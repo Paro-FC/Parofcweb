@@ -1,0 +1,866 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --barca-blue: #004d98;
+    --barca-red: #a50044;
+    --barca-gold: #edbb00;
+    --dark-bg: #0a0e27;
+    --text-white: #ffffff;
+    --text-light: #e0e0e0;
+    --gradient-bg: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b3d 100%);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--gradient-bg);
+    color: var(--text-white);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Top Navigation */
+.top-nav {
+    background: var(--dark-bg);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket-alert {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.ticket-alert .highlight {
+    color: var(--barca-gold);
+    font-weight: 700;
+}
+
+.top-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.login-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+.view-plans-btn {
+    background: var(--barca-red);
+    color: var(--text-white);
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.language-selector {
+    color: var(--text-white);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.menu-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Main Navigation */
+.main-nav {
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-link {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--barca-gold);
+}
+
+.caret {
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+.external-icon {
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.search-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-white);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Hero Section */
+.hero {
+    padding: 80px 20px;
+    text-align: center;
+    background: var(--gradient-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.match-crests {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.crest-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+}
+
+.crest {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--barca-gold) 0%, #d4a017 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(237, 187, 0, 0.3);
+    position: relative;
+}
+
+.barca-crest::before {
+    content: '🔵🔴';
+    font-size: 80px;
+}
+
+.copenhagen-crest::before {
+    content: '🦁';
+    font-size: 80px;
+}
+
+.vs-divider {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--barca-gold);
+    text-transform: uppercase;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+}
+
+.category {
+    background: var(--barca-red);
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.date {
+    color: var(--text-light);
+}
+
+/* News Section */
+.news-section {
+    padding: 60px 20px;
+    background: rgba(10, 14, 39, 0.5);
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.news-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.news-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-bg);
+}
+
+.news-content {
+    padding: 20px;
+}
+
+.news-badge {
+    display: inline-block;
+    background: var(--barca-red);
+    color: var(--text-white);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.news-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.news-date {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+/* Partners Section */
+.partners-section {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.partners-logos {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.partner-logo {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.partner-logo:hover {
+    border-color: var(--barca-gold);
+    color: var(--barca-gold);
+}
+
+/* Tickets Section */
+.tickets-section {
+    padding: 60px 20px;
+}
+
+.tickets-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    flex: 1;
+}
+
+.ticket-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-white);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+    transition: all 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ticket-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--barca-gold);
+    transform: translateY(-3px);
+}
+
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-white);
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.carousel-btn:hover {
+    background: var(--barca-red);
+}
+
+/* Calendar Section */
+.calendar-section {
+    padding: 60px 20px;
+    background: rgba(10, 14, 39, 0.5);
+}
+
+.match-countdown {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.countdown-label {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.countdown-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--barca-gold);
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-top: 5px;
+    color: var(--text-light);
+}
+
+.countdown-separator {
+    font-size: 32px;
+    color: var(--barca-gold);
+    font-weight: 700;
+}
+
+.matches-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.match-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.team {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.vs {
+    color: var(--barca-gold);
+    font-weight: 700;
+}
+
+.match-info {
+    margin-bottom: 20px;
+    color: var(--text-light);
+}
+
+.match-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: var(--barca-red);
+    color: var(--text-white);
+}
+
+.btn-primary:hover {
+    background: #8b0038;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-white);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    border-color: var(--barca-gold);
+    color: var(--barca-gold);
+}
+
+/* Store Section */
+.store-section {
+    padding: 60px 20px;
+}
+
+.store-carousel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.store-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.store-item h4 {
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    color: var(--barca-gold);
+}
+
+.store-item p {
+    color: var(--text-light);
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.btn-store {
+    display: inline-block;
+    background: var(--barca-red);
+    color: var(--text-white);
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+.btn-store:hover {
+    background: #8b0038;
+    transform: translateY(-2px);
+}
+
+/* Barça News Section */
+.barca-news-section {
+    padding: 60px 20px;
+    background: rgba(10, 14, 39, 0.5);
+}
+
+.news-list {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.news-item-large {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 30px;
+}
+
+.news-image-large {
+    width: 400px;
+    height: 250px;
+    background: var(--gradient-bg);
+    flex-shrink: 0;
+}
+
+.news-content-large {
+    padding: 30px;
+    flex: 1;
+}
+
+.news-content-large h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 15px 0;
+    line-height: 1.3;
+}
+
+.news-grid-small {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.news-item-small {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.news-image-small {
+    width: 100%;
+    height: 150px;
+    background: var(--gradient-bg);
+}
+
+.news-content-small {
+    padding: 20px;
+}
+
+.news-content-small h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+/* Players Section */
+.players-section {
+    padding: 60px 20px;
+}
+
+.players-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    flex: 1;
+}
+
+.player-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+}
+
+.player-image {
+    width: 100%;
+    height: 250px;
+    background: var(--gradient-bg);
+    position: relative;
+}
+
+.player-info {
+    padding: 20px;
+}
+
+.player-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--barca-gold);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.player-info h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.player-position {
+    color: var(--text-light);
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* Footer */
+.footer {
+    background: var(--dark-bg);
+    padding: 60px 20px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-trophies {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trophy-item {
+    text-align: center;
+}
+
+.trophy-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-light);
+}
+
+.trophy-count {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--barca-gold);
+}
+
+.footer-partners, .footer-social {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.footer-partners h4, .footer-social h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.social-links a {
+    color: var(--text-white);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    border-color: var(--barca-gold);
+    color: var(--barca-gold);
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.footer-column h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    color: var(--barca-gold);
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column ul li {
+    margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: var(--barca-gold);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
+    color: var(--text-light);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.footer-legal {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-legal a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.3s;
+}
+
+.footer-legal a:hover {
+    color: var(--barca-gold);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 32px;
+    }
+    
+    .match-crests {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .nav-left, .nav-right {
+        display: none;
+    }
+    
+    .news-grid, .tickets-grid, .players-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .news-item-large {
+        flex-direction: column;
+    }
+    
+    .news-image-large {
+        width: 100%;
+    }
+}
+

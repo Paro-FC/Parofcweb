@@ -1,0 +1,412 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image"
+      },
+      {
+        "description": "Category badge (e.g., FIRST TEAM, BASKETBALL, CLUB)",
+        "name": "badge",
+        "type": "string"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text"
+      }
+    ],
+    "name": "news",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "firstName",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "lastName",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 99
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "number",
+        "type": "number",
+        "title": "Jersey Number"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Goalkeeper",
+              "value": "Goalkeeper"
+            },
+            {
+              "title": "Defender",
+              "value": "Defender"
+            },
+            {
+              "title": "Midfielder",
+              "value": "Midfielder"
+            },
+            {
+              "title": "Forward",
+              "value": "Forward"
+            }
+          ],
+          "layout": "radio"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "Goalkeeper",
+                  "Defender",
+                  "Midfielder",
+                  "Forward"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "position",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Player Image"
+      },
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "appearances",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "cleanSheets",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "saves",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "goals",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "assists",
+            "type": "object"
+          }
+        ],
+        "name": "stats",
+        "type": "object",
+        "title": "Statistics"
+      }
+    ],
+    "name": "player",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "homeTeam",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "awayTeam",
+        "type": "string"
+      },
+      {
+        "description": "Emoji or text representation of team crest",
+        "name": "homeCrest",
+        "type": "string",
+        "title": "Home Team Crest"
+      },
+      {
+        "description": "Emoji or text representation of team crest",
+        "name": "awayCrest",
+        "type": "string",
+        "title": "Away Team Crest"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Liga Premier",
+              "value": "Liga Premier"
+            },
+            {
+              "title": "Copa Nacional",
+              "value": "Copa Nacional"
+            },
+            {
+              "title": "AFC Cup",
+              "value": "AFC Cup"
+            },
+            {
+              "title": "Friendly",
+              "value": "Friendly"
+            }
+          ]
+        },
+        "name": "competition",
+        "type": "string"
+      },
+      {
+        "description": "Emoji or text for competition",
+        "name": "competitionLogo",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "date",
+        "type": "datetime",
+        "title": "Match Date & Time"
+      },
+      {
+        "description": "e.g., Liga Premier, Matchday 8",
+        "name": "event",
+        "type": "string",
+        "title": "Event Description"
+      },
+      {
+        "name": "venue",
+        "type": "string"
+      },
+      {
+        "initialValue": false,
+        "name": "hasTickets",
+        "type": "boolean",
+        "title": "Tickets Available"
+      }
+    ],
+    "name": "match",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Cover Image"
+      },
+      {
+        "initialValue": true,
+        "description": "Show \"NEW\" badge on this story",
+        "name": "isNew",
+        "type": "boolean",
+        "title": "Mark as New"
+      }
+    ],
+    "name": "story",
+    "type": "document"
+  }
+]

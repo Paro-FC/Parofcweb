@@ -1,0 +1,134 @@
+"use client"
+
+import { Button } from "./ui/button"
+import { Search, Menu } from "lucide-react"
+import Image from "next/image"
+
+export function MainNav() {
+  return (
+    <>
+      {/* Mobile Header - Dark Blue Gradient */}
+      <nav className="md:hidden sticky top-0 z-50 bg-gradient-to-r from-barca-blue via-purple-900 to-barca-blue relative">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Logo */}
+          <a href="/" className="flex-shrink-0">
+            <Image 
+              src="/assets/logo.webp" 
+              alt="Paro FC Logo" 
+              width={60}
+              height={60}
+              className="w-12 h-12 object-contain"
+            />
+          </a>
+          
+          {/* Right side buttons */}
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="default" 
+              size="sm"
+              className="bg-barca-red hover:bg-barca-red/90 text-white rounded-md px-4 py-2 h-auto"
+            >
+              <span className="text-sm font-semibold">Login</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="text-white hover:bg-white/20 rounded-full w-10 h-10"
+            >
+              <Menu className="w-6 h-6" />
+            </Button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Secondary Navigation - White Background */}
+      <nav className="md:hidden bg-white border-b border-gray-200">
+        <div className="flex items-center justify-around px-2 py-3 overflow-x-auto scrollbar-hide">
+          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+            <span>👕</span>
+            <span>SHOP</span>
+            <span className="text-[10px]">↗</span>
+          </a>
+          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+            <span>🎫</span>
+            <span>TICKETS & MUSEUM</span>
+          </a>
+          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+            <span>🏷️</span>
+            <span>BARÇA BUSINESS</span>
+          </a>
+          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+            <span>👥</span>
+            <span>CULERS</span>
+          </a>
+        </div>
+      </nav>
+
+      {/* Desktop Navigation */}
+      <nav className="hidden md:block sticky top-0 z-50 bg-white backdrop-blur-sm relative overflow-visible">
+      {/* Two-color bottom border */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 flex">
+        <div className="flex-1 bg-barca-blue"></div>
+        <div className="flex-1 bg-barca-red"></div>
+      </div>
+      {/* Logo positioned outside header boundaries */}
+      <a href="/" className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 z-20">
+        <Image 
+          src="/assets/logo.webp" 
+            alt="Paro FC Logo" 
+          width={112}
+          height={112}
+          className="w-28 h-28 md:w-34 md:h-34 object-contain"
+        />
+      </a>
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center relative pl-32 md:pl-40">
+        
+        <div className="hidden md:flex items-center gap-6">
+          <div className="flex items-center gap-6">
+              <a href="/standings" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+                Standings <span className="text-xs">↗</span>
+            </a>
+              <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+                Shop <span className="text-xs">↗</span>
+            </a>
+              <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+                Culers <span className="text-xs">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="hidden md:flex items-center gap-6">
+            <a href="/photos" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              Photos <span className="text-xs">↗</span>
+          </a>
+            <a href="/players" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              Players <span className="text-xs">↗</span>
+          </a>
+            <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              Espai Barça <span className="text-xs">↗</span>
+          </a>
+            <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              Barça Teams <span className="text-xs">▼</span>
+          </a>
+          <Button variant="ghost" size="icon">
+            <Search className="h-5 w-5 text-gray-900" />
+          </Button>
+        </div>
+      </div>
+    </nav>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `
+      }} />
+    </>
+  )
+}
+

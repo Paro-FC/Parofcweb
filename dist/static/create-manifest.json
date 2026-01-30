@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "createdAt": "2026-01-29T17:48:07.179Z",
+  "workspaces": [
+    {
+      "name": "parofc-studio",
+      "title": "Paro FC",
+      "basePath": "/studio",
+      "projectId": "4rd3jbsr",
+      "dataset": "production",
+      "icon": null,
+      "mediaLibrary": {
+        "enabled": false
+      },
+      "schema": "a73e68d5.create-schema.json",
+      "tools": "4277de03.create-tools.json"
+    }
+  ],
+  "studioVersion": "5.7.0"
+}

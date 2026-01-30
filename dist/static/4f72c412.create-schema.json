@@ -1,0 +1,681 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Featured Image"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "First Team",
+              "value": "FIRST TEAM"
+            },
+            {
+              "title": "Club",
+              "value": "CLUB"
+            },
+            {
+              "title": "Transfers",
+              "value": "TRANSFERS"
+            },
+            {
+              "title": "Foundation",
+              "value": "FOUNDATION"
+            },
+            {
+              "title": "Academy",
+              "value": "ACADEMY"
+            },
+            {
+              "title": "Women",
+              "value": "WOMEN"
+            }
+          ]
+        },
+        "description": "Category badge (e.g., FIRST TEAM, CLUB, TRANSFERS)",
+        "name": "badge",
+        "type": "string"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime"
+      },
+      {
+        "rows": 3,
+        "description": "Brief summary shown in article cards and meta description",
+        "name": "description",
+        "type": "text",
+        "title": "Summary"
+      },
+      {
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/"
+                                  ],
+                                  "allowRelative": false,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "name": "href",
+                      "type": "url",
+                      "title": "URL"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Bold"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h2",
+                "title": "H2"
+              },
+              {
+                "value": "h3",
+                "title": "H3"
+              },
+              {
+                "value": "h4",
+                "title": "H4"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          },
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "caption",
+                "type": "string"
+              },
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Alt Text"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "body",
+        "type": "array"
+      },
+      {
+        "name": "author",
+        "type": "string"
+      },
+      {
+        "initialValue": 3,
+        "name": "readTime",
+        "type": "number",
+        "title": "Read Time (minutes)"
+      }
+    ],
+    "name": "news",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "firstName",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "lastName",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 99
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "number",
+        "type": "number",
+        "title": "Jersey Number"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Goalkeeper",
+              "value": "Goalkeeper"
+            },
+            {
+              "title": "Defender",
+              "value": "Defender"
+            },
+            {
+              "title": "Midfielder",
+              "value": "Midfielder"
+            },
+            {
+              "title": "Forward",
+              "value": "Forward"
+            }
+          ],
+          "layout": "radio"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "Goalkeeper",
+                  "Defender",
+                  "Midfielder",
+                  "Forward"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "position",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Player Image"
+      },
+      {
+        "fields": [
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "appearances",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "cleanSheets",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "saves",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "goals",
+            "type": "object"
+          },
+          {
+            "fields": [
+              {
+                "name": "value",
+                "type": "number"
+              },
+              {
+                "name": "season",
+                "type": "string"
+              }
+            ],
+            "name": "assists",
+            "type": "object"
+          }
+        ],
+        "name": "stats",
+        "type": "object",
+        "title": "Statistics"
+      }
+    ],
+    "name": "player",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "homeTeam",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "awayTeam",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Upload the home team logo/crest",
+        "name": "homeCrest",
+        "type": "image",
+        "title": "Home Team Logo"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Upload the away team logo/crest",
+        "name": "awayCrest",
+        "type": "image",
+        "title": "Away Team Logo"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Liga Premier",
+              "value": "Liga Premier"
+            },
+            {
+              "title": "Copa Nacional",
+              "value": "Copa Nacional"
+            },
+            {
+              "title": "AFC Cup",
+              "value": "AFC Cup"
+            },
+            {
+              "title": "Friendly",
+              "value": "Friendly"
+            }
+          ]
+        },
+        "name": "competition",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "description": "Upload the competition logo",
+        "name": "competitionLogo",
+        "type": "image"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "date",
+        "type": "datetime",
+        "title": "Match Date & Time"
+      },
+      {
+        "description": "e.g., Liga Premier, Matchday 8",
+        "name": "event",
+        "type": "string",
+        "title": "Event Description"
+      },
+      {
+        "name": "venue",
+        "type": "string"
+      },
+      {
+        "initialValue": false,
+        "name": "hasTickets",
+        "type": "boolean",
+        "title": "Tickets Available"
+      }
+    ],
+    "name": "match",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Thumbnail shown in the stories carousel",
+        "name": "coverImage",
+        "type": "image"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error",
+            "message": "Add at least one image or video"
+          }
+        ],
+        "description": "Add images and videos for this story",
+        "of": [
+          {
+            "fields": [
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "image",
+                "type": "image"
+              },
+              {
+                "name": "caption",
+                "type": "string"
+              },
+              {
+                "initialValue": 5,
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "min",
+                        "constraint": 1
+                      },
+                      {
+                        "flag": "max",
+                        "constraint": 30
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "duration",
+                "type": "number",
+                "title": "Duration (seconds)"
+              }
+            ],
+            "type": "object",
+            "name": "storyImage",
+            "title": "Image"
+          },
+          {
+            "fields": [
+              {
+                "options": {
+                  "accept": "video/*"
+                },
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "video",
+                "type": "file"
+              },
+              {
+                "name": "caption",
+                "type": "string"
+              },
+              {
+                "description": "Thumbnail shown while video loads",
+                "name": "poster",
+                "type": "image",
+                "title": "Video Poster"
+              }
+            ],
+            "type": "object",
+            "name": "storyVideo",
+            "title": "Video"
+          }
+        ],
+        "name": "media",
+        "type": "array",
+        "title": "Story Media"
+      },
+      {
+        "initialValue": true,
+        "description": "Show \"NEW\" badge on this story",
+        "name": "isNew",
+        "type": "boolean",
+        "title": "Mark as New"
+      },
+      {
+        "description": "Optional: When this story should no longer be shown",
+        "name": "expiresAt",
+        "type": "datetime"
+      }
+    ],
+    "name": "story",
+    "type": "document"
+  }
+]
