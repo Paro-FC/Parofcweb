@@ -44,7 +44,7 @@ export function StoreSection() {
         {/* Header Text */}
         <div className="mb-6 text-center">
           <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tight text-gray-900">
-            Barça Official Worldwide Store
+            Paro FC Official Worldwide Store
           </h3>
         </div>
 
@@ -54,7 +54,7 @@ export function StoreSection() {
             variant="default"
             className="bg-barca-blue hover:bg-barca-blue/90 text-white"
           >
-            Barça Official Worldwide Store
+            Paro FC Official Worldwide Store
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
         </div>

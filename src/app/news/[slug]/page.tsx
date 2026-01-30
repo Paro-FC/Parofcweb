@@ -7,6 +7,19 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
+interface Article {
+  _id: string
+  title: string
+  slug: string
+  image: unknown
+  badge: string
+  publishedAt: string
+  description: string
+  body?: unknown[]
+  author?: string
+  readTime?: number
+}
+
 export default async function NewsPage({ params }: Props) {
   const { slug } = await params
   
@@ -15,14 +28,16 @@ export default async function NewsPage({ params }: Props) {
     sanityFetch({ query: RELATED_NEWS_QUERY, params: { slug } }).catch(() => ({ data: [] })),
   ])
 
-  if (!articleResult.data) {
+  const article = articleResult.data as Article | null
+
+  if (!article) {
     notFound()
   }
 
   return (
     <NewsArticle 
-      article={articleResult.data} 
-      relatedNews={relatedResult.data || []} 
+      article={article} 
+      relatedNews={(relatedResult.data as any[]) || []} 
     />
   )
 }

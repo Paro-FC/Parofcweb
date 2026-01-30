@@ -106,7 +106,7 @@ export function TicketsSection() {
       <div className="container mx-auto">
         <div className="flex items-center mb-8">
           <h3 className="flex-1 text-center text-4xl font-bold uppercase tracking-tight text-gray-900">
-            Barça Tickets
+            Paro FC Tickets
           </h3>
           <div className="flex items-center gap-4">
             <button

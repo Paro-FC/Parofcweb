@@ -211,8 +211,9 @@ export default function StandingsPage() {
         }
 
         // Update teams data
-        if (standingsResult.data?.teams) {
-          const teamsData = standingsResult.data.teams.map((team: any, index: number) => ({
+        const standingsData = standingsResult.data as any
+        if (standingsData?.teams) {
+          const teamsData = standingsData.teams.map((team: any, index: number) => ({
             id: index + 1,
             position: team.position,
             name: team.teamName,

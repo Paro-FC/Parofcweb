@@ -104,9 +104,9 @@ export function MainNav() {
             <a href="/players" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
               Players <span className="text-xs">↗</span>
           </a>
-            <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
-              Espai Barça <span className="text-xs">↗</span>
-          </a>
+            <a href="/news" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              News <span className="text-xs">↗</span>
+            </a>
             <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
               Barça Teams <span className="text-xs">▼</span>
           </a>
@@ -131,4 +131,3 @@ export function MainNav() {
     </>
   )
 }
-

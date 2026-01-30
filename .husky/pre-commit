@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint (allow it to fail without blocking)
+set +e
+pnpm lint
+lint_exit_code=$?
+set -e
+
+if [ $lint_exit_code -ne 0 ]; then
+  echo "⚠️  Lint check failed, but continuing..."
+fi
+
+# Build must succeed
+pnpm build

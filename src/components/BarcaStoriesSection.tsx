@@ -130,7 +130,7 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
             className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center transition-all ${
               canScrollLeft 
                 ? 'opacity-100 hover:bg-gray-50 hover:border-barca-gold cursor-pointer' 
-                : 'opacity-50 cursor-not-allowed'
+                : 'opacity-0 pointer-events-none'
             }`}
           >
             <ChevronLeft className="w-6 h-6 text-gray-900" />

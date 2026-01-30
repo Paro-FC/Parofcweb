@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence, PanInfo } from "framer-motion"
 import { X, ChevronLeft, ChevronRight, Pause, Play, Send, Volume2, VolumeX } from "lucide-react"
 import Image from "next/image"
+import type { SanityImageSource } from '@sanity/image-url'
 
 interface MediaItem {
   _key: string
@@ -27,7 +28,7 @@ interface StoriesViewerProps {
   stories: Story[]
   initialStoryIndex: number
   onClose: () => void
-  urlFor: (source: unknown) => { width: (w: number) => { height: (h: number) => { url: () => string } } }
+  urlFor: (source: SanityImageSource) => { width: (w: number) => { height: (h: number) => { url: () => string } } }
 }
 
 export function StoriesViewer({ stories, initialStoryIndex, onClose, urlFor }: StoriesViewerProps) {
