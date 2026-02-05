@@ -1,7 +1,12 @@
+"use client"
+
 import { Button } from "./ui/button"
-import Image from "next/image"
+import { Menu } from "lucide-react"
+import { useSideMenu } from "@/contexts/SideMenuContext"
 
 export function TopNav() {
+  const { openMenu } = useSideMenu()
+
   return (
     <>
       {/* Top Banner - Mobile Style */}
@@ -29,7 +34,14 @@ export function TopNav() {
           <Button variant="ghost" size="sm">Login</Button>
           <Button variant="default" size="sm">View Plans</Button>
           <span className="text-sm text-gray-900 cursor-pointer hover:text-barca-gold transition-colors">EN</span>
-          <Button variant="ghost" size="icon">☰</Button>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={openMenu}
+            aria-label="Menu"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
       </div>
     </nav>

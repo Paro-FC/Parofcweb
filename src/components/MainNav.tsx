@@ -1,10 +1,29 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Button } from "./ui/button"
 import { Search, Menu } from "lucide-react"
 import Image from "next/image"
+import { SearchModal } from "./SearchModal"
+import { useSideMenu } from "@/contexts/SideMenuContext"
 
 export function MainNav() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const { openMenu } = useSideMenu()
+
+  // Keyboard shortcut: Cmd+K or Ctrl+K to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        setIsSearchOpen(true)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
   return (
     <>
       {/* Mobile Header - Dark Blue Gradient */}
@@ -34,6 +53,7 @@ export function MainNav() {
               variant="ghost" 
               size="icon"
               className="text-white hover:bg-white/20 rounded-full w-10 h-10"
+              onClick={openMenu}
             >
               <Menu className="w-6 h-6" />
             </Button>
@@ -110,12 +130,28 @@ export function MainNav() {
             <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
               Barça Teams <span className="text-xs">▼</span>
           </a>
-          <Button variant="ghost" size="icon">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => setIsSearchOpen(true)}
+            aria-label="Search"
+          >
             <Search className="h-5 w-5 text-gray-900" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={openMenu}
+            aria-label="Menu"
+          >
+            <Menu className="h-5 w-5 text-gray-900" />
           </Button>
         </div>
       </div>
     </nav>
+
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       <style dangerouslySetInnerHTML={{
         __html: `

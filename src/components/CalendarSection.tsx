@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { Calendar, RefreshCw, ExternalLink } from "lucide-react"
+import { Calendar, RefreshCw, ExternalLink, ArrowRight } from "lucide-react"
 import { Countdown } from "./ui/countdown"
 import { Button } from "./ui/button"
 import Image from "next/image"
+import Link from "next/link"
+import { CalendarSyncModal } from "./CalendarSyncModal"
 
 interface Match {
   _id: string
@@ -76,6 +79,7 @@ function formatMatchDate(dateString: string) {
 
 export function CalendarSection({ matches }: { matches?: Match[] }) {
   const matchList = matches && matches.length > 0 ? matches : fallbackMatches
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
   
   // Get the first match date for countdown
   const targetDate = matchList[0] ? new Date(matchList[0].date) : new Date()
@@ -104,6 +108,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
             <Button
               variant="outline"
               className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-barca-gold hover:text-barca-gold"
+              onClick={() => setIsSyncModalOpen(true)}
             >
               <Calendar className="w-4 h-4 mr-2" />
               Sync Calendar
@@ -120,7 +125,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-barca rounded-2xl p-6 text-white"
+                  className="bg-gradient-barca rounded-2xl p-6 text-white flex flex-col h-full"
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex flex-col items-center gap-2">
@@ -174,28 +179,23 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-6">
+                  <div className="space-y-2 mb-6 flex-1">
                     <p className="font-bold text-sm">{formatMatchDate(match.date)}</p>
                     <p className="text-xs text-white/80">{match.event}</p>
                     <p className="text-xs text-white/80">{match.venue}</p>
                   </div>
 
-                  <div className="flex flex-col gap-3">
-                    <a
-                      href="#"
-                      className="flex items-center gap-2 text-sm text-white/90 hover:text-barca-gold transition-colors"
-                    >
-                      <span>⚽</span>
-                      Match Centre
-                    </a>
-                    {match.hasTickets && (
+                  <div className="mt-auto pt-4">
+                    <Link href={`/matches/${match._id}`}>
                       <Button
-                        variant="gold"
-                        className="w-full font-bold uppercase text-dark-bg"
+                        variant="outline"
+                        className="w-full border-white/30 bg-white/10 hover:bg-white/20 text-white hover:text-barca-gold hover:border-barca-gold transition-all"
                       >
-                        Tickets
+                        <span className="mr-2">⚽</span>
+                        Match Centre
+                        <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
-                    )}
+                    </Link>
                   </div>
                 </motion.div>
               ))}
@@ -220,13 +220,13 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                     Next Games
                   </h4>
                   <div className="flex-1 flex items-end p-4">
-                    <a
-                      href="#"
+                    <Link
+                      href="/calendar"
                       className="flex items-center gap-2 text-white hover:text-barca-gold transition-colors text-sm font-semibold"
                     >
                       See The Calendar
                       <ExternalLink className="w-4 h-4" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -234,6 +234,13 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
           </div>
         </motion.div>
       </div>
+
+      {/* Calendar Sync Modal */}
+      <CalendarSyncModal 
+        isOpen={isSyncModalOpen} 
+        onClose={() => setIsSyncModalOpen(false)}
+        matches={matchList}
+      />
     </section>
   )
 }

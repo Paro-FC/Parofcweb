@@ -4,7 +4,7 @@ import { CalendarSection } from "@/components/CalendarSection"
 import { BarcaStoriesSection } from "@/components/BarcaStoriesSection"
 import { NewsSection } from "@/components/NewsSection"
 import { PlayersSection } from "@/components/PlayersSection"
-import { StoreSection } from "@/components/StoreSection"
+// import { StoreSection } from "@/components/StoreSection"
 import { TrophiesSection } from "@/components/TrophiesSection"
 import { PartnersSection } from "@/components/PartnersSection"
 import { Card } from "@/components/ui/card"
@@ -31,8 +31,8 @@ export default async function Home() {
         <CalendarSection matches={matchesResult.data as any} />
         <hr className="border-gray-200" />
         <BarcaStoriesSection stories={storiesResult.data as any} />
-        <hr className="border-gray-200" />
-        <StoreSection />
+        {/* <hr className="border-gray-200" />
+        <StoreSection /> */}
         <hr className="border-gray-200" />
         <NewsSection news={newsResult.data as any} />
       </Card>

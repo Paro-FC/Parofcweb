@@ -102,6 +102,66 @@ export const MATCHES_QUERY = `*[_type == "match"] | order(date asc) [0...3] {
   hasTickets
 }`
 
+// All matches query for calendar page
+export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
+  _id,
+  homeTeam,
+  awayTeam,
+  homeCrest {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  awayCrest {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  competition,
+  competitionLogo {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  date,
+  event,
+  venue,
+  hasTickets
+}`
+
+// Single match query
+export const MATCH_QUERY = `*[_type == "match" && _id == $id][0] {
+  _id,
+  homeTeam,
+  awayTeam,
+  homeCrest {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  awayCrest {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  competition,
+  competitionLogo {
+    asset-> {
+      _id,
+      url
+    }
+  },
+  date,
+  event,
+  venue,
+  hasTickets
+}`
+
 // Stories queries
 export const STORIES_QUERY = `*[_type == "story"] | order(_createdAt desc) {
   _id,
@@ -196,5 +256,35 @@ export const TROPHIES_QUERY = `*[_type == "trophy"] | order(name asc) {
   _id,
   name,
   total
+}`
+
+// Search queries
+export const SEARCH_NEWS_QUERY = `*[_type == "news" && (title match $searchTerm || description match $searchTerm)] | order(publishedAt desc) [0...5] {
+  _id,
+  title,
+  "slug": slug.current,
+  image,
+  badge,
+  publishedAt,
+  description
+}`
+
+export const SEARCH_PLAYERS_QUERY = `*[_type == "player" && (firstName match $searchTerm || lastName match $searchTerm)] | order(lastName asc) [0...5] {
+  _id,
+  firstName,
+  lastName,
+  number,
+  position,
+  image,
+  "slug": slug.current
+}`
+
+export const SEARCH_PHOTOS_QUERY = `*[_type == "photo" && title match $searchTerm] | order(date desc) [0...5] {
+  _id,
+  title,
+  "coverImage": coverImage.asset->url,
+  category,
+  date,
+  "slug": slug.current
 }`
 
