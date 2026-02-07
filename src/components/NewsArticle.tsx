@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Share2, Bookmark, Clock, Calendar, ChevronRight, Heart, X } from "lucide-react"
 import { urlFor } from "@/sanity/lib/image"
 import { PortableText, PortableTextComponents } from "@portabletext/react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 interface NewsArticleProps {
   article: {
@@ -121,15 +121,65 @@ function formatRelativeDate(dateString: string) {
 }
 
 export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
+  const articleId = article._id
+  const likesKey = `article_likes_${articleId}`
+  const likedKey = `article_liked_${articleId}`
+  const bookmarkedKey = `article_bookmarked_${articleId}`
+
+  // Initialize with default values to avoid hydration mismatch
   const [likes, setLikes] = useState(1831)
   const [isLiked, setIsLiked] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Load from localStorage after hydration (client-side only)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedLikes = localStorage.getItem(likesKey)
+      if (storedLikes) {
+        setLikes(parseInt(storedLikes, 10))
+      }
+      
+      const storedLiked = localStorage.getItem(likedKey)
+      if (storedLiked === 'true') {
+        setIsLiked(true)
+      }
+      
+      const storedBookmarked = localStorage.getItem(bookmarkedKey)
+      if (storedBookmarked === 'true') {
+        setIsBookmarked(true)
+      }
+      
+      setIsHydrated(true)
+    }
+  }, [likesKey, likedKey, bookmarkedKey])
+
+  // Sync likes to localStorage (only after hydration)
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      localStorage.setItem(likesKey, likes.toString())
+    }
+  }, [likes, likesKey, isHydrated])
+
+  // Sync liked state to localStorage (only after hydration)
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      localStorage.setItem(likedKey, isLiked.toString())
+    }
+  }, [isLiked, likedKey, isHydrated])
+
+  // Sync bookmarked state to localStorage (only after hydration)
+  useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      localStorage.setItem(bookmarkedKey, isBookmarked.toString())
+    }
+  }, [isBookmarked, bookmarkedKey, isHydrated])
 
   const handleLike = () => {
     if (isLiked) {
-      setLikes(likes - 1)
+      setLikes(prev => prev - 1)
     } else {
-      setLikes(likes + 1)
+      setLikes(prev => prev + 1)
     }
     setIsLiked(!isLiked)
   }

@@ -288,3 +288,52 @@ export const SEARCH_PHOTOS_QUERY = `*[_type == "photo" && title match $searchTer
   "slug": slug.current
 }`
 
+// Products queries
+export const PRODUCTS_QUERY = `*[_type == "product"] {
+  _id,
+  name,
+  "slug": slug.current,
+  image,
+  hoverImage,
+  collection,
+  price,
+  currency,
+  salePrice,
+  badge,
+  sizes,
+  inStock,
+  _createdAt
+}`
+
+export const PRODUCTS_BY_COLLECTION_QUERY = `*[_type == "product" && collection == $collection && inStock == true] {
+  _id,
+  name,
+  "slug": slug.current,
+  image,
+  hoverImage,
+  collection,
+  price,
+  currency,
+  salePrice,
+  badge,
+  sizes,
+  inStock,
+  _createdAt
+}`
+
+export const PRODUCT_QUERY = `*[_type == "product" && slug.current == $slug][0] {
+  _id,
+  name,
+  "slug": slug.current,
+  image,
+  hoverImage,
+  collection,
+  price,
+  currency,
+  salePrice,
+  badge,
+  sizes,
+  inStock,
+  description
+}`
+

@@ -2,14 +2,21 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "./ui/button"
-import { Search, Menu } from "lucide-react"
+import { Search, Menu, ShoppingBag } from "lucide-react"
 import Image from "next/image"
 import { SearchModal } from "./SearchModal"
 import { useSideMenu } from "@/contexts/SideMenuContext"
+import { useCart } from "@/contexts/CartContext"
 
 export function MainNav() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { openMenu } = useSideMenu()
+  const { getItemCount, setIsCartOpen } = useCart()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Keyboard shortcut: Cmd+K or Ctrl+K to open search
   useEffect(() => {
@@ -43,6 +50,19 @@ export function MainNav() {
           {/* Right side buttons */}
           <div className="flex items-center gap-2">
             <Button 
+              variant="ghost" 
+              size="icon"
+              className="text-white hover:bg-white/20 rounded-full w-10 h-10 relative"
+              onClick={() => setIsCartOpen(true)}
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {mounted && getItemCount() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-barca-gold text-barca-blue text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {getItemCount()}
+                </span>
+              )}
+            </Button>
+            <Button 
               variant="default" 
               size="sm"
               className="bg-barca-red hover:bg-barca-red/90 text-white rounded-md px-4 py-2 h-auto"
@@ -64,7 +84,7 @@ export function MainNav() {
       {/* Mobile Secondary Navigation - White Background */}
       <nav className="md:hidden bg-white border-b border-gray-200">
         <div className="flex items-center justify-around px-2 py-3 overflow-x-auto scrollbar-hide">
-          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+          <a href="/shop" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
             <span>👕</span>
             <span>SHOP</span>
             <span className="text-[10px]">↗</span>
@@ -85,30 +105,30 @@ export function MainNav() {
       </nav>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-white backdrop-blur-sm relative overflow-visible">
+      <nav className="hidden md:block sticky top-0 z-50 bg-white backdrop-blur-sm relative">
       {/* Two-color bottom border */}
       <div className="absolute bottom-0 left-0 right-0 h-1 flex">
         <div className="flex-1 bg-barca-blue"></div>
         <div className="flex-1 bg-barca-red"></div>
       </div>
-      {/* Logo positioned outside header boundaries */}
-      <a href="/" className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 z-20">
-        <Image 
-          src="/assets/logo.webp" 
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+        {/* Logo inside nav */}
+        <a href="/" className="flex-shrink-0">
+          <Image 
+            src="/assets/logo.webp" 
             alt="Paro FC Logo" 
-          width={112}
-          height={112}
-          className="w-28 h-28 md:w-34 md:h-34 object-contain"
-        />
-      </a>
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center relative pl-32 md:pl-40">
+            width={80}
+            height={80}
+            className="w-20 h-20 object-contain"
+          />
+        </a>
         
         <div className="hidden md:flex items-center gap-6">
           <div className="flex items-center gap-6">
               <a href="/standings" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
                 Standings <span className="text-xs">↗</span>
             </a>
-              <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              <a href="/shop" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
                 Shop <span className="text-xs">↗</span>
             </a>
               <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
@@ -137,6 +157,20 @@ export function MainNav() {
             aria-label="Search"
           >
             <Search className="h-5 w-5 text-gray-900" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="relative"
+            onClick={() => setIsCartOpen(true)}
+            aria-label="Cart"
+          >
+            <ShoppingBag className="h-5 w-5 text-gray-900" />
+            {mounted && getItemCount() > 0 && (
+              <span className="absolute -top-1 -right-1 bg-barca-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                {getItemCount()}
+              </span>
+            )}
           </Button>
           <Button 
             variant="ghost" 
