@@ -215,6 +215,7 @@ export default function ShopPage() {
   }, [])
 
   const filteredProducts = products.filter(product => {
+    if (!product) return false
     if (selectedCollection === 'all') return true
     return product.collection === selectedCollection
   })
@@ -231,11 +232,15 @@ export default function ShopPage() {
         if (!a._createdAt && b._createdAt) return 1
         return 0
       case 'price-low':
-        return (a.salePrice || a.price) - (b.salePrice || b.price)
+        const priceA = a.salePrice ?? a.price ?? 0
+        const priceB = b.salePrice ?? b.price ?? 0
+        return priceA - priceB
       case 'price-high':
-        return (b.salePrice || b.price) - (a.salePrice || a.price)
+        const priceAHigh = a.salePrice ?? a.price ?? 0
+        const priceBHigh = b.salePrice ?? b.price ?? 0
+        return priceBHigh - priceAHigh
       case 'name':
-        return a.name.localeCompare(b.name)
+        return (a.name || '').localeCompare(b.name || '')
       default:
         return 0
     }
@@ -263,8 +268,8 @@ export default function ShopPage() {
       </Link>
 
       {/* Fixed Header Section - Moves up on scroll */}
-      <div className={`fixed left-0 right-0 bg-white z-[60] transition-all duration-300 ${
-        isScrolled ? 'top-0' : 'top-0 md:top-[120px]'
+      <div className={`fixed left-0 right-0 bg-white z-40 transition-all duration-300 ${
+        isScrolled ? 'top-0' : 'top-0 md:top-[150px]'
       }`}>
         {/* Header */}
         <div className="border-b border-gray-200">
