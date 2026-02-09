@@ -112,19 +112,18 @@ export function MainNav() {
         <div className="flex-1 bg-barca-red"></div>
       </div>
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        {/* Logo inside nav */}
-        <a href="/" className="flex-shrink-0">
-          <Image 
-            src="/assets/logo.webp" 
-            alt="Paro FC Logo" 
-            width={80}
-            height={80}
-            className="w-20 h-20 object-contain"
-          />
-        </a>
-        
-        <div className="hidden md:flex items-center gap-6">
-          <div className="flex items-center gap-6">
+        {/* Logo and left nav items grouped together */}
+        <div className="hidden md:flex items-center gap-3">
+          <a href="/" className="flex-shrink-0">
+            <Image 
+              src="/assets/logo.webp" 
+              alt="Paro FC Logo" 
+              width={80}
+              height={80}
+              className="w-20 h-20 object-contain"
+            />
+          </a>
+          <div className="flex items-center gap-4">
               <a href="/standings" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
                 Standings <span className="text-xs">↗</span>
             </a>
