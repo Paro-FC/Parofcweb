@@ -19,7 +19,6 @@ interface CartItem {
   name: string
   slug: string
   image: string
-  collection?: string
   price: number
   currency: string
   salePrice?: number
@@ -53,7 +52,6 @@ const CartItemSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1),
   image: z.string().url().or(z.string().startsWith('/')),
-  collection: z.string().optional(),
   price: z.number().positive(),
   currency: z.string().length(3),
   salePrice: z.number().positive().optional(),

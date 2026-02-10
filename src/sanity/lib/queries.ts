@@ -299,6 +299,14 @@ export const SEARCH_PHOTOS_QUERY = `*[_type == "photo" && title match $searchTer
   "slug": slug.current
 }`
 
+// Categories query
+export const CATEGORIES_QUERY = `*[_type == "category"] | order(title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  image
+}`
+
 // Products queries
 export const PRODUCTS_QUERY = `*[_type == "product"] {
   _id,
@@ -306,7 +314,12 @@ export const PRODUCTS_QUERY = `*[_type == "product"] {
   "slug": slug.current,
   image,
   hoverImage,
-  collection,
+  category-> {
+    _id,
+    title,
+    "slug": slug.current,
+    image
+  },
   price,
   currency,
   salePrice,
@@ -316,13 +329,18 @@ export const PRODUCTS_QUERY = `*[_type == "product"] {
   _createdAt
 }`
 
-export const PRODUCTS_BY_COLLECTION_QUERY = `*[_type == "product" && collection == $collection && inStock == true] {
+export const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category._ref == $categoryId && inStock == true] {
   _id,
   name,
   "slug": slug.current,
   image,
   hoverImage,
-  collection,
+  category-> {
+    _id,
+    title,
+    "slug": slug.current,
+    image
+  },
   price,
   currency,
   salePrice,
@@ -338,13 +356,25 @@ export const PRODUCT_QUERY = `*[_type == "product" && slug.current == $slug][0] 
   "slug": slug.current,
   image,
   hoverImage,
-  collection,
+  category-> {
+    _id,
+    title,
+    "slug": slug.current,
+    image
+  },
   price,
   currency,
   salePrice,
   badge,
   sizes,
   inStock,
-  description
+  description,
+  assemblyRequired,
+  color,
+  dimensions,
+  featured,
+  images,
+  material,
+  stock
 }`
 

@@ -7,8 +7,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, SlidersHorizontal, ChevronDown, ShoppingBag } from 'lucide-react'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
-import { PRODUCTS_QUERY } from '@/sanity/lib/queries'
+import { PRODUCTS_QUERY, CATEGORIES_QUERY } from '@/sanity/lib/queries'
 import type { SanityImageSource } from '@sanity/image-url'
+
+interface Category {
+  _id: string
+  title: string
+  slug: string
+  image?: SanityImageSource | string
+}
 
 interface Product {
   _id: string
@@ -16,7 +23,7 @@ interface Product {
   slug: string
   image: SanityImageSource | string
   hoverImage?: SanityImageSource | string
-  collection: string
+  category: Category | null
   price: number
   currency: string
   salePrice?: number
@@ -24,16 +31,6 @@ interface Product {
   sizes?: string[]
   inStock: boolean
   _createdAt?: string
-}
-
-const collectionLabels: Record<string, string> = {
-  'home-kit': 'HOME KIT',
-  'away-kit': 'AWAY KIT',
-  'third-kit': 'THIRD KIT',
-  'training': 'TRAINING',
-  'retro': 'RETRO COLLECTION',
-  'fan': 'FAN COLLECTION',
-  'accessories': 'ACCESSORIES',
 }
 
 const badgeStyles: Record<string, string> = {
@@ -93,10 +90,10 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
     return product.badge ? badgeStyles[product.badge] : ''
   }, [product.badge])
 
-  // Memoize collection label
-  const collectionLabel = useMemo(() => {
-    return product.collection ? (collectionLabels[product.collection] || product.collection.toUpperCase()) : ''
-  }, [product.collection])
+  // Memoize category title
+  const categoryTitle = useMemo(() => {
+    return product.category?.title || ''
+  }, [product.category])
 
   return (
     <motion.div
@@ -132,18 +129,18 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
             />
           )}
 
-          {/* Collection Badge (top-left) */}
-          {collectionLabel && (
-            <div className="absolute top-3 left-3">
+          {/* Category Badge (top-left) */}
+          {categoryTitle && (
+            <div className="absolute top-3 left-3 z-10">
               <span className="bg-barca-gold/90 text-dark-charcoal text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider">
-                {collectionLabel}
+                {categoryTitle}
               </span>
             </div>
           )}
 
           {/* Special Badge (bottom-left) */}
           {product.badge && (
-            <div className="absolute bottom-3 left-3">
+            <div className="absolute bottom-3 left-3 z-10">
               <span className={`${badgeStyle} text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider`}>
                 {badgeLabels[product.badge]}
               </span>
@@ -164,10 +161,10 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
 
         {/* Product Info */}
         <div className="mt-4 space-y-2">
-          {/* Collection Label */}
-          {collectionLabel && (
+          {/* Category Label */}
+          {categoryTitle && (
             <p className="text-barca-gold text-xs font-semibold tracking-wider uppercase">
-              {collectionLabel}
+              {categoryTitle}
             </p>
           )}
           
@@ -203,32 +200,48 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedCollection, setSelectedCollection] = useState<string>('all')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [sortBy, setSortBy] = useState<string>('newest')
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchData() {
       try {
-        const data = await client.fetch(PRODUCTS_QUERY)
-        console.log('Fetched products:', data)
-        if (data && Array.isArray(data)) {
-          console.log(`Found ${data.length} products`)
-          setProducts(data)
+        const [productsData, categoriesData] = await Promise.all([
+          client.fetch(PRODUCTS_QUERY),
+          client.fetch(CATEGORIES_QUERY)
+        ])
+        
+        console.log('Fetched products:', productsData)
+        console.log('Fetched categories:', categoriesData)
+        
+        if (productsData && Array.isArray(productsData)) {
+          console.log(`Found ${productsData.length} products`)
+          setProducts(productsData)
         } else {
-          console.warn('No products data or invalid format:', data)
+          console.warn('No products data or invalid format:', productsData)
           setProducts([])
         }
+        
+        if (categoriesData && Array.isArray(categoriesData)) {
+          console.log(`Found ${categoriesData.length} categories`)
+          setCategories(categoriesData)
+        } else {
+          console.warn('No categories data or invalid format:', categoriesData)
+          setCategories([])
+        }
       } catch (error) {
-        console.error('Error fetching products:', error)
+        console.error('Error fetching data:', error)
         setProducts([])
+        setCategories([])
       } finally {
         setIsLoading(false)
       }
     }
-    fetchProducts()
+    fetchData()
   }, [])
 
   useEffect(() => {
@@ -241,10 +254,11 @@ export default function ShopPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+
   const filteredProducts = products.filter(product => {
     if (!product) return false
-    if (selectedCollection === 'all') return true
-    return product.collection === selectedCollection
+    if (selectedCategory === 'all') return true
+    return product.category?._id === selectedCategory
   })
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -273,16 +287,6 @@ export default function ShopPage() {
     }
   })
 
-  const collections = [
-    { value: 'all', label: 'All Products' },
-    { value: 'home-kit', label: 'Home Kit' },
-    { value: 'away-kit', label: 'Away Kit' },
-    { value: 'third-kit', label: 'Third Kit' },
-    { value: 'training', label: 'Training' },
-    { value: 'retro', label: 'Retro Collection' },
-    { value: 'fan', label: 'Fan Collection' },
-    { value: 'accessories', label: 'Accessories' },
-  ]
 
   return (
     <div className="min-h-screen bg-white">
@@ -344,21 +348,31 @@ export default function ShopPage() {
                 className="overflow-hidden"
               >
                 <div className="py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Collection Filter */}
+                  {/* Category Filter */}
                   <div>
-                    <h3 className="text-xs font-bold text-gray-500 mb-3 tracking-wider">COLLECTION</h3>
+                    <h3 className="text-xs font-bold text-gray-500 mb-3 tracking-wider">CATEGORY</h3>
                     <div className="flex flex-wrap gap-2">
-                      {collections.map((collection) => (
+                      <button
+                        onClick={() => setSelectedCategory('all')}
+                        className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                          selectedCategory === 'all'
+                            ? 'bg-barca-gold text-dark-charcoal'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        All Products
+                      </button>
+                      {categories.map((category) => (
                         <button
-                          key={collection.value}
-                          onClick={() => setSelectedCollection(collection.value)}
+                          key={category._id}
+                          onClick={() => setSelectedCategory(category._id)}
                           className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
-                            selectedCollection === collection.value
+                            selectedCategory === category._id
                               ? 'bg-barca-gold text-dark-charcoal'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
-                          {collection.label}
+                          {category.title}
                         </button>
                       ))}
                     </div>
@@ -423,13 +437,13 @@ export default function ShopPage() {
           <div className="text-center py-20">
             <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500 mb-2">
-              {products.length === 0 
+                {products.length === 0 
                 ? 'No products found. Add products in Sanity Studio to see them here.'
-                : `No products found in "${collections.find(c => c.value === selectedCollection)?.label || 'this collection'}".`}
+                : `No products found in "${selectedCategory === 'all' ? 'all categories' : categories.find(c => c._id === selectedCategory)?.title || 'this category'}".`}
             </p>
             {products.length === 0 && (
               <p className="text-sm text-gray-400 mt-2">
-                Make sure products have the required fields: name, slug, image, price, currency, collection, and inStock.
+                Make sure products have the required fields: name, slug, image, price, currency, category, and inStock.
               </p>
             )}
           </div>

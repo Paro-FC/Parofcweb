@@ -12,13 +12,20 @@ import { useParams } from 'next/navigation'
 import type { SanityImageSource } from '@sanity/image-url'
 import { useCart } from '@/contexts/CartContext'
 
+interface Category {
+  _id: string
+  title: string
+  slug: string
+  image?: SanityImageSource | string
+}
+
 interface Product {
   _id: string
   name: string
   slug: string
   image: SanityImageSource | string
   hoverImage?: SanityImageSource | string
-  collection: string
+  category: Category | null
   price: number
   currency: string
   salePrice?: number
@@ -26,16 +33,13 @@ interface Product {
   sizes?: string[]
   inStock: boolean
   description?: string
-}
-
-const collectionLabels: Record<string, string> = {
-  'home-kit': 'HOME KIT',
-  'away-kit': 'AWAY KIT',
-  'third-kit': 'THIRD KIT',
-  'training': 'TRAINING',
-  'retro': 'RETRO COLLECTION',
-  'fan': 'FAN COLLECTION',
-  'accessories': 'ACCESSORIES',
+  assemblyRequired?: boolean
+  color?: string
+  dimensions?: string
+  featured?: boolean
+  images?: Array<{ _key: string; _type: string; asset: { _ref: string; _type: string } }>
+  material?: string
+  stock?: number
 }
 
 const badgeStyles: Record<string, string> = {
@@ -92,9 +96,9 @@ function RelatedProductCard({ product }: { product: Product }) {
         )}
       </div>
       <div className="mt-3 space-y-1">
-        {product.collection && (
+        {product.category?.title && (
           <p className="text-barca-gold text-xs font-semibold tracking-wider uppercase">
-            {collectionLabels[product.collection] || product.collection.toUpperCase()}
+            {product.category.title}
           </p>
         )}
         <h3 className="text-gray-900 text-sm font-medium line-clamp-2 group-hover:text-barca-gold transition-colors">
@@ -131,11 +135,11 @@ export default function ProductDetailPage() {
         
         if (productData) {
           setProduct(productData)
-          // Filter related products (same collection, excluding current)
+          // Filter related products (same category, excluding current)
           const related = allProducts
-            .filter((p: Product) => p._id !== productData._id && p.collection === productData.collection)
+            .filter((p: Product) => p._id !== productData._id && p.category?._id === productData.category?._id)
             .slice(0, 4)
-          // If no related products in same collection, show any other products
+          // If no related products in same category, show any other products
           if (related.length === 0) {
             const otherProducts = allProducts
               .filter((p: Product) => p._id !== productData._id)
@@ -192,7 +196,6 @@ export default function ProductDetailPage() {
       name: product.name,
       slug: product.slug,
       image: imageUrl,
-      collection: product.collection,
       price: product.price,
       currency: product.currency,
       salePrice: product.salePrice,
@@ -273,11 +276,11 @@ export default function ProductDetailPage() {
                   className="object-cover"
                 />
 
-              {/* Collection Badge */}
-              {product.collection && (
-                <div className="absolute top-4 left-4">
+              {/* Category Badge */}
+              {product.category?.title && (
+                <div className="absolute top-4 left-4 z-10">
                   <span className="bg-barca-gold/90 text-dark-charcoal text-xs font-bold px-4 py-2 rounded-full tracking-wider">
-                    {collectionLabels[product.collection] || product.collection.toUpperCase()}
+                    {product.category.title}
                   </span>
                 </div>
               )}
@@ -337,6 +340,15 @@ export default function ProductDetailPage() {
           {/* Product Info */}
           <div className="lg:sticky lg:top-[160px] lg:self-start">
             <div className="space-y-6">
+            {/* Category */}
+            {product.category?.title && (
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="bg-barca-gold/20 text-barca-gold text-xs font-semibold tracking-wider uppercase px-3 py-1.5 rounded-full">
+                  {product.category.title}
+                </span>
+              </div>
+            )}
+
             {/* Product Name */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{product.name}</h1>
 

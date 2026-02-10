@@ -54,7 +54,6 @@ export interface Product extends SanityDocument {
   slug: SanitySlug
   image?: SanityImageReference
   hoverImage?: SanityImageReference
-  collection?: string
   price: number
   currency: string
   salePrice?: number

@@ -7,6 +7,7 @@ import { standing } from './standing'
 import { photo } from './photo'
 import { trophy } from './trophy'
 import { product } from './product'
+import { category } from './category'
 
-export const schemaTypes = [news, player, match, story, partner, standing, photo, trophy, product]
+export const schemaTypes = [news, player, match, story, partner, standing, photo, trophy, product, category]
 

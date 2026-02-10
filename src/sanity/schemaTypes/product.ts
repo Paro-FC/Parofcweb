@@ -42,21 +42,12 @@ export const product = defineType({
       description: 'Optional image shown on hover',
     }),
     defineField({
-      name: 'collection',
-      title: 'Collection',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Home Kit', value: 'home-kit' },
-          { title: 'Away Kit', value: 'away-kit' },
-          { title: 'Third Kit', value: 'third-kit' },
-          { title: 'Training', value: 'training' },
-          { title: 'Retro Collection', value: 'retro' },
-          { title: 'Fan Collection', value: 'fan' },
-          { title: 'Accessories', value: 'accessories' },
-        ],
-      },
+      name: 'category',
+      title: 'Category',
+      type: 'reference',
+      to: [{ type: 'category' }],
       validation: (rule) => rule.required(),
+      description: 'Product category (required)',
     }),
     defineField({
       name: 'price',
@@ -124,20 +115,66 @@ export const product = defineType({
       type: 'text',
       rows: 4,
     }),
+    defineField({
+      name: 'assemblyRequired',
+      title: 'Assembly Required',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Whether the product requires assembly',
+    }),
+    defineField({
+      name: 'color',
+      title: 'Color',
+      type: 'string',
+      description: 'Product color (e.g., natural, black, white)',
+    }),
+    defineField({
+      name: 'dimensions',
+      title: 'Dimensions',
+      type: 'string',
+      description: 'Product dimensions (e.g., 40cm base x 200cm height x 180cm reach)',
+    }),
+    defineField({
+      name: 'featured',
+      title: 'Featured',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Whether this product should be featured prominently',
+    }),
+    defineField({
+      name: 'images',
+      title: 'Additional Images',
+      type: 'array',
+      of: [{ type: 'image', options: { hotspot: true } }],
+      description: 'Additional product images (supplements main image and hover image)',
+    }),
+    defineField({
+      name: 'material',
+      title: 'Material',
+      type: 'string',
+      description: 'Product material (e.g., metal, wood, fabric)',
+    }),
+    defineField({
+      name: 'stock',
+      title: 'Stock Quantity',
+      type: 'number',
+      description: 'Number of items in stock',
+      validation: (rule) => rule.min(0),
+    }),
   ],
   preview: {
     select: {
       title: 'name',
-      subtitle: 'collection',
+      categoryTitle: 'category.title',
       media: 'image',
       price: 'price',
       currency: 'currency',
     },
-    prepare({ title, subtitle, media, price, currency }) {
+    prepare({ title, categoryTitle, media, price, currency }) {
       const currencySymbol = currency === 'BTN' ? 'Nu.' : '$'
       return {
         title,
-        subtitle: `${subtitle} - ${currencySymbol}${price}`,
+        subtitle: `${categoryTitle || 'No category'} - ${currencySymbol}${price}`,
         media,
       }
     },

@@ -8,7 +8,6 @@ export interface CartItem {
   name: string
   slug: string
   image: string
-  collection: string
   price: number
   currency: string
   salePrice?: number
