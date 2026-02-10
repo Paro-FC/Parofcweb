@@ -4,7 +4,19 @@ import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 import { urlFor } from "@/sanity/lib/image"
-import { StoriesViewer } from "./StoriesViewer"
+import dynamic from "next/dynamic"
+
+// Dynamically import StoriesViewer to reduce initial bundle size
+const StoriesViewer = dynamic(() => import("./StoriesViewer").then(mod => ({ default: mod.StoriesViewer })), {
+  loading: () => (
+    <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+      <div className="text-center text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+        <p>Loading story...</p>
+      </div>
+    </div>
+  )
+})
 
 interface MediaItem {
   _key: string

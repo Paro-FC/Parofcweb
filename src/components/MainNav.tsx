@@ -34,7 +34,7 @@ export function MainNav() {
   return (
     <>
       {/* Mobile Header - Dark Charcoal */}
-      <nav className="md:hidden sticky top-0 z-50 bg-dark-charcoal relative">
+      <nav className="md:hidden sticky top-0 z-50 bg-dark-charcoal">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Logo */}
           <a href="/" className="flex-shrink-0">
@@ -105,7 +105,7 @@ export function MainNav() {
       </nav>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal backdrop-blur-sm relative">
+      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal backdrop-blur-sm">
       {/* Two-color bottom border */}
       <div className="absolute bottom-0 left-0 right-0 h-1 flex">
         <div className="flex-1 bg-barca-gold"></div>

@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { urlFor } from "@/sanity/lib/image"
 import { CalendarSyncModal } from "./CalendarSyncModal"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Calendar, RefreshCw, X, ArrowRight } from "lucide-react"
 import { Button } from "./ui/button"
 
@@ -56,7 +56,9 @@ function groupMatchesByMonth(matches: Match[]) {
 
 export function CalendarPage({ matches }: CalendarPageProps) {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
-  const groupedMatches = groupMatchesByMonth(matches)
+  
+  // Memoize grouped matches to avoid recalculating on every render
+  const groupedMatches = useMemo(() => groupMatchesByMonth(matches), [matches])
 
   return (
     <div className="min-h-screen bg-white">

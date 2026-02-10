@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { urlFor } from "@/sanity/lib/image"
+import { useMemo } from "react"
 
 interface NewsItem {
   _id: string
@@ -36,6 +37,11 @@ function formatDate(dateString: string) {
 export function Hero({ news }: HeroProps) {
   // Get the first/latest news item
   const newsItem = news && news.length > 0 ? news[0] : fallbackNews
+  
+  // Memoize date formatting
+  const formattedDate = useMemo(() => {
+    return formatDate(newsItem.publishedAt)
+  }, [newsItem.publishedAt])
 
   return (
     <section 
@@ -84,7 +90,7 @@ export function Hero({ news }: HeroProps) {
               {newsItem.badge && (
                 <span className="text-white text-sm font-semibold uppercase">{newsItem.badge}</span>
               )}
-              <span className="text-white text-sm">{formatDate(newsItem.publishedAt)}</span>
+              <span className="text-white text-sm">{formattedDate}</span>
             </motion.div>
           </Link>
         ) : (
@@ -110,7 +116,7 @@ export function Hero({ news }: HeroProps) {
               {newsItem.badge && (
                 <span className="text-white text-sm font-semibold uppercase">{newsItem.badge}</span>
               )}
-              <span className="text-white text-sm">{formatDate(newsItem.publishedAt)}</span>
+              <span className="text-white text-sm">{formattedDate}</span>
         </motion.div>
           </>
         )}

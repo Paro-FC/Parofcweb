@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -52,26 +52,51 @@ const badgeLabels: Record<string, string> = {
   'bestseller': 'BEST SELLER',
 }
 
-function ProductCard({ product, index }: { product: Product; index: number }) {
+const ProductCard = React.memo(function ProductCard({ product, index }: { product: Product; index: number }) {
   const [isHovered, setIsHovered] = useState(false)
   
-  const formatPrice = (price: number, currency: string) => {
-    if (currency === 'BTN') {
+  // Memoize price formatting
+  const formattedPrice = useMemo(() => {
+    const price = product.salePrice || product.price
+    if (product.currency === 'BTN') {
       return `Nu. ${price.toLocaleString()}`
     }
     return `$${price.toFixed(2)} USD`
-  }
+  }, [product.salePrice, product.price, product.currency])
 
-  const getImageUrl = (image: SanityImageSource | string) => {
-    if (typeof image === 'string') {
-      return image
+  // Memoize image URLs
+  const mainImageUrl = useMemo(() => {
+    if (typeof product.image === 'string') {
+      return product.image
     }
     try {
-      return urlFor(image).width(600).height(750).url()
+      return urlFor(product.image).width(600).height(750).url()
     } catch {
       return '/images/placeholder-product.png'
     }
-  }
+  }, [product.image])
+
+  const hoverImageUrl = useMemo(() => {
+    if (!product.hoverImage) return null
+    if (typeof product.hoverImage === 'string') {
+      return product.hoverImage
+    }
+    try {
+      return urlFor(product.hoverImage).width(600).height(750).url()
+    } catch {
+      return null
+    }
+  }, [product.hoverImage])
+
+  // Memoize badge style
+  const badgeStyle = useMemo(() => {
+    return product.badge ? badgeStyles[product.badge] : ''
+  }, [product.badge])
+
+  // Memoize collection label
+  const collectionLabel = useMemo(() => {
+    return product.collection ? (collectionLabels[product.collection] || product.collection.toUpperCase()) : ''
+  }, [product.collection])
 
   return (
     <motion.div
@@ -87,18 +112,18 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
           {/* Main Image */}
           <Image
-            src={getImageUrl(product.image)}
+            src={mainImageUrl}
             alt={product.name}
             fill
             className={`object-cover transition-all duration-500 ${
-              isHovered && product.hoverImage ? 'opacity-0' : 'opacity-100'
+              isHovered && hoverImageUrl ? 'opacity-0' : 'opacity-100'
             }`}
           />
           
           {/* Hover Image */}
-          {product.hoverImage && (
+          {hoverImageUrl && (
             <Image
-              src={getImageUrl(product.hoverImage)}
+              src={hoverImageUrl}
               alt={`${product.name} - alternate view`}
               fill
               className={`object-cover transition-all duration-500 absolute inset-0 ${
@@ -108,10 +133,10 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           )}
 
           {/* Collection Badge (top-left) */}
-          {product.collection && (
+          {collectionLabel && (
             <div className="absolute top-3 left-3">
               <span className="bg-barca-gold/90 text-dark-charcoal text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider">
-                {collectionLabels[product.collection] || product.collection.toUpperCase()}
+                {collectionLabel}
               </span>
             </div>
           )}
@@ -119,7 +144,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           {/* Special Badge (bottom-left) */}
           {product.badge && (
             <div className="absolute bottom-3 left-3">
-              <span className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider`}>
+              <span className={`${badgeStyle} text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider`}>
                 {badgeLabels[product.badge]}
               </span>
             </div>
@@ -140,9 +165,9 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         {/* Product Info */}
         <div className="mt-4 space-y-2">
           {/* Collection Label */}
-          {product.collection && (
+          {collectionLabel && (
             <p className="text-barca-gold text-xs font-semibold tracking-wider uppercase">
-              {collectionLabels[product.collection] || product.collection.toUpperCase()}
+              {collectionLabel}
             </p>
           )}
           
@@ -156,15 +181,17 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             {product.salePrice ? (
               <>
                 <span className="text-red-600 font-bold">
-                  {formatPrice(product.salePrice, product.currency)}
+                  {formattedPrice}
                 </span>
                 <span className="text-gray-400 line-through text-sm">
-                  {formatPrice(product.price, product.currency)}
+                  {product.currency === 'BTN' 
+                    ? `Nu. ${product.price.toLocaleString()}`
+                    : `$${product.price.toFixed(2)} USD`}
                 </span>
               </>
             ) : (
               <span className="text-gray-900 font-bold">
-                {formatPrice(product.price, product.currency)}
+                {formattedPrice}
               </span>
             )}
           </div>
@@ -172,7 +199,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       </Link>
     </motion.div>
   )
-}
+})
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -210,7 +237,7 @@ export default function ShopPage() {
       setIsScrolled(scrollPosition > 50)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 

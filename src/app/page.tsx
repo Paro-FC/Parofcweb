@@ -1,7 +1,6 @@
 import { Hero } from "@/components/Hero"
 import { TicketsSection } from "@/components/TicketsSection"
 import { CalendarSection } from "@/components/CalendarSection"
-import { BarcaStoriesSection } from "@/components/BarcaStoriesSection"
 import { NewsSection } from "@/components/NewsSection"
 import { PlayersSection } from "@/components/PlayersSection"
 // import { StoreSection } from "@/components/StoreSection"
@@ -10,6 +9,12 @@ import { PartnersSection } from "@/components/PartnersSection"
 import { Card } from "@/components/ui/card"
 import { sanityFetch } from "@/sanity/lib/live"
 import { NEWS_QUERY, PLAYERS_QUERY, MATCHES_QUERY, STORIES_QUERY, MAIN_PARTNERS_QUERY, TROPHIES_QUERY } from "@/sanity/lib/queries"
+import dynamic from "next/dynamic"
+
+// Dynamically import heavy components to reduce initial bundle size
+const BarcaStoriesSection = dynamic(() => import("@/components/BarcaStoriesSection").then(mod => ({ default: mod.BarcaStoriesSection })), {
+  loading: () => <div className="py-16 text-center text-gray-500">Loading stories...</div>
+})
 
 export default async function Home() {
   // Fetch all content from Sanity in parallel

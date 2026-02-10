@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { X, ChevronRight, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 interface MenuItem {
   label: string
@@ -188,7 +189,10 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
         <div key={item.label} className="border-b border-light-grey">
           <button
             onClick={() => toggleItem(item.label)}
-            className={`w-full flex items-center justify-between py-4 px-6 text-left hover:bg-light-gold/10 hover:text-barca-gold transition-colors ${indentClass}`}
+            className={cn(
+              "w-full flex items-center justify-between py-4 px-6 text-left hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
+              indentClass
+            )}
           >
             <span className="text-base font-semibold text-dark-charcoal">{item.label}</span>
             {isExpanded ? (
@@ -218,7 +222,10 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
 
     if (item.href) {
       const content = (
-        <div className={`flex items-center justify-between py-3 px-6 hover:bg-light-gold/10 hover:text-barca-gold transition-colors ${indentClass}`}>
+        <div className={cn(
+          "flex items-center justify-between py-3 px-6 hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
+          indentClass
+        )}>
           <span className="text-sm text-dark-charcoal">{item.label}</span>
           {item.external && (
             <span className="text-xs text-medium-grey">↗</span>
