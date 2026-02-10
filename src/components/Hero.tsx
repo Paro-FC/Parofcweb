@@ -65,7 +65,7 @@ export function Hero({ news }: HeroProps) {
           <Link href={`/news/${newsItem.slug}`} className="block">
             {/* Main Headline */}
             <motion.h1
-              className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider mb-6 text-center text-white mt-12 md:mt-16"
+              className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider mb-6 text-center text-white mt-12 md:mt-16 underline"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -91,7 +91,7 @@ export function Hero({ news }: HeroProps) {
           <>
         {/* Main Headline */}
         <motion.h1
-          className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider mb-6 text-center text-white mt-12 md:mt-16"
+          className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider mb-6 text-center text-white mt-12 md:mt-16 underline"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
