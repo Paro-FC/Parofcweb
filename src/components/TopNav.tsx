@@ -1,11 +1,31 @@
-"use client"
+import Link from "next/link"
 
-// import { Button } from "./ui/button"
-// import { Menu } from "lucide-react"
-import { useSideMenu } from "@/contexts/SideMenuContext"
+interface LatestMatch {
+  _id: string
+  homeTeam: string
+  awayTeam: string
+  competition?: string
+  date: string
+  venue?: string
+  event?: string
+}
 
-export function TopNav() {
-  const { openMenu } = useSideMenu()
+interface TopNavProps {
+  latestMatch?: LatestMatch | null
+}
+
+function formatMatchTitle(match: LatestMatch | null): string {
+  if (!match) {
+    return "New matches at Spotify Camp Nou!"
+  }
+  
+  const venue = match.venue || "Spotify Camp Nou"
+  return `${match.homeTeam} vs ${match.awayTeam} at ${venue}!`
+}
+
+export function TopNav({ latestMatch = null }: TopNavProps) {
+  const matchTitle = formatMatchTitle(latestMatch)
+  const matchLink = latestMatch ? `/matches/${latestMatch._id}` : "#"
 
   return (
     <>
@@ -16,20 +36,20 @@ export function TopNav() {
             <div className="w-3 h-3 rounded-full bg-barca-gold"></div>
             <div className="w-3 h-3 rounded-full bg-barca-red"></div>
           </div>
-          <a href="#" className="flex-1 text-sm text-light-gold font-semibold">
-            New matches at Spotify Camp Nou!{" "}
+          <Link href={matchLink} className="flex-1 text-sm text-light-gold font-semibold hover:text-barca-gold transition-colors">
+            {matchTitle}{" "}
             <span className="text-barca-gold font-bold text-base">BUY TICKETS</span>
-          </a>
+          </Link>
         </div>
       </nav>
 
       {/* Desktop Top Nav */}
       <nav className="hidden md:block bg-light-gold border-b border-medium-grey py-2">
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="#" className="text-sm text-dark-charcoal hover:text-barca-gold transition-colors">
-          🔵🔴 New matches at Spotify Camp Nou!{" "}
+        <Link href={matchLink} className="text-sm text-dark-charcoal hover:text-barca-gold transition-colors">
+          🔵🔴 {matchTitle}{" "}
           <span className="text-barca-gold font-bold">BUY TICKETS</span>
-        </a>
+        </Link>
         <div className="flex items-center gap-4">
           {/* <Button variant="ghost" size="sm">Login</Button> */}
           {/* <Button variant="default" size="sm">View Plans</Button> */}

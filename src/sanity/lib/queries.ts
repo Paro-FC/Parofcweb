@@ -251,6 +251,17 @@ export const PHOTO_QUERY = `*[_type == "photo" && slug.current == $slug][0] {
   }
 }`
 
+// Latest match with tickets query (for TopNav)
+export const LATEST_TICKETS_MATCH_QUERY = `*[_type == "match" && hasTickets == true] | order(date asc) [0] {
+  _id,
+  homeTeam,
+  awayTeam,
+  competition,
+  date,
+  venue,
+  event
+}`
+
 // Trophies queries
 export const TROPHIES_QUERY = `*[_type == "trophy"] | order(name asc) {
   _id,

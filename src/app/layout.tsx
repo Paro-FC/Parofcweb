@@ -3,7 +3,7 @@ import '../index.css'
 import { SanityLive } from '@/sanity/lib/live'
 import { ConditionalLayout } from '@/components/ConditionalLayout'
 import { sanityFetch } from '@/sanity/lib/live'
-import { PARTNERS_QUERY } from '@/sanity/lib/queries'
+import { PARTNERS_QUERY, LATEST_TICKETS_MATCH_QUERY } from '@/sanity/lib/queries'
 
 export const metadata: Metadata = {
   title: 'Paro FC - Official Website',
@@ -20,13 +20,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Fetch partners for footer (only if not on studio route)
-  const partnersResult = await sanityFetch({ query: PARTNERS_QUERY }).catch(() => ({ data: [] }))
+  // Fetch partners for footer and latest match for TopNav
+  const [partnersResult, matchResult] = await Promise.all([
+    sanityFetch({ query: PARTNERS_QUERY }).catch(() => ({ data: [] })),
+    sanityFetch({ query: LATEST_TICKETS_MATCH_QUERY }).catch(() => ({ data: null }))
+  ])
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ConditionalLayout partners={(partnersResult.data as any) || []}>
+        <ConditionalLayout 
+          partners={(partnersResult.data as any) || []}
+          latestMatch={(matchResult.data as any) || null}
+        >
           {children}
         </ConditionalLayout>
         <SanityLive />

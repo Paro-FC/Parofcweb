@@ -91,16 +91,16 @@ export function MainNav() {
           </a>
           <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
             <span>🎫</span>
-            <span>TICKETS & MUSEUM</span>
+            <span>TICKETS</span>
           </a>
-          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+          <a href="/news" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
             <span>🏷️</span>
-            <span>BARÇA BUSINESS</span>
+            <span>NEWS</span>
           </a>
-          <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
+          {/* <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
             <span>👥</span>
             <span>CULERS</span>
-          </a>
+          </a> */}
         </div>
       </nav>
 
