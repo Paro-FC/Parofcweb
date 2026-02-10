@@ -8,6 +8,11 @@ import { PARTNERS_QUERY } from '@/sanity/lib/queries'
 export const metadata: Metadata = {
   title: 'Paro FC - Official Website',
   description: 'Paro FC Official Website',
+  icons: {
+    icon: '/assets/logo.webp',
+    apple: '/assets/logo.webp',
+    shortcut: '/assets/logo.webp',
+  },
 }
 
 export default async function RootLayout({
