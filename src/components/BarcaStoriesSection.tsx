@@ -101,7 +101,12 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
     <>
     <section className="py-16 px-4">
       <div className="container mx-auto">
-        <h3 className="text-4xl font-bold text-gray-900 uppercase tracking-tight mb-8 text-center">
+        <h3 
+          className="text-4xl font-bold uppercase tracking-tight mb-8 text-center"
+          style={{
+            color: '#111827', // gray-900
+          }}
+        >
             Paro FC Stories
         </h3>
 
@@ -127,25 +132,51 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
           <button
             onClick={scrollLeft}
             disabled={!canScrollLeft}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center transition-all ${
+            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center transition-all ${
               canScrollLeft 
-                ? 'opacity-100 hover:bg-gray-50 hover:border-barca-gold cursor-pointer' 
+                ? 'opacity-100 hover:bg-gray-50 cursor-pointer' 
                 : 'opacity-0 pointer-events-none'
             }`}
+            style={{
+              border: `1px solid ${canScrollLeft ? '#E6BB29' : '#E5E7EB'}`, // barca-gold on hover, gray-200 default
+            }}
+            onMouseEnter={(e) => {
+              if (canScrollLeft) {
+                e.currentTarget.style.borderColor = '#E6BB29'; // barca-gold
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canScrollLeft) {
+                e.currentTarget.style.borderColor = '#E5E7EB'; // gray-200
+              }
+            }}
           >
-            <ChevronLeft className="w-6 h-6 text-gray-900" />
+            <ChevronLeft className="w-6 h-6" style={{ color: '#111827' }} /> {/* gray-900 */}
           </button>
 
           <button
             onClick={scrollRight}
             disabled={!canScrollRight}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center transition-all ${
+            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center transition-all ${
               canScrollRight 
-                ? 'opacity-100 hover:bg-gray-50 hover:border-barca-gold cursor-pointer' 
+                ? 'opacity-100 hover:bg-gray-50 cursor-pointer' 
                 : 'opacity-50 cursor-not-allowed'
             }`}
+            style={{
+              border: `1px solid ${canScrollRight ? '#E6BB29' : '#E5E7EB'}`, // barca-gold on hover, gray-200 default
+            }}
+            onMouseEnter={(e) => {
+              if (canScrollRight) {
+                e.currentTarget.style.borderColor = '#E6BB29'; // barca-gold
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (canScrollRight) {
+                e.currentTarget.style.borderColor = '#E5E7EB'; // gray-200
+              }
+            }}
           >
-            <ChevronRight className="w-6 h-6 text-gray-900" />
+            <ChevronRight className="w-6 h-6" style={{ color: '#111827' }} /> {/* gray-900 */}
           </button>
 
           <div
@@ -184,17 +215,28 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
                     style={{
                         backgroundImage: story.coverImage 
                           ? `url(${urlFor(story.coverImage).width(300).height(400).url()})`
-                          : `linear-gradient(135deg, #004D98 0%, #A50044 100%)`,
+                          : `linear-gradient(135deg, #1A1A1A 0%, #8B0000 100%)`, // dark-charcoal to barca-red
                     }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                    <div 
+                      className="absolute inset-0"
+                      style={{
+                        background: 'linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5), transparent)',
+                      }}
+                    />
                   </div>
 
 
                   {/* NEW Badge */}
                   {story.isNew && (
                     <div className="absolute top-3 left-3 z-10">
-                      <span className="bg-barca-gold text-dark-bg text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                      <span 
+                        className="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide"
+                        style={{
+                          backgroundColor: '#E6BB29', // barca-gold
+                          color: '#1A1A1A', // dark-bg
+                        }}
+                      >
                         New
                       </span>
                     </div>
@@ -203,15 +245,25 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
                     {/* Media count indicator */}
                     {story.media && story.media.length > 1 && (
                       <div className="absolute top-3 right-3 z-10">
-                        <span className="bg-black/50 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        <span 
+                          className="text-white text-xs font-bold px-2 py-1 rounded-full"
+                          style={{
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)', // black/50
+                          }}
+                        >
                           {story.media.length}
-                      </span>
-                    </div>
-                  )}
+                        </span>
+                      </div>
+                    )}
 
                   {/* Text Overlay at Bottom */}
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <span className="text-white font-semibold text-sm leading-tight block">
+                    <span 
+                      className="font-semibold text-sm leading-tight block"
+                      style={{
+                        color: '#FFFFFF', // white
+                      }}
+                    >
                       {story.title}
                     </span>
                   </div>

@@ -249,7 +249,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <button
                         key={term}
                         onClick={() => handleQuickSearch(term)}
-                        className="px-4 py-2 bg-barca-blue/10 hover:bg-barca-blue/20 rounded-full text-sm text-barca-blue font-medium transition-colors"
+                        className="px-4 py-2 bg-barca-gold/10 hover:bg-barca-gold/20 rounded-full text-sm text-barca-gold font-medium transition-colors"
                       >
                         {term}
                       </button>
@@ -276,7 +276,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       onClick={onClose}
                       className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
                     >
-                      <User className="w-5 h-5 text-barca-blue" />
+                      <User className="w-5 h-5 text-barca-gold" />
                       <span className="text-sm font-medium text-gray-900">Players</span>
                     </Link>
                     <Link
@@ -322,7 +322,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           <Link
                             href="/news"
                             onClick={onClose}
-                            className="text-sm text-barca-blue hover:text-barca-blue/80 font-medium"
+                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
                           >
                             View all →
                           </Link>
@@ -356,7 +356,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     {news.badge}
                                   </span>
                                 )}
-                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-blue transition-colors">
+                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-gold transition-colors">
                                   {news.title}
                                 </h4>
                                 {news.description && (
@@ -380,7 +380,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           <Link
                             href="/players"
                             onClick={onClose}
-                            className="text-sm text-barca-blue hover:text-barca-blue/80 font-medium"
+                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
                           >
                             View all →
                           </Link>
@@ -409,7 +409,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-blue transition-colors">
+                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-gold transition-colors">
                                   {player.firstName} {player.lastName}
                                 </h4>
                                 <p className="text-sm text-gray-500">
@@ -433,7 +433,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                           <Link
                             href="/photos"
                             onClick={onClose}
-                            className="text-sm text-barca-blue hover:text-barca-blue/80 font-medium"
+                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
                           >
                             View all →
                           </Link>

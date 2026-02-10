@@ -69,7 +69,7 @@ const portableTextComponents: PortableTextComponents = {
       <p className="text-lg text-gray-700 leading-relaxed mb-5">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-barca-red pl-6 my-10 italic text-xl text-gray-600">
+      <blockquote className="border-l-4 border-bronze pl-6 my-10 italic text-xl text-gray-600">
         {children}
       </blockquote>
     ),
@@ -78,7 +78,7 @@ const portableTextComponents: PortableTextComponents = {
     link: ({ children, value }) => (
       <a
         href={value?.href}
-        className="text-barca-blue hover:text-barca-red underline transition-colors"
+        className="text-barca-gold hover:text-bronze underline transition-colors"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -323,7 +323,7 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
                 onClick={() => setIsBookmarked(!isBookmarked)}
                 className={`p-2 rounded-full transition-all ${
                   isBookmarked
-                    ? "bg-barca-gold text-white"
+                    ? "bg-barca-gold text-dark-charcoal"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
@@ -370,7 +370,7 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
               <h2 className="text-2xl font-bold text-gray-900">Related News</h2>
               <Link
                 href="/"
-                className="flex items-center gap-1 text-barca-blue hover:text-barca-red transition-colors font-medium"
+                className="flex items-center gap-1 text-barca-gold hover:text-bronze transition-colors font-medium"
               >
                 View all
                 <ChevronRight size={20} />

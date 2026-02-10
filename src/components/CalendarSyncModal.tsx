@@ -229,7 +229,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
           {/* Content */}
           <div className="p-8">
             {/* Title */}
-            <h2 className="text-3xl font-bold text-barca-blue mb-4 text-center">
+            <h2 className="text-3xl font-bold text-barca-gold mb-4 text-center">
               CHOOSE YOUR CALENDAR
             </h2>
 
@@ -238,7 +238,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
               THIS EXPERIENCE IS POWERED BY ECAL, I AGREE TO{" "}
               <a
                 href="#"
-                className="text-barca-blue underline hover:text-barca-blue/80"
+                className="text-barca-gold underline hover:text-barca-gold/80"
                 onClick={(e) => e.stopPropagation()}
               >
                 TERMS OF USE
@@ -246,7 +246,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
               AND{" "}
               <a
                 href="#"
-                className="text-barca-blue underline hover:text-barca-blue/80"
+                className="text-barca-gold underline hover:text-barca-gold/80"
                 onClick={(e) => e.stopPropagation()}
               >
                 PRIVACY POLICY
@@ -265,7 +265,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
                   <div className="flex items-center justify-center">
                     {option.icon}
                   </div>
-                  <span className="text-xs font-semibold text-gray-900 text-center group-hover:text-barca-blue transition-colors">
+                  <span className="text-xs font-semibold text-gray-900 text-center group-hover:text-barca-gold transition-colors">
                     {option.name}
                   </span>
                 </button>

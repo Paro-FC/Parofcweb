@@ -33,8 +33,8 @@ export function MainNav() {
 
   return (
     <>
-      {/* Mobile Header - Dark Blue Gradient */}
-      <nav className="md:hidden sticky top-0 z-50 bg-gradient-to-r from-barca-blue via-purple-900 to-barca-blue relative">
+      {/* Mobile Header - Dark Charcoal */}
+      <nav className="md:hidden sticky top-0 z-50 bg-dark-charcoal relative">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Logo */}
           <a href="/" className="flex-shrink-0">
@@ -57,7 +57,7 @@ export function MainNav() {
             >
               <ShoppingBag className="w-5 h-5" />
               {mounted && getItemCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-barca-gold text-barca-blue text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-barca-gold text-dark-charcoal text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                   {getItemCount()}
                 </span>
               )}
@@ -105,10 +105,10 @@ export function MainNav() {
       </nav>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-white backdrop-blur-sm relative">
+      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal backdrop-blur-sm relative">
       {/* Two-color bottom border */}
       <div className="absolute bottom-0 left-0 right-0 h-1 flex">
-        <div className="flex-1 bg-barca-blue"></div>
+        <div className="flex-1 bg-barca-gold"></div>
         <div className="flex-1 bg-barca-red"></div>
       </div>
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
@@ -124,29 +124,29 @@ export function MainNav() {
             />
           </a>
           <div className="flex items-center gap-4">
-              <a href="/standings" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              <a href="/standings" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
                 Standings <span className="text-xs">↗</span>
             </a>
-              <a href="/shop" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              <a href="/shop" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
                 Shop <span className="text-xs">↗</span>
             </a>
-              <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+              <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
                 Culers <span className="text-xs">↗</span>
             </a>
           </div>
         </div>
 
         <div className="hidden md:flex items-center gap-6">
-            <a href="/photos" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+            <a href="/photos" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
               Photos <span className="text-xs">↗</span>
           </a>
-            <a href="/players" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+            <a href="/players" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
               Players <span className="text-xs">↗</span>
           </a>
-            <a href="/news" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+            <a href="/news" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
               News <span className="text-xs">↗</span>
             </a>
-            <a href="#" className="text-sm font-semibold uppercase text-gray-900 hover:text-barca-gold transition-colors">
+            <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
               Barça Teams <span className="text-xs">▼</span>
           </a>
           <Button 
@@ -155,7 +155,7 @@ export function MainNav() {
             onClick={() => setIsSearchOpen(true)}
             aria-label="Search"
           >
-            <Search className="h-5 w-5 text-gray-900" />
+            <Search className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
           </Button>
           <Button 
             variant="ghost" 
@@ -164,7 +164,7 @@ export function MainNav() {
             onClick={() => setIsCartOpen(true)}
             aria-label="Cart"
           >
-            <ShoppingBag className="h-5 w-5 text-gray-900" />
+            <ShoppingBag className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
             {mounted && getItemCount() > 0 && (
               <span className="absolute -top-1 -right-1 bg-barca-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {getItemCount()}
@@ -177,7 +177,7 @@ export function MainNav() {
             onClick={openMenu}
             aria-label="Menu"
           >
-            <Menu className="h-5 w-5 text-gray-900" />
+            <Menu className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
           </Button>
         </div>
       </div>

@@ -94,7 +94,7 @@ const portableTextComponents: PortableTextComponents = {
     link: ({ children, value }) => (
       <a
         href={value?.href}
-        className="text-barca-blue hover:text-barca-red underline transition-colors"
+        className="text-barca-gold hover:text-bronze underline transition-colors"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -389,7 +389,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
             <h2 className="text-2xl font-bold text-gray-900">Squad</h2>
             <Link
               href="/players"
-              className="flex items-center gap-1 text-barca-blue hover:text-barca-red transition-colors font-medium"
+              className="flex items-center gap-1 text-barca-gold hover:text-bronze transition-colors font-medium"
             >
               View all
               <ChevronRight size={20} />

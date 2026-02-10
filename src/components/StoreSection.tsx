@@ -52,7 +52,7 @@ export function StoreSection() {
         <div className="flex justify-end mb-12">
           <Button
             variant="default"
-            className="bg-barca-blue hover:bg-barca-blue/90 text-white"
+            className="bg-barca-gold hover:bg-barca-gold/90 text-dark-charcoal"
           >
             Paro FC Official Worldwide Store
             <ExternalLink className="w-4 h-4 ml-2" />
@@ -107,10 +107,10 @@ export function StoreSection() {
                   </div>
 
                   {/* Shop Now Button at Bottom */}
-                  <button className="flex items-center gap-2 text-barca-blue font-bold uppercase text-sm mt-4 hover:opacity-80 transition-opacity">
+                  <button className="flex items-center gap-2 text-barca-gold font-bold uppercase text-sm mt-4 hover:opacity-80 transition-opacity">
                     SHOP NOW
-                    <div className="w-6 h-6 rounded-full bg-barca-blue flex items-center justify-center">
-                      <ArrowUpRight className="w-3 h-3 text-white" />
+                    <div className="w-6 h-6 rounded-full bg-barca-gold flex items-center justify-center">
+                      <ArrowUpRight className="w-3 h-3 text-dark-charcoal" />
                     </div>
                   </button>
                 </div>

@@ -41,7 +41,7 @@ const badgeStyles: Record<string, string> = {
   'exclusive': 'bg-gradient-to-r from-blue-600 to-purple-600 text-white',
   'sale': 'bg-red-500 text-white',
   'limited': 'bg-amber-500 text-white',
-  'bestseller': 'bg-barca-blue text-white',
+  'bestseller': 'bg-barca-gold text-dark-charcoal',
 }
 
 const badgeLabels: Record<string, string> = {
@@ -110,7 +110,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           {/* Collection Badge (top-left) */}
           {product.collection && (
             <div className="absolute top-3 left-3">
-              <span className="bg-barca-blue/90 text-white text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider">
+              <span className="bg-barca-gold/90 text-dark-charcoal text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider">
                 {collectionLabels[product.collection] || product.collection.toUpperCase()}
               </span>
             </div>
@@ -131,7 +131,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
             className="absolute bottom-3 right-3"
           >
-            <button className="bg-white/95 hover:bg-white text-barca-blue p-2.5 rounded-full shadow-lg transition-all hover:scale-110">
+            <button className="bg-white/95 hover:bg-white text-barca-gold p-2.5 rounded-full shadow-lg transition-all hover:scale-110">
               <ShoppingBag size={18} />
             </button>
           </motion.div>
@@ -141,13 +141,13 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <div className="mt-4 space-y-2">
           {/* Collection Label */}
           {product.collection && (
-            <p className="text-barca-blue text-xs font-semibold tracking-wider uppercase">
+            <p className="text-barca-gold text-xs font-semibold tracking-wider uppercase">
               {collectionLabels[product.collection] || product.collection.toUpperCase()}
             </p>
           )}
           
           {/* Product Name */}
-          <h3 className="text-gray-900 font-medium text-sm leading-snug line-clamp-2 group-hover:text-barca-blue transition-colors">
+          <h3 className="text-gray-900 font-medium text-sm leading-snug line-clamp-2 group-hover:text-barca-gold transition-colors">
             {product.name}
           </h3>
           
@@ -291,7 +291,7 @@ export default function ShopPage() {
             {/* Filter Toggle */}
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-barca-blue transition-colors"
+              className="flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-barca-gold transition-colors"
             >
               <SlidersHorizontal size={18} />
               <span>FILTER AND SORT</span>
@@ -327,7 +327,7 @@ export default function ShopPage() {
                           onClick={() => setSelectedCollection(collection.value)}
                           className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
                             selectedCollection === collection.value
-                              ? 'bg-barca-blue text-white'
+                              ? 'bg-barca-gold text-dark-charcoal'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
@@ -352,7 +352,7 @@ export default function ShopPage() {
                           onClick={() => setSortBy(option.value)}
                           className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
                             sortBy === option.value
-                              ? 'bg-barca-blue text-white'
+                              ? 'bg-barca-gold text-dark-charcoal'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >

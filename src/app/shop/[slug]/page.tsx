@@ -43,7 +43,7 @@ const badgeStyles: Record<string, string> = {
   'exclusive': 'bg-gradient-to-r from-blue-600 to-purple-600 text-white',
   'sale': 'bg-red-500 text-white',
   'limited': 'bg-amber-500 text-white',
-  'bestseller': 'bg-barca-blue text-white',
+  'bestseller': 'bg-barca-gold text-dark-charcoal',
 }
 
 const badgeLabels: Record<string, string> = {
@@ -93,11 +93,11 @@ function RelatedProductCard({ product }: { product: Product }) {
       </div>
       <div className="mt-3 space-y-1">
         {product.collection && (
-          <p className="text-barca-blue text-xs font-semibold tracking-wider uppercase">
+          <p className="text-barca-gold text-xs font-semibold tracking-wider uppercase">
             {collectionLabels[product.collection] || product.collection.toUpperCase()}
           </p>
         )}
-        <h3 className="text-gray-900 text-sm font-medium line-clamp-2 group-hover:text-barca-blue transition-colors">
+        <h3 className="text-gray-900 text-sm font-medium line-clamp-2 group-hover:text-barca-gold transition-colors">
           {product.name}
         </h3>
         <p className="text-gray-900 font-bold text-sm">
@@ -237,7 +237,7 @@ export default function ProductDetailPage() {
           </p>
           <Link
             href="/shop"
-            className="inline-block bg-barca-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-barca-blue/90 transition-colors"
+            className="inline-block bg-barca-gold text-dark-charcoal px-6 py-3 rounded-lg font-semibold hover:bg-barca-gold/90 transition-colors"
           >
             Back to Shop
           </Link>
@@ -276,7 +276,7 @@ export default function ProductDetailPage() {
               {/* Collection Badge */}
               {product.collection && (
                 <div className="absolute top-4 left-4">
-                  <span className="bg-barca-blue/90 text-white text-xs font-bold px-4 py-2 rounded-full tracking-wider">
+                  <span className="bg-barca-gold/90 text-dark-charcoal text-xs font-bold px-4 py-2 rounded-full tracking-wider">
                     {collectionLabels[product.collection] || product.collection.toUpperCase()}
                   </span>
                 </div>
@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
                     key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
                     className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                      currentImageIndex === idx ? 'border-barca-blue' : 'border-transparent'
+                      currentImageIndex === idx ? 'border-barca-gold' : 'border-transparent'
                     }`}
                   >
                     <Image
@@ -390,7 +390,7 @@ export default function ProductDetailPage() {
                       }}
                       className={`py-3 px-4 rounded-lg font-semibold text-sm transition-all ${
                         selectedSize === size
-                          ? 'bg-barca-blue text-white ring-2 ring-barca-blue ring-offset-2'
+                          ? 'bg-barca-gold text-dark-charcoal ring-2 ring-barca-gold ring-offset-2'
                           : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                       }`}
                     >
@@ -417,7 +417,7 @@ export default function ProductDetailPage() {
                 product.inStock
                   ? addedToCart
                     ? 'bg-green-500 text-white'
-                    : 'bg-barca-gold text-barca-blue hover:bg-barca-gold/90'
+                    : 'bg-barca-gold text-dark-charcoal hover:bg-barca-gold/90'
                   : 'bg-gray-200 text-gray-500 cursor-not-allowed'
               }`}
             >
@@ -459,21 +459,21 @@ export default function ProductDetailPage() {
             {/* Product Features */}
             <div className="border-t border-gray-200 pt-6 space-y-4">
               <div className="flex items-start gap-3">
-                <Truck size={20} className="text-barca-blue flex-shrink-0 mt-0.5" />
+                <Truck size={20} className="text-barca-gold flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-gray-900">Free Shipping</h3>
                   <p className="text-sm text-gray-600">On orders over Nu. 5,000</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <RotateCcw size={20} className="text-barca-blue flex-shrink-0 mt-0.5" />
+                <RotateCcw size={20} className="text-barca-gold flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-gray-900">Easy Returns</h3>
                   <p className="text-sm text-gray-600">30-day return policy</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Shield size={20} className="text-barca-blue flex-shrink-0 mt-0.5" />
+                <Shield size={20} className="text-barca-gold flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-gray-900">Authentic Products</h3>
                   <p className="text-sm text-gray-600">100% official Paro FC merchandise</p>
@@ -508,7 +508,7 @@ export default function ProductDetailPage() {
             product.inStock
               ? addedToCart
                 ? 'bg-green-500 text-white'
-                : 'bg-barca-gold text-barca-blue'
+                : 'bg-barca-gold text-dark-charcoal'
               : 'bg-gray-200 text-gray-500 cursor-not-allowed'
           }`}
         >

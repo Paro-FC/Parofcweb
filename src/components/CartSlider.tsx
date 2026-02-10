@@ -40,7 +40,7 @@ export function CartSlider() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <div className="flex items-center gap-2">
-                <ShoppingBag size={24} className="text-barca-blue" />
+                <ShoppingBag size={24} className="text-barca-gold" />
                 <h2 className="text-lg font-bold text-gray-900">Your Cart</h2>
                 <span className="bg-barca-red text-white text-xs font-bold px-2 py-0.5 rounded-full">
                   {getItemCount()}
@@ -64,7 +64,7 @@ export function CartSlider() {
                   <Link
                     href="/shop"
                     onClick={() => setIsCartOpen(false)}
-                    className="bg-barca-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-barca-blue/90 transition-colors"
+                    className="bg-barca-gold text-dark-charcoal px-6 py-3 rounded-lg font-semibold hover:bg-barca-gold/90 transition-colors"
                   >
                     Continue Shopping
                   </Link>
@@ -92,7 +92,7 @@ export function CartSlider() {
                           {item.name}
                         </h4>
                         <p className="text-xs text-gray-500 mt-0.5">Size: {item.size}</p>
-                        <p className="text-sm font-bold text-barca-blue mt-1">
+                        <p className="text-sm font-bold text-barca-gold mt-1">
                           {formatPrice(item.salePrice || item.price, item.currency)}
                         </p>
 
@@ -147,7 +147,7 @@ export function CartSlider() {
                 <Link
                   href="/checkout"
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full bg-barca-gold text-barca-blue py-4 rounded-lg font-bold text-center block hover:bg-barca-gold/90 transition-colors"
+                  className="w-full bg-barca-gold text-dark-charcoal py-4 rounded-lg font-bold text-center block hover:bg-barca-gold/90 transition-colors"
                 >
                   PROCEED TO CHECKOUT
                 </Link>
@@ -155,7 +155,7 @@ export function CartSlider() {
                 {/* Continue Shopping */}
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full text-center text-sm text-gray-600 hover:text-barca-blue transition-colors"
+                  className="w-full text-center text-sm text-gray-600 hover:text-barca-gold transition-colors"
                 >
                   Continue Shopping
                 </button>

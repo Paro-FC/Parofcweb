@@ -65,7 +65,7 @@
 
 @layer base {
   body {
-    @apply bg-gradient-barca text-white font-sans antialiased;
+    @apply bg-white text-dark-charcoal font-sans antialiased;
   }
 }
 

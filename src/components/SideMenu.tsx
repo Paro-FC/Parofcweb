@@ -185,16 +185,16 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
 
     if (hasChildren) {
       return (
-        <div key={item.label} className="border-b border-gray-200">
+        <div key={item.label} className="border-b border-light-grey">
           <button
             onClick={() => toggleItem(item.label)}
-            className={`w-full flex items-center justify-between py-4 px-6 text-left hover:bg-gray-50 transition-colors ${indentClass}`}
+            className={`w-full flex items-center justify-between py-4 px-6 text-left hover:bg-light-gold/10 hover:text-barca-gold transition-colors ${indentClass}`}
           >
-            <span className="text-base font-semibold text-gray-900">{item.label}</span>
+            <span className="text-base font-semibold text-dark-charcoal">{item.label}</span>
             {isExpanded ? (
-              <ChevronDown className="w-5 h-5 text-gray-600" />
+              <ChevronDown className="w-5 h-5 text-medium-grey group-hover:text-barca-gold" />
             ) : (
-              <ChevronRight className="w-5 h-5 text-gray-600" />
+              <ChevronRight className="w-5 h-5 text-medium-grey group-hover:text-barca-gold" />
             )}
           </button>
           <AnimatePresence>
@@ -206,7 +206,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="bg-gray-50">
+                <div className="bg-light-gold/20">
                   {item.children?.map((child) => renderMenuItem(child, level + 1))}
                 </div>
               </motion.div>
@@ -218,10 +218,10 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
 
     if (item.href) {
       const content = (
-        <div className={`flex items-center justify-between py-3 px-6 hover:bg-gray-50 transition-colors ${indentClass}`}>
-          <span className="text-sm text-gray-700">{item.label}</span>
+        <div className={`flex items-center justify-between py-3 px-6 hover:bg-light-gold/10 hover:text-barca-gold transition-colors ${indentClass}`}>
+          <span className="text-sm text-dark-charcoal">{item.label}</span>
           {item.external && (
-            <span className="text-xs text-gray-400">↗</span>
+            <span className="text-xs text-medium-grey">↗</span>
           )}
         </div>
       )
@@ -233,7 +233,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="block border-b border-gray-200"
+            className="block border-b border-light-grey"
           >
             {content}
           </a>
@@ -278,15 +278,15 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
             className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 overflow-y-auto"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
+            <div className="sticky top-0 bg-dark-charcoal border-b border-medium-grey z-10">
               <div className="flex items-center justify-between px-6 py-4">
-                <h2 className="text-xl font-bold text-gray-900">Menu</h2>
+                <h2 className="text-xl font-bold text-light-gold">Menu</h2>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-2 hover:bg-barca-gold/20 rounded-full transition-colors"
                   aria-label="Close menu"
                 >
-                  <X className="w-6 h-6 text-gray-600" />
+                  <X className="w-6 h-6 text-light-gold hover:text-barca-gold transition-colors" />
                 </button>
               </div>
             </div>

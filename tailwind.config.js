@@ -23,13 +23,22 @@ module.exports = {
         '6xl': ['60px', { lineHeight: '1.1', letterSpacing: '-0.05em' }],
       },
       colors: {
-        'barca-blue': '#004d98',
-        'barca-red': '#a50044',
-        'barca-gold': '#edbb00',
-        'dark-bg': '#0a0e27',
+        // Primary Colors
+        'barca-gold': '#E6BB29', // Main Brand Color - Gold
+        'light-gold': '#EFE28D', // Light Gold / Cream
+        // Secondary Colors
+        'barca-red': '#8B0000', // Deep Red
+        'bronze': '#A66337', // Brown / Bronze
+        // Neutral / Supporting Colors
+        'dark-charcoal': '#1A1A1A', // Dark Charcoal (instead of pure black)
+        'medium-grey': '#5E5952', // Medium Grey
+        'light-grey': '#9F9384', // Light Grey
+        // Legacy support (mapping old colors to new scheme)
+        'barca-blue': '#1A1A1A', // Map to dark charcoal for navbar/header
+        'dark-bg': '#1A1A1A', // Map to dark charcoal
       },
       backgroundImage: {
-        'gradient-barca': 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b3d 100%)',
+        'gradient-barca': 'linear-gradient(135deg, #1A1A1A 0%, #5E5952 50%, #A66337 100%)',
       },
       animation: {
         'marquee': 'marquee 25s linear infinite',

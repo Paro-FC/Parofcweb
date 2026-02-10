@@ -23,7 +23,7 @@ export function Footer({ partners = [] }: FooterProps) {
   const otherPartners = partners.filter(p => !p.category || (p.category !== 'main' && p.category !== 'official'))
 
   return (
-    <footer className="bg-[#1a1a2e] text-white py-16 px-4">
+    <footer className="bg-dark-charcoal text-light-gold py-16 px-4">
       <div className="container mx-auto">
         {/* Main Partners removed - shown on homepage only */}
 
@@ -42,14 +42,14 @@ export function Footer({ partners = [] }: FooterProps) {
 
         {/* Social Media Section */}
         <div className="mb-16">
-          <h3 className="text-xl font-semibold text-center text-white mb-8">
+          <h3 className="text-xl font-semibold text-center text-light-gold mb-8">
             Follow Paro FC on social media
           </h3>
           <div className="flex justify-center items-center gap-6">
-            <Facebook className="w-8 h-8 text-white hover:text-barca-gold transition-colors cursor-pointer" />
-            <Youtube className="w-8 h-8 text-white hover:text-barca-gold transition-colors cursor-pointer" />
-            <Instagram className="w-8 h-8 text-white hover:text-barca-gold transition-colors cursor-pointer" />
-            <svg className="w-8 h-8 text-white hover:text-barca-gold transition-colors cursor-pointer" viewBox="0 0 24 24" fill="currentColor">
+            <Facebook className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" />
+            <Youtube className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" />
+            <Instagram className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" />
+            <svg className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
             </svg>
           </div>
@@ -59,8 +59,8 @@ export function Footer({ partners = [] }: FooterProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 mb-12">
           {/* Goalkeepers */}
           <div>
-            <h4 className="text-white font-bold mb-4">Goalkeepers</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">Goalkeepers</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>Wojciech Szczęsny</li>
               <li>Joan Garcia</li>
             </ul>
@@ -68,8 +68,8 @@ export function Footer({ partners = [] }: FooterProps) {
 
           {/* Defenders */}
           <div>
-            <h4 className="text-white font-bold mb-4">Defenders</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">Defenders</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>João Cancelo</li>
               <li>Alejandro Balde</li>
               <li>Ronald Araujo</li>
@@ -83,8 +83,8 @@ export function Footer({ partners = [] }: FooterProps) {
 
           {/* Midfielders */}
           <div>
-            <h4 className="text-white font-bold mb-4">Midfielders</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">Midfielders</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>Gavi</li>
               <li>Pedri</li>
               <li>Fermín López</li>
@@ -97,8 +97,8 @@ export function Footer({ partners = [] }: FooterProps) {
 
           {/* Forwards */}
           <div>
-            <h4 className="text-white font-bold mb-4">Forwards</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">Forwards</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>Ferran Torres</li>
               <li>Robert Lewandowski</li>
               <li>Lamine Yamal</li>
@@ -110,8 +110,8 @@ export function Footer({ partners = [] }: FooterProps) {
 
           {/* Barça Products */}
           <div>
-            <h4 className="text-white font-bold mb-4">Barça Products</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">Barça Products</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>Culers Membership</li>
               <li>Barça One</li>
               <li>Tickets & Museum</li>
@@ -126,8 +126,8 @@ export function Footer({ partners = [] }: FooterProps) {
 
           {/* Club */}
           <div>
-            <h4 className="text-white font-bold mb-4">Club</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">Club</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>Spotify Camp Nou</li>
               <li>Ethical Channel</li>
               <li>The Crest</li>
@@ -138,8 +138,8 @@ export function Footer({ partners = [] }: FooterProps) {
 
           {/* History */}
           <div>
-            <h4 className="text-white font-bold mb-4">History</h4>
-            <ul className="space-y-2 text-white/70 text-sm">
+            <h4 className="text-light-gold font-bold mb-4">History</h4>
+            <ul className="space-y-2 text-light-gold/70 text-sm">
               <li>2008-20. The best years in our history</li>
               <li>The era of the Dream Team</li>
               <li>1950-1961. The Kubala era</li>
@@ -162,34 +162,34 @@ export function Footer({ partners = [] }: FooterProps) {
                 className="object-contain"
               />
               <div>
-                <div className="text-white font-bold text-lg mb-1">Paro FC</div>
-                <div className="text-white/70 text-xs">
+                <div className="text-light-gold font-bold text-lg mb-1">Paro FC</div>
+                <div className="text-light-gold/70 text-xs">
                   © Copyright Paro FC Official website of Paro FC
                 </div>
               </div>
             </div>
 
             {/* Center - Legal Links */}
-            <div className="flex flex-wrap items-center justify-center gap-2 text-white/70 text-sm">
-              <a href="#" className="hover:text-white transition-colors">Legal Terms</a>
-              <span className="text-white/30">|</span>
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <span className="text-white/30">|</span>
-              <a href="/font-license" className="hover:text-white transition-colors">Font License</a>
-              <span className="text-white/30">|</span>
-              <a href="#" className="hover:text-white transition-colors">Accessibility</a>
-              <span className="text-white/30">|</span>
-              <a href="#" className="hover:text-white transition-colors">Contact Us</a>
-              <span className="text-white/30">|</span>
-              <a href="#" className="hover:text-white transition-colors">Support/FAQs</a>
-              <span className="text-white/30">|</span>
-              <a href="#" className="hover:text-white transition-colors">Consent management</a>
-              <span className="text-white/30">|</span>
-              <a href="#" className="hover:text-white transition-colors">Consent choices</a>
+            <div className="flex flex-wrap items-center justify-center gap-2 text-light-gold/70 text-sm">
+              <a href="#" className="hover:text-barca-gold transition-colors">Legal Terms</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="#" className="hover:text-barca-gold transition-colors">Privacy Policy</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="/font-license" className="hover:text-barca-gold transition-colors">Font License</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="#" className="hover:text-barca-gold transition-colors">Accessibility</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="#" className="hover:text-barca-gold transition-colors">Contact Us</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="#" className="hover:text-barca-gold transition-colors">Support/FAQs</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="#" className="hover:text-barca-gold transition-colors">Consent management</a>
+              <span className="text-light-gold/30">|</span>
+              <a href="#" className="hover:text-barca-gold transition-colors">Consent choices</a>
             </div>
 
             {/* Right - BARÇA Text */}
-            <div className="text-white font-bold text-4xl md:text-5xl">
+            <div className="text-light-gold font-bold text-4xl md:text-5xl">
               BARÇA
             </div>
           </div>

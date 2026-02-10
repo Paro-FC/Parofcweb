@@ -174,7 +174,7 @@ export default function PhotosPage() {
                   />
                   
                   {/* Camera Icon with Count - Top Right */}
-                  <div className="absolute top-3 right-3 bg-barca-blue/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-1.5 z-10">
+                  <div className="absolute top-3 right-3 bg-barca-gold/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-1.5 z-10">
                     <span className="text-white text-sm font-semibold">{photo.photoCount}</span>
                     <Camera className="w-4 h-4 text-white" />
                   </div>

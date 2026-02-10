@@ -299,7 +299,7 @@ export default function PlayersPage() {
           {/* Background split - red left, blue right */}
           <div className="absolute inset-0 flex">
             <div className="w-1/2 bg-barca-red"></div>
-            <div className="w-1/2 bg-barca-blue"></div>
+            <div className="w-1/2 bg-barca-gold"></div>
           </div>
           
           {/* Staff Image */}

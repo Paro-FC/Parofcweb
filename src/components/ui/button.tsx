@@ -2,10 +2,11 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = {
-  default: "bg-barca-red text-white hover:bg-barca-red/90",
-  outline: "border border-white/30 bg-transparent hover:bg-white/10 hover:border-barca-gold hover:text-barca-gold",
-  ghost: "hover:bg-white/10 hover:text-barca-gold",
-  gold: "bg-barca-gold text-dark-bg hover:bg-barca-gold/90",
+  default: "bg-barca-gold text-dark-charcoal hover:bg-barca-gold/90",
+  secondary: "bg-bronze text-white hover:bg-bronze/90",
+  outline: "border border-medium-grey bg-transparent hover:bg-light-gold/10 hover:border-barca-gold hover:text-barca-gold",
+  ghost: "hover:bg-light-gold/10 hover:text-barca-gold",
+  gold: "bg-barca-gold text-dark-charcoal hover:bg-barca-gold/90",
 } as const
 
 const buttonSizes = {

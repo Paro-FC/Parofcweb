@@ -149,7 +149,7 @@ export default function CheckoutPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/shop"
-                className="bg-barca-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-barca-blue/90 transition-colors"
+                className="bg-barca-gold text-dark-charcoal px-6 py-3 rounded-lg font-semibold hover:bg-barca-gold/90 transition-colors"
               >
                 Continue Shopping
               </Link>
@@ -198,7 +198,7 @@ export default function CheckoutPage() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/shop" className="flex items-center gap-2 text-gray-600 hover:text-barca-blue transition-colors">
+            <Link href="/shop" className="flex items-center gap-2 text-gray-600 hover:text-barca-gold transition-colors">
               <ArrowLeft size={20} />
               <span className="font-medium">Back to Shop</span>
             </Link>
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
               {/* Contact Information */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-barca-blue text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">1</span>
                   Contact Information
                 </h2>
                 
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                       name="firstName"
                       value={customerDetails.firstName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
                         errors.firstName ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Enter your first name"
@@ -247,7 +247,7 @@ export default function CheckoutPage() {
                       name="lastName"
                       value={customerDetails.lastName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
                         errors.lastName ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Enter your last name"
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
                       name="email"
                       value={customerDetails.email}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
                         errors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="your@email.com"
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                       name="phone"
                       value={customerDetails.phone}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
                         errors.phone ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="+975 17XXXXXX"
@@ -294,7 +294,7 @@ export default function CheckoutPage() {
               {/* Shipping Address */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-barca-blue text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">2</span>
                   Shipping Address
                 </h2>
                 
@@ -308,7 +308,7 @@ export default function CheckoutPage() {
                       name="address"
                       value={customerDetails.address}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
                         errors.address ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Street address"
@@ -326,7 +326,7 @@ export default function CheckoutPage() {
                         name="city"
                         value={customerDetails.city}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all ${
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
                           errors.city ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="City"
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
                         name="state"
                         value={customerDetails.state}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all"
                         placeholder="Dzongkhag/State"
                       />
                     </div>
@@ -359,7 +359,7 @@ export default function CheckoutPage() {
                         name="zipCode"
                         value={customerDetails.zipCode}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all"
                         placeholder="Postal code"
                       />
                     </div>
@@ -372,7 +372,7 @@ export default function CheckoutPage() {
                         name="country"
                         value={customerDetails.country}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-blue focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all"
                       >
                         <option value="Bhutan">Bhutan</option>
                         <option value="India">India</option>
@@ -388,7 +388,7 @@ export default function CheckoutPage() {
               {/* Order Notes */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-barca-blue text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">3</span>
                   Additional Notes (Optional)
                 </h2>
                 
@@ -409,7 +409,7 @@ export default function CheckoutPage() {
                   <span className="text-sm">Secure Checkout</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
-                  <Truck size={20} className="text-barca-blue" />
+                  <Truck size={20} className="text-barca-gold" />
                   <span className="text-sm">Fast Delivery</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
@@ -423,7 +423,7 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-barca-gold text-barca-blue py-4 rounded-lg font-bold text-lg hover:bg-barca-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-barca-gold text-dark-charcoal py-4 rounded-lg font-bold text-lg hover:bg-barca-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -454,7 +454,7 @@ export default function CheckoutPage() {
                         fill
                         className="object-contain"
                       />
-                      <span className="absolute -top-1 -right-1 bg-barca-blue text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                      <span className="absolute -top-1 -right-1 bg-barca-gold text-dark-charcoal text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
                         {item.quantity}
                       </span>
                     </div>
@@ -485,7 +485,7 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between">
                     <span className="text-lg font-bold text-gray-900">Total</span>
-                    <span className="text-lg font-bold text-barca-blue">{formatPrice(total, currency)}</span>
+                    <span className="text-lg font-bold text-barca-gold">{formatPrice(total, currency)}</span>
                   </div>
                 </div>
               </div>
@@ -503,7 +503,7 @@ export default function CheckoutPage() {
                 form="checkout-form"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="hidden lg:flex w-full mt-6 bg-barca-gold text-barca-blue py-4 rounded-lg font-bold text-lg hover:bg-barca-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2"
+                className="hidden lg:flex w-full mt-6 bg-barca-gold text-dark-charcoal py-4 rounded-lg font-bold text-lg hover:bg-barca-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

@@ -260,11 +260,11 @@ export default function StandingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div className="min-h-screen bg-white">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-[#37003c] to-[#04f5ff] py-8">
+      <div className="bg-gradient-to-r from-dark-charcoal to-bronze py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white">Tables</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-light-gold">Tables</h1>
         </div>
       </div>
 
@@ -278,8 +278,8 @@ export default function StandingsPage() {
                 onClick={() => setSelectedCompetition(comp.id)}
                 className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-4 ${
                   selectedCompetition === comp.id
-                    ? 'text-[#37003c] border-[#37003c]'
-                    : 'text-gray-600 border-transparent hover:text-[#37003c]'
+                    ? 'text-barca-gold border-barca-gold'
+                    : 'text-gray-600 border-transparent hover:text-barca-gold'
                 }`}
               >
                 {comp.name}
@@ -298,7 +298,7 @@ export default function StandingsPage() {
             <div className="relative">
               <button
                 onClick={() => setShowSeasonDropdown(!showSeasonDropdown)}
-                className="flex items-center gap-3 px-5 py-2.5 bg-white border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-900 hover:border-[#37003c] hover:bg-gray-50 transition-all min-w-[120px] shadow-sm"
+                className="flex items-center gap-3 px-5 py-2.5 bg-white border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-900 hover:border-barca-gold hover:bg-gray-50 transition-all min-w-[120px] shadow-sm"
               >
                 <span>{selectedSeason}</span>
                 <ChevronDown 
@@ -322,9 +322,9 @@ export default function StandingsPage() {
                           setSelectedSeason(season)
                           setShowSeasonDropdown(false)
                         }}
-                        className={`w-full px-5 py-3 text-sm text-left hover:bg-[#37003c] hover:text-white transition-colors ${
+                        className={`w-full px-5 py-3 text-sm text-left hover:bg-barca-gold hover:text-dark-charcoal transition-colors ${
                           selectedSeason === season 
-                            ? 'bg-[#37003c] text-white font-semibold' 
+                            ? 'bg-barca-gold text-dark-charcoal font-semibold' 
                             : 'text-gray-700 font-medium'
                         }`}
                       >
@@ -341,7 +341,7 @@ export default function StandingsPage() {
         {/* Table Card */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Table Header */}
-          <div className="bg-[#37003c] text-white px-6 py-4">
+          <div className="bg-dark-charcoal text-light-gold px-6 py-4">
             <h2 className="text-xl font-bold">BOB Bhutan Premier League {selectedSeason}</h2>
           </div>
 

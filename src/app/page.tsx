@@ -23,7 +23,7 @@ export default async function Home() {
   ])
 
   return (
-    <div className="min-h-screen bg-gradient-barca">
+    <div className="min-h-screen bg-white">
       <Hero news={newsResult.data as any} />
       <Card className="bg-white rounded-t-3xl border-0 shadow-none mx-2 md:mx-4">
         <TicketsSection />
