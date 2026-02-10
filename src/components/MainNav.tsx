@@ -146,9 +146,9 @@ export function MainNav() {
             <a href="/news" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
               News <span className="text-xs">↗</span>
             </a>
-            <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
+            {/* <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
               Barça Teams <span className="text-xs">▼</span>
-          </a>
+          </a> */}
           <Button 
             variant="ghost" 
             size="icon"

@@ -95,57 +95,57 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
         { label: "Privacy Policy", href: "#" },
       ],
     },
-    {
-      label: "Barça Teams",
-      children: [
-        {
-          label: "Football",
-          children: [
-            { label: "First Team", href: "/players" },
-            { label: "Women's", href: "#" }
-          ],
-        },
-        {
-          label: "Futsal",
-          children: [
-            { label: "First Team", href: "#" },
-            { label: "Latest", href: "#" },
-            { label: "Schedule", href: "#" },
-            { label: "Tickets", href: "#" },
-            { label: "Results", href: "#" },
-            { label: "Standings", href: "#" },
-            { label: "Players", href: "#" },
-            { label: "Photos", href: "#" },
-            { label: "Honours", href: "#" },
-            { label: "History", href: "#" },
-          ],
-        },
-        {
-          label: "Roller Hockey",
-          children: [
-            { label: "First Team", href: "#" },
-            { label: "Latest", href: "#" },
-            { label: "Schedule", href: "#" },
-            { label: "Tickets", href: "#" },
-            { label: "Results", href: "#" },
-            { label: "Standings", href: "#" },
-            { label: "Players", href: "#" },
-            { label: "Photos", href: "#" },
-            { label: "History", href: "#" },
-            { label: "Honours", href: "#" },
-          ],
-        },
-        {
-          label: "Esports",
-          children: [
-            { label: "League of Legends", href: "#" },
-            { label: "VALORANT Rising", href: "#" },
-            { label: "VALORANT Game Changers", href: "#" },
-            { label: "eFootball", href: "#" },
-          ],
-        },
-      ],
-    },
+    // {
+    //   label: "Barça Teams",
+    //   children: [
+    //     {
+    //       label: "Football",
+    //       children: [
+    //         { label: "First Team", href: "/players" },
+    //         { label: "Women's", href: "#" }
+    //       ],
+    //     },
+    //     {
+    //       label: "Futsal",
+    //       children: [
+    //         { label: "First Team", href: "#" },
+    //         { label: "Latest", href: "#" },
+    //         { label: "Schedule", href: "#" },
+    //         { label: "Tickets", href: "#" },
+    //         { label: "Results", href: "#" },
+    //         { label: "Standings", href: "#" },
+    //         { label: "Players", href: "#" },
+    //         { label: "Photos", href: "#" },
+    //         { label: "Honours", href: "#" },
+    //         { label: "History", href: "#" },
+    //       ],
+    //     },
+    //     {
+    //       label: "Roller Hockey",
+    //       children: [
+    //         { label: "First Team", href: "#" },
+    //         { label: "Latest", href: "#" },
+    //         { label: "Schedule", href: "#" },
+    //         { label: "Tickets", href: "#" },
+    //         { label: "Results", href: "#" },
+    //         { label: "Standings", href: "#" },
+    //         { label: "Players", href: "#" },
+    //         { label: "Photos", href: "#" },
+    //         { label: "History", href: "#" },
+    //         { label: "Honours", href: "#" },
+    //       ],
+    //     },
+    //     {
+    //       label: "Esports",
+    //       children: [
+    //         { label: "League of Legends", href: "#" },
+    //         { label: "VALORANT Rising", href: "#" },
+    //         { label: "VALORANT Game Changers", href: "#" },
+    //         { label: "eFootball", href: "#" },
+    //       ],
+    //     },
+    //   ],
+    // },
     {
       label: "Tickets & Museum",
       children: [
