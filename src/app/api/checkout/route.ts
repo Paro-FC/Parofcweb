@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { z } from 'zod'
+import DOMPurify from 'isomorphic-dompurify'
+import { SHIPPING_COST_BTN, EMAIL_CONFIG } from '@/lib/constants'
 
 // Initialize Resend lazily to avoid build-time errors
 function getResend() {
@@ -16,7 +19,7 @@ interface CartItem {
   name: string
   slug: string
   image: string
-  collection: string
+  collection?: string
   price: number
   currency: string
   salePrice?: number
@@ -44,6 +47,40 @@ interface CheckoutRequest {
   currency: string
 }
 
+// Validation schema
+const CartItemSchema = z.object({
+  _id: z.string().min(1),
+  name: z.string().min(1).max(200),
+  slug: z.string().min(1),
+  image: z.string().url().or(z.string().startsWith('/')),
+  collection: z.string().optional(),
+  price: z.number().positive(),
+  currency: z.string().length(3),
+  salePrice: z.number().positive().optional(),
+  size: z.string().min(1).max(10),
+  quantity: z.number().int().positive().max(100),
+})
+
+const CustomerDetailsSchema = z.object({
+  firstName: z.string().min(1).max(100).trim(),
+  lastName: z.string().min(1).max(100).trim(),
+  email: z.string().email().max(255),
+  phone: z.string().min(1).max(20).trim(),
+  address: z.string().min(1).max(500).trim(),
+  city: z.string().min(1).max(100).trim(),
+  state: z.string().max(100).trim(),
+  zipCode: z.string().max(20).trim(),
+  country: z.string().min(1).max(100).trim(),
+  notes: z.string().max(1000).trim().optional().default(''),
+})
+
+const CheckoutSchema = z.object({
+  customer: CustomerDetailsSchema,
+  items: z.array(CartItemSchema).min(1).max(50),
+  subtotal: z.number().positive(),
+  currency: z.string().length(3),
+})
+
 function generateOrderId(): string {
   const timestamp = Date.now().toString(36).toUpperCase()
   const random = Math.random().toString(36).substring(2, 6).toUpperCase()
@@ -57,6 +94,11 @@ function formatPrice(price: number, currency: string): string {
   return `${price.toLocaleString()} ${currency}`
 }
 
+// Sanitize string for HTML output
+function sanitizeHtml(str: string): string {
+  return DOMPurify.sanitize(str, { ALLOWED_TAGS: [] })
+}
+
 function generateAdminEmailHtml(order: {
   orderId: string
   customer: CustomerDetails
@@ -66,6 +108,18 @@ function generateAdminEmailHtml(order: {
   total: number
   currency: string
 }): string {
+  // Sanitize all user inputs
+  const safeOrderId = sanitizeHtml(order.orderId)
+  const safeFirstName = sanitizeHtml(order.customer.firstName)
+  const safeLastName = sanitizeHtml(order.customer.lastName)
+  const safeEmail = sanitizeHtml(order.customer.email)
+  const safePhone = sanitizeHtml(order.customer.phone)
+  const safeAddress = sanitizeHtml(order.customer.address)
+  const safeCity = sanitizeHtml(order.customer.city)
+  const safeState = sanitizeHtml(order.customer.state || '')
+  const safeZipCode = sanitizeHtml(order.customer.zipCode || '')
+  const safeCountry = sanitizeHtml(order.customer.country)
+  const safeNotes = sanitizeHtml(order.customer.notes || '')
   const itemsHtml = order.items
     .map(
       (item) => `
@@ -92,7 +146,7 @@ function generateAdminEmailHtml(order: {
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #004D98 0%, #A50044 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
         <h1 style="color: white; margin: 0; font-size: 28px;">🛒 New Order Received!</h1>
-        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">Order ID: <strong>${order.orderId}</strong></p>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">Order ID: <strong>${safeOrderId}</strong></p>
       </div>
       
       <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-top: none;">
@@ -100,28 +154,28 @@ function generateAdminEmailHtml(order: {
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 8px 0; color: #666; width: 140px;">Name:</td>
-            <td style="padding: 8px 0;"><strong>${order.customer.firstName} ${order.customer.lastName}</strong></td>
+            <td style="padding: 8px 0;"><strong>${safeFirstName} ${safeLastName}</strong></td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #666;">Email:</td>
-            <td style="padding: 8px 0;"><a href="mailto:${order.customer.email}" style="color: #004D98;">${order.customer.email}</a></td>
+            <td style="padding: 8px 0;"><a href="mailto:${safeEmail}" style="color: #004D98;">${safeEmail}</a></td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #666;">Phone:</td>
-            <td style="padding: 8px 0;"><a href="tel:${order.customer.phone}" style="color: #004D98;">${order.customer.phone}</a></td>
+            <td style="padding: 8px 0;"><a href="tel:${safePhone}" style="color: #004D98;">${safePhone}</a></td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #666;">Address:</td>
             <td style="padding: 8px 0;">
-              ${order.customer.address}<br>
-              ${order.customer.city}${order.customer.state ? `, ${order.customer.state}` : ''}<br>
-              ${order.customer.zipCode ? `${order.customer.zipCode}, ` : ''}${order.customer.country}
+              ${safeAddress}<br>
+              ${safeCity}${safeState ? `, ${safeState}` : ''}<br>
+              ${safeZipCode ? `${safeZipCode}, ` : ''}${safeCountry}
             </td>
           </tr>
-          ${order.customer.notes ? `
+          ${safeNotes ? `
           <tr>
             <td style="padding: 8px 0; color: #666;">Notes:</td>
-            <td style="padding: 8px 0; background: #f9f9f9; padding: 12px; border-radius: 8px;">${order.customer.notes}</td>
+            <td style="padding: 8px 0; background: #f9f9f9; padding: 12px; border-radius: 8px;">${safeNotes}</td>
           </tr>
           ` : ''}
         </table>
@@ -180,18 +234,33 @@ function generateCustomerEmailHtml(order: {
   total: number
   currency: string
 }): string {
+  // Sanitize all user inputs
+  const safeOrderId = sanitizeHtml(order.orderId)
+  const safeFirstName = sanitizeHtml(order.customer.firstName)
+  const safeLastName = sanitizeHtml(order.customer.lastName)
+  const safeAddress = sanitizeHtml(order.customer.address)
+  const safeCity = sanitizeHtml(order.customer.city)
+  const safeState = sanitizeHtml(order.customer.state || '')
+  const safeZipCode = sanitizeHtml(order.customer.zipCode || '')
+  const safeCountry = sanitizeHtml(order.customer.country)
+  const safePhone = sanitizeHtml(order.customer.phone)
+  
   const itemsHtml = order.items
     .map(
-      (item) => `
+      (item) => {
+        const safeName = sanitizeHtml(item.name)
+        const safeSize = sanitizeHtml(item.size)
+        return `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #eee;">
-          <strong>${item.name}</strong><br>
-          <span style="color: #666; font-size: 14px;">Size: ${item.size}</span>
+          <strong>${safeName}</strong><br>
+          <span style="color: #666; font-size: 14px;">Size: ${safeSize}</span>
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
         <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${formatPrice((item.salePrice || item.price) * item.quantity, item.currency)}</td>
       </tr>
     `
+      }
     )
     .join('')
 
@@ -206,13 +275,13 @@ function generateCustomerEmailHtml(order: {
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #004D98 0%, #A50044 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
         <h1 style="color: white; margin: 0; font-size: 28px;">✅ Order Confirmed!</h1>
-        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">Thank you for your order, ${order.customer.firstName}!</p>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0;">Thank you for your order, ${safeFirstName}!</p>
       </div>
       
       <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-top: none;">
         <div style="text-align: center; margin-bottom: 30px;">
           <p style="color: #666; margin: 0;">Your order ID is:</p>
-          <p style="font-size: 24px; font-weight: bold; color: #004D98; margin: 10px 0; font-family: monospace;">${order.orderId}</p>
+          <p style="font-size: 24px; font-weight: bold; color: #004D98; margin: 10px 0; font-family: monospace;">${safeOrderId}</p>
         </div>
 
         <h2 style="color: #004D98; margin-top: 0;">Order Summary</h2>
@@ -248,11 +317,11 @@ function generateCustomerEmailHtml(order: {
 
         <h2 style="color: #004D98; margin-top: 30px;">Shipping Address</h2>
         <p style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 0;">
-          ${order.customer.firstName} ${order.customer.lastName}<br>
-          ${order.customer.address}<br>
-          ${order.customer.city}${order.customer.state ? `, ${order.customer.state}` : ''}<br>
-          ${order.customer.zipCode ? `${order.customer.zipCode}, ` : ''}${order.customer.country}<br>
-          <strong>Phone:</strong> ${order.customer.phone}
+          ${safeFirstName} ${safeLastName}<br>
+          ${safeAddress}<br>
+          ${safeCity}${safeState ? `, ${safeState}` : ''}<br>
+          ${safeZipCode ? `${safeZipCode}, ` : ''}${safeCountry}<br>
+          <strong>Phone:</strong> ${safePhone}
         </p>
 
         <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50;">
@@ -263,7 +332,7 @@ function generateCustomerEmailHtml(order: {
         <div style="margin-top: 30px; text-align: center;">
           <p style="color: #666;">Our team will contact you shortly to confirm your order and arrange delivery.</p>
           <p style="color: #666;">If you have any questions, please contact us at:</p>
-          <p style="margin: 5px 0;"><a href="mailto:shop@parofc.com" style="color: #004D98;">shop@parofc.com</a></p>
+          <p style="margin: 5px 0;"><a href="mailto:${EMAIL_CONFIG.SUPPORT_EMAIL}" style="color: #004D98;">${EMAIL_CONFIG.SUPPORT_EMAIL}</a></p>
         </div>
       </div>
 
@@ -278,19 +347,28 @@ function generateCustomerEmailHtml(order: {
 
 export async function POST(request: NextRequest) {
   try {
-    const body: CheckoutRequest = await request.json()
-    const { customer, items, subtotal, currency } = body
-
-    // Validate required fields
-    if (!customer || !items || items.length === 0) {
+    const body = await request.json()
+    
+    // Validate input with Zod schema
+    const validationResult = CheckoutSchema.safeParse(body)
+    
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Invalid request data' },
+        { 
+          error: 'Invalid request data',
+          details: validationResult.error.issues.map(err => ({
+            path: err.path.join('.'),
+            message: err.message
+          }))
+        },
         { status: 400 }
       )
     }
 
+    const { customer, items, subtotal, currency } = validationResult.data
+
     const orderId = generateOrderId()
-    const shipping = 150 // Fixed shipping for Bhutan
+    const shipping = SHIPPING_COST_BTN // Fixed shipping for Bhutan
     const total = subtotal + shipping
 
     const orderData = {
@@ -303,9 +381,6 @@ export async function POST(request: NextRequest) {
       currency,
     }
 
-    // Admin email address - change this to your actual admin email
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@parofc.com'
-
     // Get Resend instance
     const resend = getResend()
 
@@ -313,15 +388,15 @@ export async function POST(request: NextRequest) {
       try {
         // Send email to admin
         await resend.emails.send({
-          from: 'Paro FC Shop <onboarding@resend.dev>',
-          to: adminEmail,
+          from: EMAIL_CONFIG.FROM,
+          to: EMAIL_CONFIG.ADMIN_EMAIL,
           subject: `🛒 New Order #${orderId} - ${customer.firstName} ${customer.lastName}`,
           html: generateAdminEmailHtml(orderData),
         })
 
         // Send confirmation email to customer
         await resend.emails.send({
-          from: 'Paro FC Shop <onboarding@resend.dev>',
+          from: EMAIL_CONFIG.FROM,
           to: customer.email,
           subject: `Order Confirmed! #${orderId} - Paro FC Shop`,
           html: generateCustomerEmailHtml(orderData),

@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { CART_STORAGE_KEY } from '@/lib/constants'
 
 export interface CartItem {
   _id: string
@@ -36,21 +37,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('paro-fc-cart')
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart))
-      } catch (e) {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY)
+      if (savedCart) {
+        try {
+          setItems(JSON.parse(savedCart))
+        } catch (e) {
+          console.error('Error parsing cart data:', e)
+          // Clear corrupted data
+          localStorage.removeItem(CART_STORAGE_KEY)
+        }
+      }
+    } catch (e) {
+      // Handle localStorage access errors (private browsing, etc.)
+      if (e instanceof DOMException) {
+        console.warn('localStorage not available:', e.message)
+      } else {
         console.error('Error loading cart:', e)
       }
+    } finally {
+      setIsHydrated(true)
     }
-    setIsHydrated(true)
   }, [])
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem('paro-fc-cart', JSON.stringify(items))
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+      } catch (e) {
+        if (e instanceof DOMException) {
+          if (e.name === 'QuotaExceededError') {
+            console.error('Cart storage quota exceeded. Clearing old items...')
+            // Try to clear and save again with current items only
+            try {
+              localStorage.removeItem(CART_STORAGE_KEY)
+              localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+            } catch (retryError) {
+              console.error('Failed to save cart after clearing:', retryError)
+            }
+          } else {
+            console.warn('localStorage not available:', e.message)
+          }
+        } else {
+          console.error('Error saving cart:', e)
+        }
+      }
     }
   }, [items, isHydrated])
 

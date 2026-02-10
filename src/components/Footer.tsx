@@ -177,20 +177,20 @@ export function Footer({ partners = [] }: FooterProps) {
               <span className="text-light-gold/30">|</span>
               <a href="/font-license" className="hover:text-barca-gold transition-colors">Font License</a>
               <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-barca-gold transition-colors">Accessibility</a>
-              <span className="text-light-gold/30">|</span>
+              {/* <a href="#" className="hover:text-barca-gold transition-colors">Accessibility</a>
+              <span className="text-light-gold/30">|</span> */}
               <a href="#" className="hover:text-barca-gold transition-colors">Contact Us</a>
               <span className="text-light-gold/30">|</span>
               <a href="#" className="hover:text-barca-gold transition-colors">Support/FAQs</a>
-              <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-barca-gold transition-colors">Consent management</a>
-              <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-barca-gold transition-colors">Consent choices</a>
+              {/* <span className="text-light-gold/30">|</span> */}
+              {/* <a href="#" className="hover:text-barca-gold transition-colors">Consent management</a> */}
+              {/* <span className="text-light-gold/30">|</span> */}
+              {/* <a href="#" className="hover:text-barca-gold transition-colors">Consent choices</a> */}
             </div>
 
             {/* Right - BARÇA Text */}
             <div className="text-light-gold font-bold text-4xl md:text-5xl">
-              BARÇA
+              PARO FC
             </div>
           </div>
         </div>

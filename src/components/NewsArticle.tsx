@@ -135,43 +135,84 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
   // Load from localStorage after hydration (client-side only)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedLikes = localStorage.getItem(likesKey)
-      if (storedLikes) {
-        setLikes(parseInt(storedLikes, 10))
+      try {
+        const storedLikes = localStorage.getItem(likesKey)
+        if (storedLikes) {
+          const parsedLikes = parseInt(storedLikes, 10)
+          if (!isNaN(parsedLikes)) {
+            setLikes(parsedLikes)
+          }
+        }
+        
+        const storedLiked = localStorage.getItem(likedKey)
+        if (storedLiked === 'true') {
+          setIsLiked(true)
+        }
+        
+        const storedBookmarked = localStorage.getItem(bookmarkedKey)
+        if (storedBookmarked === 'true') {
+          setIsBookmarked(true)
+        }
+      } catch (e) {
+        if (e instanceof DOMException) {
+          console.warn('localStorage not available:', e.message)
+        } else {
+          console.error('Error loading article state:', e)
+        }
+      } finally {
+        setIsHydrated(true)
       }
-      
-      const storedLiked = localStorage.getItem(likedKey)
-      if (storedLiked === 'true') {
-        setIsLiked(true)
-      }
-      
-      const storedBookmarked = localStorage.getItem(bookmarkedKey)
-      if (storedBookmarked === 'true') {
-        setIsBookmarked(true)
-      }
-      
-      setIsHydrated(true)
     }
   }, [likesKey, likedKey, bookmarkedKey])
 
   // Sync likes to localStorage (only after hydration)
   useEffect(() => {
     if (isHydrated && typeof window !== 'undefined') {
-      localStorage.setItem(likesKey, likes.toString())
+      try {
+        localStorage.setItem(likesKey, likes.toString())
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          console.error('localStorage quota exceeded for likes')
+        } else if (e instanceof DOMException) {
+          console.warn('localStorage not available:', e.message)
+        } else {
+          console.error('Error saving likes:', e)
+        }
+      }
     }
   }, [likes, likesKey, isHydrated])
 
   // Sync liked state to localStorage (only after hydration)
   useEffect(() => {
     if (isHydrated && typeof window !== 'undefined') {
-      localStorage.setItem(likedKey, isLiked.toString())
+      try {
+        localStorage.setItem(likedKey, isLiked.toString())
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          console.error('localStorage quota exceeded for liked state')
+        } else if (e instanceof DOMException) {
+          console.warn('localStorage not available:', e.message)
+        } else {
+          console.error('Error saving liked state:', e)
+        }
+      }
     }
   }, [isLiked, likedKey, isHydrated])
 
   // Sync bookmarked state to localStorage (only after hydration)
   useEffect(() => {
     if (isHydrated && typeof window !== 'undefined') {
-      localStorage.setItem(bookmarkedKey, isBookmarked.toString())
+      try {
+        localStorage.setItem(bookmarkedKey, isBookmarked.toString())
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          console.error('localStorage quota exceeded for bookmarked state')
+        } else if (e instanceof DOMException) {
+          console.warn('localStorage not available:', e.message)
+        } else {
+          console.error('Error saving bookmarked state:', e)
+        }
+      }
     }
   }, [isBookmarked, bookmarkedKey, isHydrated])
 
