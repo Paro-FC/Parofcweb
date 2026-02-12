@@ -119,134 +119,139 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
           </Link>
         </div>
 
-        {/* Main Content - Centered */}
-        <div className="flex-1 flex items-center justify-center px-4 py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-4xl text-center"
-          >
-            {/* League Name */}
-            <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${getCompetitionColor(match.competition)}`}>
-              {match.competition?.toUpperCase() || 'MATCH'}
-            </h1>
+        {/* Main Content - Two Column Layout */}
+        <div className="flex-1 flex items-start justify-center px-4 py-12">
+          <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Left Column - Match Information */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-center"
+            >
+              {/* League Name */}
+              <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${getCompetitionColor(match.competition)}`}>
+                {match.competition?.toUpperCase() || 'MATCH'}
+              </h1>
 
-            {/* Date */}
-            <p className="text-3xl md:text-4xl font-bold text-barca-gold mb-8">
-              {formatted.day} {formatted.date} {formatted.month}
-            </p>
-
-            {/* Match Countdown */}
-            <div className="mb-12">
-              <p className="text-white text-lg mb-4">Match countdown</p>
-              <div className="flex items-center justify-center gap-4 md:gap-8">
-                <div className="flex flex-col items-center">
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    {String(timeRemaining.days).padStart(2, '0')}
-                  </span>
-                  <span className="text-white text-sm mt-2">DAYS</span>
-                </div>
-                <span className="text-5xl md:text-7xl font-bold text-white">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    {String(timeRemaining.hours).padStart(2, '0')}
-                  </span>
-                  <span className="text-white text-sm mt-2">HOURS</span>
-                </div>
-                <span className="text-5xl md:text-7xl font-bold text-white">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    {String(timeRemaining.minutes).padStart(2, '0')}
-                  </span>
-                  <span className="text-white text-sm mt-2">MINS</span>
-                </div>
-                <span className="text-5xl md:text-7xl font-bold text-white">:</span>
-                <div className="flex flex-col items-center">
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    {String(timeRemaining.seconds).padStart(2, '0')}
-                  </span>
-                  <span className="text-white text-sm mt-2">SECS</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Kickoff Time */}
-            <div className="mb-12">
-              <p className="text-white text-lg mb-2">Kickoff CET</p>
-              <p className="text-6xl md:text-8xl font-bold text-white">
-                {formatted.time}
+              {/* Date */}
+              <p className="text-3xl md:text-4xl font-bold text-barca-gold mb-8">
+                {formatted.day} {formatted.date} {formatted.month}
               </p>
-            </div>
 
-            {/* Teams */}
-            <div className="flex items-center justify-center gap-8 md:gap-16 mb-12">
-              {/* Home Team */}
-              <div className="flex flex-col items-center">
-                <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
-                  {match.homeCrest ? (
-                    <Image
-                      src={urlFor(match.homeCrest).width(128).height(128).url()}
-                      alt={match.homeTeam}
-                      fill
-                      className="object-contain"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center text-4xl">
-                      ⚽
-                    </div>
-                  )}
+              {/* Match Countdown */}
+              <div className="mb-12">
+                <p className="text-white text-lg mb-4">Match countdown</p>
+                <div className="flex items-center justify-center gap-4 md:gap-8">
+                  <div className="flex flex-col items-center">
+                    <span className="text-5xl md:text-7xl font-bold text-white">
+                      {String(timeRemaining.days).padStart(2, '0')}
+                    </span>
+                    <span className="text-white text-sm mt-2">DAYS</span>
+                  </div>
+                  <span className="text-5xl md:text-7xl font-bold text-white">:</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-5xl md:text-7xl font-bold text-white">
+                      {String(timeRemaining.hours).padStart(2, '0')}
+                    </span>
+                    <span className="text-white text-sm mt-2">HOURS</span>
+                  </div>
+                  <span className="text-5xl md:text-7xl font-bold text-white">:</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-5xl md:text-7xl font-bold text-white">
+                      {String(timeRemaining.minutes).padStart(2, '0')}
+                    </span>
+                    <span className="text-white text-sm mt-2">MINS</span>
+                  </div>
+                  <span className="text-5xl md:text-7xl font-bold text-white">:</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-5xl md:text-7xl font-bold text-white">
+                      {String(timeRemaining.seconds).padStart(2, '0')}
+                    </span>
+                    <span className="text-white text-sm mt-2">SECS</span>
+                  </div>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
-                  {match.homeTeam}
-                </h2>
               </div>
 
-              {/* VS / Time */}
-              <div className="flex flex-col items-center">
-                <p className="text-4xl md:text-6xl font-bold text-white mb-2">
+              {/* Kickoff Time */}
+              {/* <div className="mb-12">
+                <p className="text-white text-lg mb-2">Kickoff CET</p>
+                <p className="text-6xl md:text-8xl font-bold text-white">
                   {formatted.time}
                 </p>
-                <p className="text-white/80 text-sm">CET</p>
-              </div>
+              </div> */}
 
-              {/* Away Team */}
-              <div className="flex flex-col items-center">
-                <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
-                  {match.awayCrest ? (
-                    <Image
-                      src={urlFor(match.awayCrest).width(128).height(128).url()}
-                      alt={match.awayTeam}
-                      fill
-                      className="object-contain"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center text-4xl">
-                      ⚽
-                    </div>
-                  )}
+              {/* Teams */}
+              <div className="flex items-center justify-center gap-8 md:gap-16 mb-12">
+                {/* Home Team */}
+                <div className="flex flex-col items-center">
+                  <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
+                    {match.homeCrest ? (
+                      <Image
+                        src={urlFor(match.homeCrest).width(128).height(128).url()}
+                        alt={match.homeTeam}
+                        fill
+                        className="object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center text-4xl">
+                        ⚽
+                      </div>
+                    )}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
+                    {match.homeTeam}
+                  </h2>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
-                  {match.awayTeam}
-                </h2>
-              </div>
-            </div>
 
-            {/* Ticket Booking Form */}
+                {/* VS / Time */}
+                <div className="flex flex-col items-center">
+                  <p className="text-4xl md:text-6xl font-bold text-white mb-2">
+                    {formatted.time}
+                  </p>
+                  <p className="text-white/80 text-sm">CET</p>
+                </div>
+
+                {/* Away Team */}
+                <div className="flex flex-col items-center">
+                  <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
+                    {match.awayCrest ? (
+                      <Image
+                        src={urlFor(match.awayCrest).width(128).height(128).url()}
+                        alt={match.awayTeam}
+                        fill
+                        className="object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center text-4xl">
+                        ⚽
+                      </div>
+                    )}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
+                    {match.awayTeam}
+                  </h2>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column - Ticket Booking Form */}
             {match.hasTickets && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-12"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-start justify-center"
               >
-                <TicketBookingForm
-                  matchId={match._id}
-                  matchTitle={`${match.homeTeam} vs ${match.awayTeam}`}
-                  availability={match.ticketAvailability ?? 0}
-                />
+                <div className="w-full max-w-md">
+                  <TicketBookingForm
+                    matchId={match._id}
+                    matchTitle={`${match.homeTeam} vs ${match.awayTeam}`}
+                    availability={match.ticketAvailability ?? 0}
+                  />
+                </div>
               </motion.div>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
 

@@ -31,7 +31,7 @@ export default async function Home() {
     <div className="min-h-screen bg-white">
       <Hero news={newsResult.data as any} />
       <Card className="bg-white rounded-t-3xl border-0 shadow-none mx-2 md:mx-4">
-        <TicketsSection />
+        {/* <TicketsSection /> */}
         <hr className="border-gray-200" />
         <CalendarSection matches={matchesResult.data as any} />
         <hr className="border-gray-200" />

@@ -130,9 +130,9 @@ export function MainNav() {
               <a href="/shop" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
                 Shop <span className="text-xs">↗</span>
             </a>
-              <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
+              {/* <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
                 Culers <span className="text-xs">↗</span>
-            </a>
+            </a> */}
           </div>
         </div>
 

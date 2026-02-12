@@ -17,12 +17,14 @@ export function TicketBookingForm({ matchId, matchTitle, availability }: TicketB
   const router = useRouter()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<{
     name?: string
     email?: string
+    phone?: string
     quantity?: string
   }>({})
 
@@ -43,6 +45,17 @@ export function TicketBookingForm({ matchId, matchTitle, availability }: TicketB
       isValid = false
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = "Please enter a valid email address"
+      isValid = false
+    }
+
+    if (!phone.trim()) {
+      errors.phone = "Contact number is required"
+      isValid = false
+    } else if (!/^[\d\s\-\+\(\)]+$/.test(phone)) {
+      errors.phone = "Please enter a valid phone number"
+      isValid = false
+    } else if (phone.replace(/\D/g, '').length < 8) {
+      errors.phone = "Phone number must be at least 8 digits"
       isValid = false
     }
 
@@ -78,6 +91,7 @@ export function TicketBookingForm({ matchId, matchTitle, availability }: TicketB
           matchId,
           name: name.trim(),
           email: email.trim(),
+          phone: phone.trim(),
           quantity,
         }),
       })
@@ -118,7 +132,7 @@ export function TicketBookingForm({ matchId, matchTitle, availability }: TicketB
   }
 
   return (
-    <Card className="bg-white/10 backdrop-blur-sm border-white/20 max-w-md mx-auto">
+    <Card className="bg-white/10 backdrop-blur-sm border-white/20 w-full sticky top-8">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <Ticket className="w-5 h-5" />
@@ -195,6 +209,39 @@ export function TicketBookingForm({ matchId, matchTitle, availability }: TicketB
               <p id="email-error" className="mt-1 text-sm text-red-400 flex items-center gap-1">
                 <AlertCircle className="w-4 h-4" />
                 {fieldErrors.email}
+              </p>
+            )}
+          </div>
+
+          {/* Phone Field */}
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
+              Contact Number <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value)
+                if (fieldErrors.phone) {
+                  setFieldErrors((prev) => ({ ...prev, phone: undefined }))
+                }
+              }}
+              className={`w-full h-11 px-4 rounded-md bg-white/10 border ${
+                fieldErrors.phone
+                  ? "border-red-400 focus:border-red-500"
+                  : "border-white/20 focus:border-barca-gold"
+              } text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-barca-gold focus:ring-offset-2 focus:ring-offset-transparent transition-colors`}
+              placeholder="+975 17 12 34 56"
+              disabled={isSubmitting}
+              aria-invalid={!!fieldErrors.phone}
+              aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
+            />
+            {fieldErrors.phone && (
+              <p id="phone-error" className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" />
+                {fieldErrors.phone}
               </p>
             )}
           </div>

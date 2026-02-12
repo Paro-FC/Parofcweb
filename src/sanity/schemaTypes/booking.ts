@@ -27,6 +27,12 @@ export const booking = defineType({
       validation: (rule) => rule.required().email(),
     }),
     defineField({
+      name: 'phone',
+      title: 'Contact Number',
+      type: 'string',
+      validation: (rule) => rule.required().min(1).max(20),
+    }),
+    defineField({
       name: 'quantity',
       title: 'Quantity',
       type: 'number',

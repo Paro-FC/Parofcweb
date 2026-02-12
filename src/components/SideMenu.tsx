@@ -172,11 +172,11 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
       href: "#",
       external: true,
     },
-    {
-      label: "Culers",
-      href: "#",
-      external: true,
-    },
+    // {
+    //   label: "Culers",
+    //   href: "#",
+    //   external: true,
+    // },
   ]
 
   const renderMenuItem = (item: MenuItem, level: number = 0) => {

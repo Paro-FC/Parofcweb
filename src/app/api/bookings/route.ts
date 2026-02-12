@@ -52,6 +52,7 @@ const BookingRequestSchema = z.object({
   matchId: z.string().min(1),
   name: z.string().min(1).max(100).trim(),
   email: z.string().email().max(255),
+  phone: z.string().min(1).max(20).trim().regex(/^[\d\s\-\+\(\)]+$/, 'Invalid phone number format'),
   quantity: z.number().int().positive().max(100),
 })
 
@@ -70,6 +71,7 @@ function generateAdminBookingEmailHtml(booking: {
   bookingId: string
   name: string
   email: string
+  phone: string
   quantity: number
   match: {
     homeTeam: string
@@ -83,6 +85,7 @@ function generateAdminBookingEmailHtml(booking: {
   const safeBookingId = sanitizeHtml(booking.bookingId)
   const safeName = sanitizeHtml(booking.name)
   const safeEmail = sanitizeHtml(booking.email)
+  const safePhone = sanitizeHtml(booking.phone)
   const safeHomeTeam = sanitizeHtml(booking.match.homeTeam)
   const safeAwayTeam = sanitizeHtml(booking.match.awayTeam)
   const safeCompetition = sanitizeHtml(booking.match.competition || 'Match')
@@ -166,6 +169,7 @@ function generateBookingEmailHtml(booking: {
   bookingId: string
   name: string
   email: string
+  phone: string
   quantity: number
   match: {
     homeTeam: string
@@ -178,6 +182,7 @@ function generateBookingEmailHtml(booking: {
   const safeBookingId = sanitizeHtml(booking.bookingId)
   const safeName = sanitizeHtml(booking.name)
   const safeEmail = sanitizeHtml(booking.email)
+  const safePhone = sanitizeHtml(booking.phone)
   const safeHomeTeam = sanitizeHtml(booking.match.homeTeam)
   const safeAwayTeam = sanitizeHtml(booking.match.awayTeam)
   const safeCompetition = sanitizeHtml(booking.match.competition || 'Match')
@@ -217,6 +222,10 @@ function generateBookingEmailHtml(booking: {
           <tr>
             <td style="padding: 8px 0; color: #666;">Email:</td>
             <td style="padding: 8px 0;"><a href="mailto:${safeEmail}" style="color: #E6BB29;">${safeEmail}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #666;">Phone:</td>
+            <td style="padding: 8px 0;"><a href="tel:${safePhone}" style="color: #E6BB29;">${safePhone}</a></td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #666;">Quantity:</td>
@@ -270,7 +279,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { matchId, name, email, quantity } = validationResult.data
+    const { matchId, name, email, phone, quantity } = validationResult.data
 
     const readClient = getReadClient()
     
@@ -336,6 +345,7 @@ export async function POST(request: NextRequest) {
         },
         name: sanitizeHtml(name),
         email: sanitizeHtml(email),
+        phone: sanitizeHtml(phone),
         quantity,
         bookingId,
         status: 'confirmed',
@@ -383,6 +393,7 @@ export async function POST(request: NextRequest) {
             bookingId,
             name,
             email,
+            phone,
             quantity,
             match: {
               homeTeam: match.homeTeam,
@@ -403,6 +414,7 @@ export async function POST(request: NextRequest) {
             bookingId,
             name,
             email,
+            phone,
             quantity,
             match: {
               homeTeam: match.homeTeam,
