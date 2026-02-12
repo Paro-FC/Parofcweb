@@ -50,9 +50,9 @@ export function PartnersSection({
                 href={partner.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block group"
+                className="block"
               >
-                <div className="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
