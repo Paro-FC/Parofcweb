@@ -28,23 +28,21 @@ export default async function Home() {
   ])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <Hero news={newsResult.data as any} />
       <Card className="bg-white rounded-t-3xl border-0 shadow-none mx-2 md:mx-4">
         {/* <TicketsSection /> */}
-        <hr className="border-gray-200" />
-        <CalendarSection matches={matchesResult.data as any} />
-        <hr className="border-gray-200" />
         <BarcaStoriesSection stories={storiesResult.data as any} />
-        {/* <hr className="border-gray-200" />
+        <hr className="border-gray-100" />
+        <CalendarSection matches={matchesResult.data as any} />
+        <hr className="border-gray-100" />
+       {/* <hr className="border-gray-200" />
         <StoreSection /> */}
-        <hr className="border-gray-200" />
+        <hr className="border-gray-100" />
         <NewsSection news={newsResult.data as any} />
       </Card>
       <PlayersSection players={playersResult.data as any} />
-      
       <TrophiesSection trophies={trophiesResult.data as any} />
-      
       {/* Main Partners Section - Homepage Only */}
       <PartnersSection partners={mainPartnersResult.data as any} title="Main Partners" />
     </div>

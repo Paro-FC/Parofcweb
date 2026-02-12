@@ -2,7 +2,11 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { sanityFetch } from "@/sanity/lib/live"
+import { PLAYERS_BY_TEAM_QUERY } from "@/sanity/lib/queries"
+import { urlFor } from "@/sanity/lib/image"
+import Link from "next/link"
 
 interface PlayerStats {
   appearances?: { value: number; season: string }
@@ -13,12 +17,15 @@ interface PlayerStats {
 }
 
 interface Player {
-  id: number
+  _id?: string
+  id?: number
   number: number
   firstName: string
   lastName: string
   position: string
-  image: string
+  team?: string
+  image?: unknown | string
+  slug?: string
   stats?: PlayerStats
 }
 
@@ -200,27 +207,67 @@ const staffMembers = [
 ]
 
 type PositionCategory = "goalkeepers" | "defenders" | "midfielders" | "forwards" | "coaching"
+type TeamType = "mens" | "womens"
 
 export default function PlayersPage() {
+  const [activeTeam, setActiveTeam] = useState<TeamType>("mens")
   const [activeCategory, setActiveCategory] = useState<PositionCategory>("goalkeepers")
+  const [players, setPlayers] = useState<Player[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const PlayerCard = ({ player, index }: { player: Player; index: number }) => (
-    <motion.div
-      key={player.id}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
-      className="relative w-full"
-    >
-      <div className="relative w-full h-[600px] overflow-hidden">
-        {/* Background Image - Full Card Coverage */}
-        <Image
-          src={player.image}
-          alt={`${player.firstName} ${player.lastName}`}
-          fill
-          className="object-cover"
-        />
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      setLoading(true)
+      try {
+        const result = await sanityFetch({
+          query: PLAYERS_BY_TEAM_QUERY,
+          params: { team: activeTeam },
+        })
+        setPlayers((result.data as Player[]) || [])
+      } catch (error) {
+        console.error("Error fetching players:", error)
+        setPlayers([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlayers()
+  }, [activeTeam])
+
+  // Group players by position
+  const goalkeepers = players.filter((p) => p.position === "Goalkeeper")
+  const defenders = players.filter((p) => p.position === "Defender")
+  const midfielders = players.filter((p) => p.position === "Midfielder")
+  const forwards = players.filter((p) => p.position === "Forward")
+
+  const PlayerCard = ({ player, index }: { player: Player; index: number }) => {
+    const playerSlug = player.slug || player._id || player.id?.toString() || 'unknown'
+    const playerId = player._id || player.id?.toString() || 'unknown'
+    return (
+      <Link href={`/players/${playerSlug}`}>
+        <motion.div
+          key={playerId}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.1 }}
+          className="relative w-full cursor-pointer"
+        >
+          <div className="relative w-full h-[600px] overflow-hidden">
+            {/* Background Image - Full Card Coverage */}
+            {player.image ? (
+              <Image
+                src={urlFor(player.image).width(600).height(900).url()}
+                alt={`${player.firstName} ${player.lastName}`}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-barca-blue to-barca-red flex items-center justify-center">
+                <span className="text-9xl text-white/20">{player.number}</span>
+              </div>
+            )}
         <div className="absolute inset-0 opacity-60">
           {index % 2 === 0 ? (
             <div className="absolute inset-0 bg-gradient-to-br from-barca-blue via-transparent to-barca-red" />
@@ -285,7 +332,9 @@ export default function PlayersPage() {
         </div>
       </div>
     </motion.div>
-  )
+    </Link>
+    )
+  }
 
   const StaffCard = ({ staff }: { staff: CoachingStaff }) => (
     <motion.div
@@ -332,16 +381,48 @@ export default function PlayersPage() {
       <section className="bg-white py-16 px-4">
         <div className="container mx-auto">
 
-          {/* Category Navigation */}
-          <nav className="mb-12">
-            <div className="flex flex-wrap gap-4 border-b border-gray-200">
-              {[
-                { id: "goalkeepers", label: "GOALKEEPERS" },
-                { id: "defenders", label: "DEFENDERS" },
-                { id: "midfielders", label: "MIDFIELDERS" },
-                { id: "forwards", label: "FORWARDS" },
-                { id: "coaching", label: "COACHING STAFF" },
-              ].map((category) => (
+          {/* Team Selection */}
+          <div className="mb-8">
+            <div className="flex gap-4 border-b-2 border-gray-200">
+              <button
+                onClick={() => setActiveTeam("mens")}
+                className={`px-6 py-3 text-lg font-semibold uppercase transition-colors border-b-2 ${
+                  activeTeam === "mens"
+                    ? "text-dark-charcoal border-barca-gold"
+                    : "text-gray-500 border-transparent hover:text-gray-700"
+                }`}
+              >
+                Men's Team
+              </button>
+              <button
+                onClick={() => setActiveTeam("womens")}
+                className={`px-6 py-3 text-lg font-semibold uppercase transition-colors border-b-2 ${
+                  activeTeam === "womens"
+                    ? "text-dark-charcoal border-barca-gold"
+                    : "text-gray-500 border-transparent hover:text-gray-700"
+                }`}
+              >
+                Women's Team
+              </button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500">Loading players...</p>
+            </div>
+          ) : (
+            <>
+              {/* Category Navigation */}
+              <nav className="mb-12">
+                <div className="flex flex-wrap gap-4 border-b border-gray-200">
+                  {[
+                    { id: "goalkeepers", label: "GOALKEEPERS" },
+                    { id: "defenders", label: "DEFENDERS" },
+                    { id: "midfielders", label: "MIDFIELDERS" },
+                    { id: "forwards", label: "FORWARDS" },
+                    { id: "coaching", label: "COACHING STAFF" },
+                  ].map((category) => (
                 <a
                   key={category.id}
                   href={`#${category.id}`}
@@ -363,47 +444,69 @@ export default function PlayersPage() {
 
           {/* Players Grid */}
           <div>
+            {players.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-gray-500">No players found for the {activeTeam === "mens" ? "Men's" : "Women's"} Team.</p>
+              </div>
+            ) : (
+              <>
             {activeCategory === "goalkeepers" && (
               <div id="goalkeepers">
                 <h3 className="text-3xl font-bold uppercase text-gray-900 mb-8">Goalkeepers</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {goalkeepers.map((player, index) => (
-                    <PlayerCard key={player.id} player={player} index={index} />
-                  ))}
-                </div>
+                {goalkeepers.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {goalkeepers.map((player, index) => (
+                      <PlayerCard key={player._id || player.id || index} player={player} index={index} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No goalkeepers found.</p>
+                )}
               </div>
             )}
 
             {activeCategory === "defenders" && (
               <div id="defenders">
                 <h3 className="text-3xl font-bold uppercase text-gray-900 mb-8">Defenders</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {defenders.map((player, index) => (
-                    <PlayerCard key={player.id} player={player} index={index} />
-                  ))}
-                </div>
+                {defenders.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {defenders.map((player, index) => (
+                      <PlayerCard key={player._id || player.id || index} player={player} index={index} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No defenders found.</p>
+                )}
               </div>
             )}
 
             {activeCategory === "midfielders" && (
               <div id="midfielders">
                 <h3 className="text-3xl font-bold uppercase text-gray-900 mb-8">Midfielders</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {midfielders.map((player, index) => (
-                    <PlayerCard key={player.id} player={player} index={index} />
-                  ))}
-                </div>
+                {midfielders.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {midfielders.map((player, index) => (
+                      <PlayerCard key={player._id || player.id || index} player={player} index={index} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No midfielders found.</p>
+                )}
               </div>
             )}
 
             {activeCategory === "forwards" && (
               <div id="forwards">
                 <h3 className="text-3xl font-bold uppercase text-gray-900 mb-8">Forwards</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {forwards.map((player, index) => (
-                    <PlayerCard key={player.id} player={player} index={index} />
-                  ))}
-                </div>
+                {forwards.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {forwards.map((player, index) => (
+                      <PlayerCard key={player._id || player.id || index} player={player} index={index} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No forwards found.</p>
+                )}
               </div>
             )}
 
@@ -424,7 +527,11 @@ export default function PlayersPage() {
                 </div>
               </div>
             )}
+              </>
+            )}
           </div>
+            </>
+          )}
         </div>
       </section>
 

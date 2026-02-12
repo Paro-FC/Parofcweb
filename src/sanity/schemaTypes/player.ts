@@ -26,6 +26,20 @@ export const player = defineType({
       validation: (rule) => rule.required().min(1).max(99),
     }),
     defineField({
+      name: 'team',
+      title: 'Team',
+      type: 'string',
+      options: {
+        list: [
+          { title: "Men's Team", value: 'mens' },
+          { title: "Women's Team", value: 'womens' },
+        ],
+        layout: 'radio',
+      },
+      validation: (rule) => rule.required(),
+      initialValue: 'mens',
+    }),
+    defineField({
       name: 'position',
       title: 'Position',
       type: 'string',

@@ -40,7 +40,7 @@ export function TrophiesSection({ trophies = fallbackTrophies }: TrophiesSection
   const trophyList = trophies && trophies.length > 0 ? trophies : fallbackTrophies
 
   return (
-    <section className="py-16 px-4" style={{ backgroundColor: '#1a1a2e' }}>
+    <section className="py-16 px-4 bg-dark-charcoal">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {trophyList.map((trophy, index) => (
@@ -50,10 +50,10 @@ export function TrophiesSection({ trophies = fallbackTrophies }: TrophiesSection
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="relative bg-black rounded-xl p-6 overflow-hidden"
+              className="relative bg-dark-charcoal border border-medium-grey/30 rounded-xl p-6 overflow-hidden"
             >
               {/* Gradient Pattern at Top */}
-              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-red-900 to-blue-900 opacity-80" />
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-barca-red via-barca-gold to-bronze opacity-80" />
               
               {/* Competition Name */}
               <div className="text-white text-sm font-normal mb-8">

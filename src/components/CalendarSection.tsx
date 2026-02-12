@@ -192,7 +192,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                         className="w-full border-white/30 bg-white/10 hover:bg-white/20 text-white hover:text-barca-gold hover:border-barca-gold transition-all"
                       >
                         <span className="mr-2">⚽</span>
-                        Match Centre
+                        TICKETS
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </Link>

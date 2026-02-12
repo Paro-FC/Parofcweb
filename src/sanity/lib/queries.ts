@@ -47,6 +47,20 @@ export const PLAYERS_QUERY = `*[_type == "player"] | order(number asc) {
   lastName,
   number,
   position,
+  team,
+  image,
+  stats,
+  "slug": slug.current
+}`
+
+// Players query filtered by team
+export const PLAYERS_BY_TEAM_QUERY = `*[_type == "player" && team == $team] | order(number asc) {
+  _id,
+  firstName,
+  lastName,
+  number,
+  position,
+  team,
   image,
   stats,
   "slug": slug.current
@@ -59,6 +73,7 @@ export const PLAYER_QUERY = `*[_type == "player" && (slug.current == $slug || _i
   lastName,
   number,
   position,
+  team,
   image,
   stats,
   "slug": slug.current,

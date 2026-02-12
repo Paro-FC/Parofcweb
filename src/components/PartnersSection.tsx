@@ -33,7 +33,7 @@ export function PartnersSection({
   }
 
   return (
-    <section className="py-12 px-4 bg-[#1a1a2e]">
+    <section className="py-12 px-4 bg-dark-charcoal">
       <div className="container mx-auto">
         <h3 className="text-2xl font-bold text-center text-white mb-8">{title}</h3>
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
