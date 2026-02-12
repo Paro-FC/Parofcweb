@@ -159,7 +159,9 @@ export const MATCH_QUERY = `*[_type == "match" && _id == $id][0] {
   date,
   event,
   venue,
-  hasTickets
+  hasTickets,
+  ticketAvailability,
+  ticketPrice
 }`
 
 // Stories queries

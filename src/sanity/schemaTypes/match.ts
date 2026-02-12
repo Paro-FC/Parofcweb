@@ -82,6 +82,22 @@ export const match = defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'ticketAvailability',
+      title: 'Ticket Availability',
+      type: 'number',
+      description: 'Number of tickets available for this match',
+      validation: (rule) => rule.min(0),
+      hidden: ({ document }) => !document?.hasTickets,
+    }),
+    defineField({
+      name: 'ticketPrice',
+      title: 'Ticket Price',
+      type: 'number',
+      description: 'Price per ticket (optional)',
+      validation: (rule) => rule.min(0),
+      hidden: ({ document }) => !document?.hasTickets,
+    }),
   ],
   preview: {
     select: {

@@ -7,6 +7,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { urlFor } from "@/sanity/lib/image"
 import { Countdown } from "./ui/countdown"
+import { TicketBookingForm } from "./TicketBookingForm"
 
 interface Match {
   _id: string
@@ -20,6 +21,8 @@ interface Match {
   event: string
   venue: string
   hasTickets: boolean
+  ticketAvailability?: number
+  ticketPrice?: number
 }
 
 interface MatchDetailPageProps {
@@ -227,6 +230,22 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
                 </h2>
               </div>
             </div>
+
+            {/* Ticket Booking Form */}
+            {match.hasTickets && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-12"
+              >
+                <TicketBookingForm
+                  matchId={match._id}
+                  matchTitle={`${match.homeTeam} vs ${match.awayTeam}`}
+                  availability={match.ticketAvailability ?? 0}
+                />
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </div>
