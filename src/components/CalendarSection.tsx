@@ -84,6 +84,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
   // Get the first match date for countdown
   const targetDate = matchList[0] ? new Date(matchList[0].date) : new Date()
 
+  // Calculate how many "coming soon" cards to add
+  // Always show 3 items total: if 1 match, add 2 coming soon; if 2 matches, add 1 coming soon
+  const matchCount = matchList.length
+  const comingSoonCount = matchCount < 3 ? 3 - matchCount : 0
+
   return (
     <section className="py-16 px-4">
       <div className="container mx-auto">
@@ -196,6 +201,42 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </Link>
+                  </div>
+                </motion.div>
+              ))}
+              
+              {/* Coming Soon Cards */}
+              {Array.from({ length: comingSoonCount }).map((_, index) => (
+                <motion.div
+                  key={`coming-soon-${index}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: (matchCount + index) * 0.1 }}
+                  className="bg-gradient-barca rounded-2xl p-6 text-white flex flex-col h-full opacity-60"
+                >
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="text-6xl">⏳</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 mb-6 flex-1 flex flex-col items-center justify-center">
+                    <p className="font-bold text-lg text-center">Coming Soon</p>
+                    <p className="text-xs text-white/80 text-center">
+                      Match details will be announced soon
+                    </p>
+                  </div>
+
+                  <div className="mt-auto pt-4">
+                    <Button
+                      variant="outline"
+                      className="w-full border-white/30 bg-white/10 text-white/50 cursor-not-allowed"
+                      disabled
+                    >
+                      <span className="mr-2">⏳</span>
+                      COMING SOON
+                    </Button>
                   </div>
                 </motion.div>
               ))}

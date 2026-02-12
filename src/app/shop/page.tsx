@@ -437,7 +437,7 @@ export default function ShopPage() {
           <div className="text-center py-20">
             <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500 mb-2">
-                {products.length === 0 
+              {products.length === 0 
                 ? 'No products found. Add products in Sanity Studio to see them here.'
                 : `No products found in "${selectedCategory === 'all' ? 'all categories' : categories.find(c => c._id === selectedCategory)?.title || 'this category'}".`}
             </p>
