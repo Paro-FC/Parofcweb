@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence, PanInfo } from "framer-motion"
-import { X, ChevronLeft, ChevronRight, Pause, Play, Send, Volume2, VolumeX } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, Pause, Play, Volume2, VolumeX } from "lucide-react"
 import Image from "next/image"
 import type { SanityImageSource } from '@sanity/image-url'
 
@@ -395,22 +395,6 @@ export function StoriesViewer({ stories, initialStoryIndex, onClose, urlFor }: S
               </p>
             </div>
           )}
-
-          {/* Bottom actions */}
-          <div className="absolute bottom-4 left-0 right-0 z-30 px-4 flex items-center gap-3">
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <input
-                type="text"
-                placeholder="Send message"
-                className="w-full bg-transparent text-white placeholder-white/60 outline-none text-sm"
-                onFocus={() => setIsPaused(true)}
-                onBlur={() => setIsPaused(false)}
-              />
-            </div>
-            <button className="w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-full transition-colors">
-              <Send size={20} />
-            </button>
-          </div>
 
           {/* Swipe hint */}
           <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 z-30 transition-opacity duration-500 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
