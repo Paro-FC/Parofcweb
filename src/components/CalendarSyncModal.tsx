@@ -194,14 +194,14 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="bg-white rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden"
+          className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90dvh] flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Yellow Header Bar */}
-          <div className="bg-barca-gold h-16 flex items-center justify-between px-6">
+          {/* Yellow Header Bar - always visible on mobile */}
+          <div className="bg-barca-gold h-14 sm:h-16 flex-shrink-0 flex items-center justify-between px-4 sm:px-6">
             <button
               onClick={onClose}
-              className="p-2 hover:bg-black/10 rounded-full transition-colors"
+              className="p-2 -ml-1 hover:bg-black/10 rounded-full transition-colors touch-manipulation"
               aria-label="Back"
             >
               <ArrowLeft className="w-5 h-5 text-gray-900" />
@@ -213,28 +213,28 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
                 alt="Paro FC Logo"
                 width={40}
                 height={40}
-                className="object-contain"
+                className="object-contain w-8 h-8 sm:w-10 sm:h-10"
               />
             </div>
             
             <button
               onClick={onClose}
-              className="p-2 hover:bg-black/10 rounded-full transition-colors"
+              className="p-2 -mr-1 hover:bg-black/10 rounded-full transition-colors touch-manipulation"
               aria-label="Close"
             >
               <X className="w-5 h-5 text-gray-900" />
             </button>
           </div>
 
-          {/* Content */}
-          <div className="p-8">
+          {/* Content - scrollable so header stays in view on small screens */}
+          <div className="p-4 sm:p-8 overflow-y-auto flex-1 min-h-0">
             {/* Title */}
-            <h2 className="text-3xl font-bold text-barca-gold mb-4 text-center">
+            <h2 className="text-xl sm:text-3xl font-bold text-barca-gold mb-3 sm:mb-4 text-center">
               CHOOSE YOUR CALENDAR
             </h2>
 
             {/* Disclaimer */}
-            <p className="text-sm text-gray-700 text-center mb-8">
+            <p className="text-xs sm:text-sm text-gray-700 text-center mb-6 sm:mb-8">
               THIS EXPERIENCE IS POWERED BY ECAL, I AGREE TO{" "}
               <a
                 href="#"
@@ -255,7 +255,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
             </p>
 
             {/* Calendar Options Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
               {calendarOptions.map((option) => (
                 <button
                   key={option.id}
@@ -274,7 +274,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
           </div>
 
           {/* Red Bottom Bar */}
-          <div className="h-1 bg-barca-red"></div>
+          <div className="h-1 flex-shrink-0 bg-barca-red" />
         </motion.div>
       </motion.div>
     </AnimatePresence>
