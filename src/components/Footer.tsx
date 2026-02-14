@@ -164,7 +164,7 @@ export function Footer({ partners = [] }: FooterProps) {
               <div>
                 <div className="text-light-gold font-bold text-lg mb-1">Paro FC</div>
                 <div className="text-light-gold/70 text-xs">
-                  © Copyright Paro FC Official website of Paro FC
+                  © Copyright Official website
                 </div>
               </div>
             </div>
@@ -186,11 +186,6 @@ export function Footer({ partners = [] }: FooterProps) {
               {/* <a href="#" className="hover:text-barca-gold transition-colors">Consent management</a> */}
               {/* <span className="text-light-gold/30">|</span> */}
               {/* <a href="#" className="hover:text-barca-gold transition-colors">Consent choices</a> */}
-            </div>
-
-            {/* Right - BARÇA Text */}
-            <div className="text-light-gold font-bold text-4xl md:text-5xl">
-              PARO FC
             </div>
           </div>
         </div>

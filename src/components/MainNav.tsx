@@ -62,13 +62,13 @@ export function MainNav() {
                 </span>
               )}
             </Button>
-            <Button 
+            {/* <Button 
               variant="default" 
               size="sm"
               className="bg-barca-red hover:bg-barca-red/90 text-white rounded-md px-4 py-2 h-auto"
             >
               <span className="text-sm font-semibold">Login</span>
-            </Button>
+            </Button> */}
             <Button 
               variant="ghost" 
               size="icon"
@@ -170,14 +170,6 @@ export function MainNav() {
                 {getItemCount()}
               </span>
             )}
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={openMenu}
-            aria-label="Menu"
-          >
-            <Menu className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
           </Button>
         </div>
       </div>

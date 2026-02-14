@@ -64,7 +64,7 @@ export function Hero({ news }: HeroProps) {
         priority
       />
       )}
-      <div className="absolute inset-0 bg-gradient-barca opacity-50" />
+      <div className="absolute inset-0 bg-black/60" />
       
       <div className="container mx-auto relative z-10 pt-16 md:pt-32 lg:pt-40">
         {newsItem.slug ? (

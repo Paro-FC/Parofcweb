@@ -12,6 +12,7 @@ interface MenuItem {
   icon?: string
   children?: MenuItem[]
   external?: boolean
+  showArrow?: boolean
 }
 
 interface SideMenuProps {
@@ -56,127 +57,11 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
   }, [isOpen])
 
   const menuItems: MenuItem[] = [
-    {
-      label: "First Team",
-      children: [
-        { label: "Latest", href: "/news" },
-        { label: "Schedule", href: "/calendar" },
-        { label: "Tickets", href: "#" },
-        { label: "Results", href: "#" },
-        { label: "Standings", href: "/standings" },
-        { label: "Players", href: "/players" },
-        { label: "Photos", href: "/photos" },
-        { label: "Honours", href: "#" },
-      ],
-    },
-    {
-      label: "Club",
-      children: [
-        { label: "Cat Culer", href: "#" },
-        { label: "Latest", href: "/news" },
-        { label: "Schedule", href: "/calendar" },
-        { label: "Revista Barça", href: "#" },
-        { label: "Organisation", href: "#" },
-        { label: "Identity", href: "#" },
-        { label: "History", href: "#" },
-        { label: "Foundation", href: "#" },
-        { label: "Documentation Centre", href: "#" },
-        { label: "Sustainability", href: "#" },
-        { label: "La Masia", href: "#" },
-        { label: "Facilities", href: "#" },
-        { label: "Spotify Camp Nou work", href: "#" },
-        { label: "Barça Innovation Hub", href: "#" },
-        { label: "Transparency and Compliance", href: "#" },
-        { label: "Child safeguarding system", href: "#" },
-        { label: "Services", href: "#" },
-        { label: "Press", href: "#" },
-        { label: "Accessibility", href: "#" },
-        { label: "Members", href: "#" },
-        { label: "Partners", href: "#" },
-        { label: "Privacy Policy", href: "#" },
-      ],
-    },
-    // {
-    //   label: "Barça Teams",
-    //   children: [
-    //     {
-    //       label: "Football",
-    //       children: [
-    //         { label: "First Team", href: "/players" },
-    //         { label: "Women's", href: "#" }
-    //       ],
-    //     },
-    //     {
-    //       label: "Futsal",
-    //       children: [
-    //         { label: "First Team", href: "#" },
-    //         { label: "Latest", href: "#" },
-    //         { label: "Schedule", href: "#" },
-    //         { label: "Tickets", href: "#" },
-    //         { label: "Results", href: "#" },
-    //         { label: "Standings", href: "#" },
-    //         { label: "Players", href: "#" },
-    //         { label: "Photos", href: "#" },
-    //         { label: "Honours", href: "#" },
-    //         { label: "History", href: "#" },
-    //       ],
-    //     },
-    //     {
-    //       label: "Roller Hockey",
-    //       children: [
-    //         { label: "First Team", href: "#" },
-    //         { label: "Latest", href: "#" },
-    //         { label: "Schedule", href: "#" },
-    //         { label: "Tickets", href: "#" },
-    //         { label: "Results", href: "#" },
-    //         { label: "Standings", href: "#" },
-    //         { label: "Players", href: "#" },
-    //         { label: "Photos", href: "#" },
-    //         { label: "History", href: "#" },
-    //         { label: "Honours", href: "#" },
-    //       ],
-    //     },
-    //     {
-    //       label: "Esports",
-    //       children: [
-    //         { label: "League of Legends", href: "#" },
-    //         { label: "VALORANT Rising", href: "#" },
-    //         { label: "VALORANT Game Changers", href: "#" },
-    //         { label: "eFootball", href: "#" },
-    //       ],
-    //     },
-    //   ],
-    // },
-    {
-      label: "Tickets & Museum",
-      children: [
-        { label: "Men's Football", href: "#" },
-        { label: "VIP Men's football", href: "#" },
-        { label: "Tours & Museum", href: "#" },
-        { label: "Men's Basketball", href: "#" },
-        { label: "VIP Men's Basketball", href: "#" },
-        { label: "Women's football", href: "#" },
-        { label: "Handball", href: "#" },
-        { label: "Futsal", href: "#" },
-        { label: "Roller-Hockey", href: "#" },
-        { label: "Barça Atlètic", href: "#" },
-        { label: "Ice rink", href: "#" },
-        { label: "Packs and promotions", href: "#" },
-        { label: "Barça Business", href: "#" },
-        { label: "All about tickets", href: "#" },
-        { label: "Barça Cafe", href: "#" },
-      ],
-    },
-    {
-      label: "Shop",
-      href: "#",
-      external: true,
-    },
-    // {
-    //   label: "Culers",
-    //   href: "#",
-    //   external: true,
-    // },
+    { label: "Standings", href: "/standings", showArrow: true },
+    { label: "Shop", href: "/shop", showArrow: true },
+    { label: "Photos", href: "/photos", showArrow: true },
+    { label: "Players", href: "/players", showArrow: true },
+    { label: "News", href: "/news", showArrow: true },
   ]
 
   const renderMenuItem = (item: MenuItem, level: number = 0) => {
@@ -227,7 +112,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
           indentClass
         )}>
           <span className="text-sm text-dark-charcoal">{item.label}</span>
-          {item.external && (
+          {(item.external || item.showArrow) && (
             <span className="text-xs text-medium-grey">↗</span>
           )}
         </div>
