@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "../index.css";
 import { SanityLive } from "@/sanity/lib/live";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
@@ -42,19 +43,11 @@ export default async function RootLayout({
           {children}
         </ConditionalLayout>
         <SanityLive />
-        {/* Privacy-friendly analytics by Plausible */}
-        <Script id="plausible-setup" strategy="beforeInteractive">
-          {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-  plausible.init();`}
-        </Script>
-        <Script
-          src="https://plausible.io/js/pa-6s2e0v8rlKOvMBF4Hsd5a.js"
-          strategy="afterInteractive"
-        />
         <Script
           src="https://cdn.jotfor.ms/agent/embedjs/019c65f6986573f7bac29fc192091672fdef/embed.js"
           strategy="afterInteractive"
         />
+        <Analytics />
       </body>
     </html>
   );
