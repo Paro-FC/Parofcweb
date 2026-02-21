@@ -1,119 +1,149 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ArrowLeft, ShoppingBag, Truck, Shield, CreditCard, CheckCircle, Loader2 } from 'lucide-react'
-import { useCart } from '@/contexts/CartContext'
-import { useRouter } from 'next/navigation'
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  ShoppingBag,
+  Truck,
+  Shield,
+  CreditCard,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useRouter } from "next/navigation";
 
 interface CustomerDetails {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  address: string
-  city: string
-  state: string
-  zipCode: string
-  country: string
-  notes: string
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  notes: string;
 }
 
 export default function CheckoutPage() {
-  const router = useRouter()
-  const { items, getSubtotal, clearCart } = useCart()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [orderComplete, setOrderComplete] = useState(false)
-  const [orderId, setOrderId] = useState('')
-  const [errors, setErrors] = useState<Partial<CustomerDetails>>({})
-  
+  const router = useRouter();
+  const { items, getSubtotal, clearCart } = useCart();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderComplete, setOrderComplete] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [errors, setErrors] = useState<Partial<CustomerDetails>>({});
+
+  const [checkoutType, setCheckoutType] = useState<
+    "domestic" | "international"
+  >("domestic");
   const [customerDetails, setCustomerDetails] = useState<CustomerDetails>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'Bhutan',
-    notes: '',
-  })
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    notes: "",
+  });
 
   const formatPrice = (price: number, currency: string) => {
-    if (currency === 'BTN') return `Nu. ${price.toLocaleString()}`
-    if (currency === 'USD') return `$${price.toLocaleString()}`
-    if (currency === 'EUR') return `€${price.toLocaleString()}`
-    return `${price.toLocaleString()} ${currency}`
-  }
+    if (currency === "BTN") return `Nu. ${price.toLocaleString()}`;
+    if (currency === "USD") return `$${price.toLocaleString()}`;
+    if (currency === "EUR") return `€${price.toLocaleString()}`;
+    return `${price.toLocaleString()} ${currency}`;
+  };
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<CustomerDetails> = {}
-    
-    if (!customerDetails.firstName.trim()) newErrors.firstName = 'First name is required'
-    if (!customerDetails.lastName.trim()) newErrors.lastName = 'Last name is required'
-    if (!customerDetails.email.trim()) {
-      newErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerDetails.email)) {
-      newErrors.email = 'Invalid email format'
-    }
-    if (!customerDetails.phone.trim()) newErrors.phone = 'Phone number is required'
-    if (!customerDetails.address.trim()) newErrors.address = 'Address is required'
-    if (!customerDetails.city.trim()) newErrors.city = 'City is required'
-    
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    const newErrors: Partial<CustomerDetails> = {};
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setCustomerDetails(prev => ({ ...prev, [name]: value }))
+    if (!customerDetails.firstName.trim())
+      newErrors.firstName = "First name is required";
+    if (!customerDetails.lastName.trim())
+      newErrors.lastName = "Last name is required";
+    if (!customerDetails.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerDetails.email)) {
+      newErrors.email = "Invalid email format";
+    }
+    if (!customerDetails.phone.trim())
+      newErrors.phone = "Phone number is required";
+    if (!customerDetails.address.trim())
+      newErrors.address = "Address is required";
+    if (!customerDetails.city.trim()) newErrors.city = "City is required";
+    if (checkoutType === "international" && !customerDetails.zipCode.trim()) {
+      newErrors.zipCode = "Postal code is required for international delivery";
+    }
+    if (checkoutType === "international" && !customerDetails.country.trim()) {
+      newErrors.country = "Country is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setCustomerDetails((prev) => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name as keyof CustomerDetails]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }))
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
-    if (items.length === 0) return
-    
-    setIsSubmitting(true)
-    
+    e.preventDefault();
+
+    if (!validateForm()) return;
+    if (items.length === 0) return;
+
+    setIsSubmitting(true);
+
     try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
+      const response = await fetch("/api/checkout", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customer: customerDetails,
+          customer: {
+            ...customerDetails,
+            zipCode: checkoutType === "domestic" ? "" : customerDetails.zipCode,
+            country: checkoutType === "domestic" ? "Bhutan" : customerDetails.country,
+          },
           items: items,
           subtotal: getSubtotal(),
-          currency: items[0]?.currency || 'BTN',
+          currency: items[0]?.currency || "BTN",
+          checkoutType,
         }),
-      })
-      
-      const data = await response.json()
-      
+      });
+
+      const data = await response.json();
+
       if (response.ok) {
-        setOrderId(data.orderId)
-        setOrderComplete(true)
-        clearCart()
+        setOrderId(data.orderId);
+        setOrderComplete(true);
+        clearCart();
       } else {
-        alert(data.error || 'Something went wrong. Please try again.')
+        alert(data.error || "Something went wrong. Please try again.");
       }
     } catch (error) {
-      console.error('Checkout error:', error)
-      alert('Something went wrong. Please try again.')
+      console.error("Checkout error:", error);
+      alert("Something went wrong. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Order Success View
   if (orderComplete) {
@@ -128,24 +158,28 @@ export default function CheckoutPage() {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
               <CheckCircle size={80} className="text-green-500 mx-auto mb-6" />
             </motion.div>
-            
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Order Confirmed!</h1>
+
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Order Confirmed!
+            </h1>
             <p className="text-gray-600 mb-2">Thank you for your order.</p>
             <p className="text-sm text-gray-500 mb-6">
-              Order ID: <span className="font-mono font-semibold">{orderId}</span>
+              Order ID:{" "}
+              <span className="font-mono font-semibold">{orderId}</span>
             </p>
-            
+
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <p className="text-sm text-gray-600">
-                A confirmation email has been sent to <strong>{customerDetails.email}</strong>.
-                Our team will contact you shortly to confirm your order and arrange delivery.
+                A confirmation email has been sent to{" "}
+                <strong>{customerDetails.email}</strong>. Our team will contact
+                you shortly to confirm your order and arrange delivery.
               </p>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/shop"
@@ -163,7 +197,7 @@ export default function CheckoutPage() {
           </motion.div>
         </div>
       </div>
-    )
+    );
   }
 
   // Empty Cart View
@@ -173,8 +207,12 @@ export default function CheckoutPage() {
         <div className="max-w-2xl mx-auto px-4 py-16">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <ShoppingBag size={64} className="text-gray-300 mx-auto mb-6" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h1>
-            <p className="text-gray-600 mb-6">Add some items to your cart before checking out.</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              Your cart is empty
+            </h1>
+            <p className="text-gray-600 mb-6">
+              Add some items to your cart before checking out.
+            </p>
             <Link
               href="/shop"
               className="inline-block bg-barca-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-barca-blue/90 transition-colors"
@@ -184,13 +222,13 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  const subtotal = getSubtotal()
-  const shipping = 150 // Fixed shipping for Bhutan
-  const total = subtotal + shipping
-  const currency = items[0]?.currency || 'BTN'
+  const subtotal = getSubtotal();
+  const shipping = 150; // Fixed shipping for Bhutan
+  const total = subtotal + shipping;
+  const currency = items[0]?.currency || "BTN";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -198,7 +236,10 @@ export default function CheckoutPage() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/shop" className="flex items-center gap-2 text-gray-600 hover:text-barca-gold transition-colors">
+            <Link
+              href="/shop"
+              className="flex items-center gap-2 text-gray-600 hover:text-barca-gold transition-colors"
+            >
               <ArrowLeft size={20} />
               <span className="font-medium">Back to Shop</span>
             </Link>
@@ -208,18 +249,63 @@ export default function CheckoutPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Customer Details Form */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              id="checkout-form"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+              {/* Checkout Type: Domestic / International */}
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">
+                    0
+                  </span>
+                  Delivery Type
+                </h2>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutType("domestic")}
+                    className={`flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all border-2 ${
+                      checkoutType === "domestic"
+                        ? "border-barca-gold bg-barca-gold/10 text-dark-charcoal"
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    Domestic
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutType("international")}
+                    className={`flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all border-2 ${
+                      checkoutType === "international"
+                        ? "border-barca-gold bg-barca-gold/10 text-dark-charcoal"
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    International
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">
+                  {checkoutType === "domestic"
+                    ? "Delivery within Bhutan. Postal code not required."
+                    : "International shipping. Postal code required."}
+                </p>
+              </div>
+
               {/* Contact Information */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">
+                    1
+                  </span>
                   Contact Information
                 </h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -231,13 +317,17 @@ export default function CheckoutPage() {
                       value={customerDetails.firstName}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                        errors.firstName ? 'border-red-500' : 'border-gray-300'
+                        errors.firstName ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter your first name"
                     />
-                    {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
+                    {errors.firstName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.firstName}
+                      </p>
+                    )}
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Last Name <span className="text-red-500">*</span>
@@ -248,13 +338,17 @@ export default function CheckoutPage() {
                       value={customerDetails.lastName}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                        errors.lastName ? 'border-red-500' : 'border-gray-300'
+                        errors.lastName ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter your last name"
                     />
-                    {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
+                    {errors.lastName && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.lastName}
+                      </p>
+                    )}
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email <span className="text-red-500">*</span>
@@ -265,16 +359,20 @@ export default function CheckoutPage() {
                       value={customerDetails.email}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
+                        errors.email ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="your@email.com"
                     />
-                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                    {errors.email && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone <span className="text-red-500">*</span>
+                      Whatsapp No. <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
@@ -282,11 +380,15 @@ export default function CheckoutPage() {
                       value={customerDetails.phone}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                        errors.phone ? 'border-red-500' : 'border-gray-300'
+                        errors.phone ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="+975 17XXXXXX"
                     />
-                    {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                    {errors.phone && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -294,10 +396,12 @@ export default function CheckoutPage() {
               {/* Shipping Address */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">
+                    2
+                  </span>
                   Shipping Address
                 </h2>
-                
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -309,13 +413,17 @@ export default function CheckoutPage() {
                       value={customerDetails.address}
                       onChange={handleInputChange}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                        errors.address ? 'border-red-500' : 'border-gray-300'
+                        errors.address ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Street address"
                     />
-                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                    {errors.address && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.address}
+                      </p>
+                    )}
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -327,13 +435,17 @@ export default function CheckoutPage() {
                         value={customerDetails.city}
                         onChange={handleInputChange}
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                          errors.city ? 'border-red-500' : 'border-gray-300'
+                          errors.city ? "border-red-500" : "border-gray-300"
                         }`}
                         placeholder="City"
                       />
-                      {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+                      {errors.city && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.city}
+                        </p>
+                      )}
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Dzongkhag/State
@@ -348,50 +460,63 @@ export default function CheckoutPage() {
                       />
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Postal Code
-                      </label>
-                      <input
-                        type="text"
-                        name="zipCode"
-                        value={customerDetails.zipCode}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all"
-                        placeholder="Postal code"
-                      />
+
+                  {checkoutType === "international" && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Postal Code <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="zipCode"
+                          value={customerDetails.zipCode}
+                          onChange={handleInputChange}
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
+                            errors.zipCode
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                          placeholder="Postal code"
+                        />
+                        {errors.zipCode && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.zipCode}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Country <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="country"
+                          value={customerDetails.country}
+                          onChange={handleInputChange}
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
+                            errors.country ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter country"
+                        />
+                        {errors.country && (
+                          <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+                        )}
+                      </div>
                     </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Country
-                      </label>
-                      <select
-                        name="country"
-                        value={customerDetails.country}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all"
-                      >
-                        <option value="Bhutan">Bhutan</option>
-                        <option value="India">India</option>
-                        <option value="Nepal">Nepal</option>
-                        <option value="Bangladesh">Bangladesh</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
               {/* Order Notes */}
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                  <span className="w-8 h-8 bg-barca-gold text-dark-charcoal rounded-full flex items-center justify-center text-sm font-bold">
+                    3
+                  </span>
                   Additional Notes (Optional)
                 </h2>
-                
+
                 <textarea
                   name="notes"
                   value={customerDetails.notes}
@@ -441,8 +566,10 @@ export default function CheckoutPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
-              
+              <h2 className="text-lg font-bold text-gray-900 mb-4">
+                Order Summary
+              </h2>
+
               {/* Cart Items */}
               <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto">
                 {items.map((item) => (
@@ -459,10 +586,15 @@ export default function CheckoutPage() {
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
+                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                        {item.name}
+                      </h4>
                       <p className="text-xs text-gray-500">Size: {item.size}</p>
                       <p className="text-sm font-semibold text-gray-900 mt-1">
-                        {formatPrice((item.salePrice || item.price) * item.quantity, item.currency)}
+                        {formatPrice(
+                          (item.salePrice || item.price) * item.quantity,
+                          item.currency,
+                        )}
                       </p>
                     </div>
                   </div>
@@ -476,16 +608,24 @@ export default function CheckoutPage() {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">{formatPrice(subtotal, currency)}</span>
+                  <span className="font-medium">
+                    {formatPrice(subtotal, currency)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium">{formatPrice(shipping, currency)}</span>
+                  <span className="font-medium">
+                    {formatPrice(shipping, currency)}
+                  </span>
                 </div>
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between">
-                    <span className="text-lg font-bold text-gray-900">Total</span>
-                    <span className="text-lg font-bold text-barca-gold">{formatPrice(total, currency)}</span>
+                    <span className="text-lg font-bold text-gray-900">
+                      Total
+                    </span>
+                    <span className="text-lg font-bold text-barca-gold">
+                      {formatPrice(total, currency)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -493,7 +633,8 @@ export default function CheckoutPage() {
               {/* Payment Method Note */}
               <div className="mt-4 p-3 bg-amber-50 rounded-lg">
                 <p className="text-xs text-amber-800">
-                  <strong>Payment Method:</strong> Cash on Delivery (COD). You will pay when your order arrives.
+                  <strong>Payment Method:</strong> Cash on Delivery (COD). You
+                  will pay when your order arrives.
                 </p>
               </div>
 
@@ -501,7 +642,6 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 form="checkout-form"
-                onClick={handleSubmit}
                 disabled={isSubmitting}
                 className="hidden lg:flex w-full mt-6 bg-barca-gold text-dark-charcoal py-4 rounded-lg font-bold text-lg hover:bg-barca-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center gap-2"
               >
@@ -511,7 +651,7 @@ export default function CheckoutPage() {
                     Processing...
                   </>
                 ) : (
-                  'PLACE ORDER'
+                  "PLACE ORDER"
                 )}
               </button>
             </div>
@@ -519,6 +659,5 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

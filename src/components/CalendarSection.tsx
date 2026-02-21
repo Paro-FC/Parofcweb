@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Calendar, RefreshCw, ExternalLink, ArrowRight } from "lucide-react"
-import { Countdown } from "./ui/countdown"
-import { Button } from "./ui/button"
-import Image from "next/image"
-import Link from "next/link"
-import { CalendarSyncModal } from "./CalendarSyncModal"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Calendar, RefreshCw, ExternalLink, ArrowRight } from "lucide-react";
+import { Countdown } from "./ui/countdown";
+import { Button } from "./ui/button";
+import Image from "next/image";
+import Link from "next/link";
+import { CalendarSyncModal } from "./CalendarSyncModal";
 
 interface Match {
-  _id: string
-  homeTeam: string
-  awayTeam: string
-  homeCrest?: string | null
-  awayCrest?: string | null
-  competition: string
-  competitionLogo?: string | null
-  date: string
-  event: string
-  venue: string
-  hasTickets: boolean
+  _id: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeCrest?: string | null;
+  awayCrest?: string | null;
+  competition: string;
+  competitionLogo?: string | null;
+  date: string;
+  event: string;
+  venue: string;
+  hasTickets: boolean;
 }
 
 // Fallback data for when Sanity content is not available
@@ -64,30 +64,30 @@ const fallbackMatches: Match[] = [
     venue: "Paro Stadium",
     hasTickets: false,
   },
-]
+];
 
 function formatMatchDate(dateString: string) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    month: 'long', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export function CalendarSection({ matches }: { matches?: Match[] }) {
-  const matchList = matches && matches.length > 0 ? matches : fallbackMatches
-  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
-  
+  const matchList = matches && matches.length > 0 ? matches : fallbackMatches;
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+
   // Get the first match date for countdown
-  const targetDate = matchList[0] ? new Date(matchList[0].date) : new Date()
+  const targetDate = matchList[0] ? new Date(matchList[0].date) : new Date();
 
   // Calculate how many "coming soon" cards to add
   // Always show 3 items total: if 1 match, add 2 coming soon; if 2 matches, add 1 coming soon
-  const matchCount = matchList.length
-  const comingSoonCount = matchCount < 3 ? 3 - matchCount : 0
+  const matchCount = matchList.length;
+  const comingSoonCount = matchCount < 3 ? 3 - matchCount : 0;
 
   return (
     <section className="py-16 px-4">
@@ -102,9 +102,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
               <h3 className="text-4xl md:text-5xl font-bold text-gray-900 uppercase tracking-tight">
                 Calendar
               </h3>
-              
-              <p className="text-sm text-gray-600 uppercase font-semibold italic">Next Match</p>
-              
+
+              <p className="text-sm text-gray-600 uppercase font-semibold italic">
+                Next Match
+              </p>
+
               <div className="flex items-center gap-2">
                 <Countdown targetDate={targetDate} />
               </div>
@@ -130,11 +132,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-gradient-barca rounded-2xl p-6 text-white flex flex-col h-full"
+                  className="bg-barca-red rounded-2xl p-6 text-white flex flex-col h-full"
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex flex-col items-center gap-2">
-                      {match.homeCrest && match.homeCrest.startsWith('http') ? (
+                      {match.homeCrest && match.homeCrest.startsWith("http") ? (
                         <div className="relative w-16 h-16">
                           <Image
                             src={match.homeCrest}
@@ -144,13 +146,18 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                           />
                         </div>
                       ) : (
-                        <div className="text-4xl">{match.homeCrest || '🏔️'}</div>
+                        <div className="text-4xl">
+                          {match.homeCrest || "🏔️"}
+                        </div>
                       )}
-                      <span className="text-sm font-semibold text-center">{match.homeTeam}</span>
+                      <span className="text-sm font-semibold text-center">
+                        {match.homeTeam}
+                      </span>
                     </div>
-                    
+
                     <div className="flex flex-col items-center gap-2 px-4">
-                      {match.competitionLogo && match.competitionLogo.startsWith('http') ? (
+                      {match.competitionLogo &&
+                      match.competitionLogo.startsWith("http") ? (
                         <div className="relative w-12 h-12">
                           <Image
                             src={match.competitionLogo}
@@ -160,15 +167,17 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                           />
                         </div>
                       ) : (
-                        <div className="text-2xl font-bold">{match.competitionLogo || '🏆'}</div>
+                        <div className="text-2xl font-bold">
+                          {match.competitionLogo || "🏆"}
+                        </div>
                       )}
                       <span className="text-xs text-center text-white/80 uppercase">
                         {match.competition}
                       </span>
                     </div>
-                    
+
                     <div className="flex flex-col items-center gap-2">
-                      {match.awayCrest && match.awayCrest.startsWith('http') ? (
+                      {match.awayCrest && match.awayCrest.startsWith("http") ? (
                         <div className="relative w-16 h-16">
                           <Image
                             src={match.awayCrest}
@@ -178,14 +187,20 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                           />
                         </div>
                       ) : (
-                        <div className="text-4xl">{match.awayCrest || '⚽'}</div>
+                        <div className="text-4xl">
+                          {match.awayCrest || "⚽"}
+                        </div>
                       )}
-                      <span className="text-sm font-semibold text-center">{match.awayTeam}</span>
+                      <span className="text-sm font-semibold text-center">
+                        {match.awayTeam}
+                      </span>
                     </div>
                   </div>
 
                   <div className="space-y-2 mb-6 flex-1">
-                    <p className="font-bold text-sm">{formatMatchDate(match.date)}</p>
+                    <p className="font-bold text-sm">
+                      {formatMatchDate(match.date)}
+                    </p>
                     <p className="text-xs text-white/80">{match.event}</p>
                     <p className="text-xs text-white/80">{match.venue}</p>
                   </div>
@@ -204,7 +219,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                   </div>
                 </motion.div>
               ))}
-              
+
               {/* Coming Soon Cards */}
               {Array.from({ length: comingSoonCount }).map((_, index) => (
                 <motion.div
@@ -277,11 +292,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
       </div>
 
       {/* Calendar Sync Modal */}
-      <CalendarSyncModal 
-        isOpen={isSyncModalOpen} 
+      <CalendarSyncModal
+        isOpen={isSyncModalOpen}
         onClose={() => setIsSyncModalOpen(false)}
         matches={matchList}
       />
     </section>
-  )
+  );
 }
