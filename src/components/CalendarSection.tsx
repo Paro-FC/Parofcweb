@@ -23,49 +23,6 @@ interface Match {
   hasTickets: boolean;
 }
 
-// Fallback data for when Sanity content is not available
-const fallbackMatches: Match[] = [
-  {
-    _id: "1",
-    homeTeam: "Paro FC",
-    awayTeam: "Thimphu City FC",
-    homeCrest: "🏔️",
-    awayCrest: "🏙️",
-    competition: "Liga Premier",
-    competitionLogo: "🏆",
-    date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-    event: "Liga Premier, Matchday 8",
-    venue: "Changlimithang Stadium",
-    hasTickets: true,
-  },
-  {
-    _id: "2",
-    homeTeam: "Druk United",
-    awayTeam: "Paro FC",
-    homeCrest: "🐉",
-    awayCrest: "🏔️",
-    competition: "Liga Premier",
-    competitionLogo: "🏆",
-    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    event: "Liga Premier, Matchday 9",
-    venue: "Changlimithang Stadium",
-    hasTickets: false,
-  },
-  {
-    _id: "3",
-    homeTeam: "Paro FC",
-    awayTeam: "Gelephu FC",
-    homeCrest: "🏔️",
-    awayCrest: "⚽",
-    competition: "Copa Nacional",
-    competitionLogo: "🏆",
-    date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-    event: "Copa Nacional, Quarter Final",
-    venue: "Paro Stadium",
-    hasTickets: false,
-  },
-];
-
 function formatMatchDate(dateString: string) {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -74,20 +31,22 @@ function formatMatchDate(dateString: string) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   });
 }
 
+const COMING_SOON_CARD_COUNT = 3;
+
 export function CalendarSection({ matches }: { matches?: Match[] }) {
-  const matchList = matches && matches.length > 0 ? matches : fallbackMatches;
+  const matchList = matches ?? [];
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
-  // Get the first match date for countdown
-  const targetDate = matchList[0] ? new Date(matchList[0].date) : new Date();
+  // Get the first match date for countdown (only when we have matches)
+  const targetDate = matchList[0] ? new Date(matchList[0].date) : null;
 
-  // Calculate how many "coming soon" cards to add
-  // Always show 3 items total: if 1 match, add 2 coming soon; if 2 matches, add 1 coming soon
+  // When no matches: show only coming soon cards. When matches: show match cards + fill to 3 with coming soon
   const matchCount = matchList.length;
-  const comingSoonCount = matchCount < 3 ? 3 - matchCount : 0;
+  const comingSoonCount = matchCount < COMING_SOON_CARD_COUNT ? COMING_SOON_CARD_COUNT - matchCount : 0;
 
   return (
     <section className="py-16 px-4">
@@ -108,7 +67,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
               </p>
 
               <div className="flex items-center gap-2">
-                <Countdown targetDate={targetDate} />
+                {targetDate ? (
+                  <Countdown targetDate={targetDate} />
+                ) : (
+                  <span className="text-sm font-semibold text-gray-500">—</span>
+                )}
               </div>
             </div>
 

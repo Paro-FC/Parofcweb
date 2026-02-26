@@ -3,6 +3,9 @@ import { Resend } from 'resend'
 import { z } from 'zod'
 import DOMPurify from 'isomorphic-dompurify'
 import { SHIPPING_COST_BTN, EMAIL_CONFIG } from '@/lib/constants'
+import { client } from '@/sanity/lib/client'
+
+const PRODUCT_PAYMENT_QR_QUERY = `*[_type == "product" && _id == $id][0]{ "paymentQrCodeUrl": paymentQrCode.asset->url }`
 
 // Initialize Resend lazily to avoid build-time errors
 function getResend() {
@@ -46,17 +49,20 @@ interface CheckoutRequest {
   currency: string
 }
 
-// Validation schema
+// Validation schema (lenient: coerce numbers, allow null/undefined for optional fields)
+const stringOptional = (maxLen: number) =>
+  z.union([z.string(), z.null(), z.undefined()]).transform((v) => (v == null ? '' : String(v).trim().slice(0, maxLen)))
+
 const CartItemSchema = z.object({
   _id: z.string().min(1),
   name: z.string().min(1).max(200),
-  slug: z.string().min(1),
-  image: z.string().url().or(z.string().startsWith('/')),
-  price: z.number().positive(),
+  slug: stringOptional(200).optional().default(''),
+  image: stringOptional(2000).optional().default(''),
+  price: z.coerce.number().positive(),
   currency: z.string().length(3),
-  salePrice: z.number().positive().optional(),
+  salePrice: z.coerce.number().min(0).optional(),
   size: z.string().min(1).max(10),
-  quantity: z.number().int().positive().max(100),
+  quantity: z.coerce.number().int().positive().max(100),
 })
 
 const CustomerDetailsSchema = z.object({
@@ -66,18 +72,19 @@ const CustomerDetailsSchema = z.object({
   phone: z.string().min(1).max(20).trim(),
   address: z.string().min(1).max(500).trim(),
   city: z.string().min(1).max(100).trim(),
-  state: z.string().max(100).trim(),
-  zipCode: z.string().max(20).trim(),
+  state: stringOptional(100).optional().default(''),
+  zipCode: stringOptional(20).optional().default(''),
   country: z.string().min(1).max(100).trim(),
-  notes: z.string().max(1000).trim().optional().default(''),
+  notes: stringOptional(1000).optional().default(''),
 })
 
 const CheckoutSchema = z.object({
   customer: CustomerDetailsSchema,
   items: z.array(CartItemSchema).min(1).max(50),
-  subtotal: z.number().positive(),
+  subtotal: z.coerce.number().positive(),
   currency: z.string().length(3),
-})
+  checkoutType: z.enum(['domestic', 'international']).optional(),
+}).passthrough()
 
 function generateOrderId(): string {
   const timestamp = Date.now().toString(36).toUpperCase()
@@ -369,6 +376,20 @@ export async function POST(request: NextRequest) {
     const shipping = SHIPPING_COST_BTN // Fixed shipping for Bhutan
     const total = subtotal + shipping
 
+    let paymentQrCodeUrl: string | null = null
+    try {
+      const firstProductId = items[0]?._id
+      if (firstProductId) {
+        const productData = await client.fetch<{ paymentQrCodeUrl?: string | null }>(
+          PRODUCT_PAYMENT_QR_QUERY,
+          { id: firstProductId }
+        )
+        paymentQrCodeUrl = productData?.paymentQrCodeUrl ?? null
+      }
+    } catch (qrErr) {
+      console.warn('Could not fetch product payment QR:', qrErr)
+    }
+
     const orderData = {
       orderId,
       customer,
@@ -412,6 +433,7 @@ export async function POST(request: NextRequest) {
       success: true,
       orderId,
       message: 'Order placed successfully',
+      paymentQrCodeUrl,
     })
   } catch (error) {
     console.error('Checkout error:', error)

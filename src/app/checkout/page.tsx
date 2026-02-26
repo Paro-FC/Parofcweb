@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -12,6 +12,8 @@ import {
   CreditCard,
   CheckCircle,
   Loader2,
+  Upload,
+  QrCode,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useRouter } from "next/navigation";
@@ -36,6 +38,18 @@ export default function CheckoutPage() {
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [errors, setErrors] = useState<Partial<CustomerDetails>>({});
+  const [showPaymentStep, setShowPaymentStep] = useState(false);
+  const [paymentQrCodeUrl, setPaymentQrCodeUrl] = useState<string | null>(null);
+  const [orderTotal, setOrderTotal] = useState(0);
+  const [orderCurrency, setOrderCurrency] = useState("BTN");
+  const [paymentProofUploaded, setPaymentProofUploaded] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [summaryPaymentQrUrl, setSummaryPaymentQrUrl] = useState<string | null>(
+    null,
+  );
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
   const [checkoutType, setCheckoutType] = useState<
     "domestic" | "international"
@@ -52,6 +66,31 @@ export default function CheckoutPage() {
     country: "",
     notes: "",
   });
+
+  // Fetch payment QR for first product to show in Order Summary
+  useEffect(() => {
+    const productId = items[0]?._id;
+    if (!productId) {
+      setSummaryPaymentQrUrl(null);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/checkout/payment-qr?productId=${encodeURIComponent(productId)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.paymentQrCodeUrl) {
+          setSummaryPaymentQrUrl(data.paymentQrCodeUrl);
+        } else if (!cancelled) {
+          setSummaryPaymentQrUrl(null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setSummaryPaymentQrUrl(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [items]);
 
   const formatPrice = (price: number, currency: string) => {
     if (currency === "BTN") return `Nu. ${price.toLocaleString()}`;
@@ -119,7 +158,8 @@ export default function CheckoutPage() {
           customer: {
             ...customerDetails,
             zipCode: checkoutType === "domestic" ? "" : customerDetails.zipCode,
-            country: checkoutType === "domestic" ? "Bhutan" : customerDetails.country,
+            country:
+              checkoutType === "domestic" ? "Bhutan" : customerDetails.country,
           },
           items: items,
           subtotal: getSubtotal(),
@@ -132,8 +172,12 @@ export default function CheckoutPage() {
 
       if (response.ok) {
         setOrderId(data.orderId);
-        setOrderComplete(true);
-        clearCart();
+        const subtotal = getSubtotal();
+        const shipping = 150;
+        setOrderTotal(subtotal + shipping);
+        setOrderCurrency(items[0]?.currency || "BTN");
+        setPaymentQrCodeUrl(data.paymentQrCodeUrl ?? null);
+        setShowPaymentStep(true);
       } else {
         alert(data.error || "Something went wrong. Please try again.");
       }
@@ -194,6 +238,154 @@ export default function CheckoutPage() {
                 Back to Home
               </Link>
             </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleUploadPayment = async () => {
+    if (!selectedFile || !orderId) return;
+    setIsUploading(true);
+    setUploadError(null);
+    try {
+      const formData = new FormData();
+      formData.set("orderId", orderId);
+      formData.set("file", selectedFile);
+      const res = await fetch("/api/checkout/upload-payment", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPaymentProofUploaded(true);
+        setUploadedImageUrl(data.imageUrl || null);
+        setSelectedFile(null);
+      } else {
+        setUploadError(data.error || "Upload failed");
+      }
+    } catch (err) {
+      console.error(err);
+      setUploadError("Upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleCompleteOrder = () => {
+    setOrderComplete(true);
+    clearCart();
+  };
+
+  // Payment Step View (after placing order, before success)
+  if (showPaymentStep && !orderComplete) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-2xl mx-auto px-4 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-xl p-8"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Complete payment
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Order <span className="font-mono font-semibold">{orderId}</span> —{" "}
+              {formatPrice(orderTotal, orderCurrency)}
+            </p>
+
+            <div className="mb-8">
+              <p className="text-sm font-semibold text-gray-700 mb-3">
+                Scan to pay
+              </p>
+              {paymentQrCodeUrl ? (
+                <div className="inline-block p-3 bg-white border border-gray-200 rounded-xl">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={paymentQrCodeUrl}
+                    alt="Scan to pay"
+                    className="w-48 h-48 object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <QrCode className="w-8 h-8 text-gray-400 flex-shrink-0" />
+                  <p className="text-sm text-gray-500">
+                    Payment QR is not set for this product. Contact support or
+                    complete the order after paying via another method.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-8">
+              <p className="text-sm font-semibold text-gray-700 mb-3">
+                Upload payment proof (required)
+              </p>
+              <p className="text-xs text-gray-500 mb-3">
+                After paying, upload a screenshot or photo of your payment
+                confirmation.
+              </p>
+              <div className="flex flex-wrap items-end gap-3">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    setSelectedFile(file || null);
+                    setUploadError(null);
+                  }}
+                  className="block w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-barca-gold file:text-dark-charcoal file:font-semibold file:cursor-pointer"
+                />
+                <button
+                  type="button"
+                  onClick={handleUploadPayment}
+                  disabled={!selectedFile || isUploading}
+                  className="inline-flex items-center gap-2 bg-barca-gold text-dark-charcoal px-4 py-2 rounded-lg font-semibold hover:bg-barca-gold/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isUploading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <Upload size={18} />
+                  )}
+                  {isUploading ? "Uploading..." : "Upload proof"}
+                </button>
+              </div>
+              {uploadError && (
+                <p className="mt-2 text-sm text-red-600">{uploadError}</p>
+              )}
+              {paymentProofUploaded && (
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                  <p className="text-sm font-semibold text-green-800 flex items-center gap-2 mb-3">
+                    <CheckCircle size={20} /> Payment proof uploaded
+                  </p>
+                  {uploadedImageUrl ? (
+                    <div className="flex justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={uploadedImageUrl}
+                        alt="Your payment proof"
+                        className="max-w-full max-h-48 rounded-lg border border-green-200 object-contain bg-white"
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-sm text-green-700">
+                      Your screenshot has been received.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCompleteOrder}
+              disabled={!paymentProofUploaded}
+              className="w-full bg-barca-gold text-dark-charcoal py-4 rounded-lg font-bold text-lg hover:bg-barca-gold/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Complete order
+            </button>
           </motion.div>
         </div>
       </div>
@@ -495,12 +687,16 @@ export default function CheckoutPage() {
                           value={customerDetails.country}
                           onChange={handleInputChange}
                           className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-barca-gold focus:border-transparent transition-all ${
-                            errors.country ? "border-red-500" : "border-gray-300"
+                            errors.country
+                              ? "border-red-500"
+                              : "border-gray-300"
                           }`}
                           placeholder="Enter country"
                         />
                         {errors.country && (
-                          <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.country}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -629,6 +825,23 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Payment QR (from first product) */}
+              {summaryPaymentQrUrl && (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-2">
+                    Scan to pay
+                  </p>
+                  <div className="flex justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={summaryPaymentQrUrl}
+                      alt="Scan to pay"
+                      className="w-36 h-36 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Payment Method Note */}
               <div className="mt-4 p-3 bg-amber-50 rounded-lg">

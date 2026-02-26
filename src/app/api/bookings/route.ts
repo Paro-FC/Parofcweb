@@ -1,50 +1,56 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
-import { z } from 'zod'
-import DOMPurify from 'isomorphic-dompurify'
-import { createClient } from '@sanity/client'
-import { EMAIL_CONFIG, SANITY_FALLBACKS } from '@/lib/constants'
+import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
+import { z } from "zod";
+import DOMPurify from "isomorphic-dompurify";
+import { createClient } from "@sanity/client";
+import { EMAIL_CONFIG, SANITY_FALLBACKS } from "@/lib/constants";
 
 // Create write client for mutations (create, patch)
 const getWriteClient = () => {
-  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || SANITY_FALLBACKS.PROJECT_ID
-  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || SANITY_FALLBACKS.DATASET
-  const token = process.env.SANITY_API_TOKEN
+  const projectId =
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || SANITY_FALLBACKS.PROJECT_ID;
+  const dataset =
+    process.env.NEXT_PUBLIC_SANITY_DATASET || SANITY_FALLBACKS.DATASET;
+  const token = process.env.SANITY_API_TOKEN;
 
   if (!token) {
-    throw new Error('SANITY_API_TOKEN is required for booking operations. Please set it in your environment variables.')
+    throw new Error(
+      "SANITY_API_TOKEN is required for booking operations. Please set it in your environment variables.",
+    );
   }
 
   return createClient({
     projectId,
     dataset,
-    apiVersion: '2024-01-01',
-    useCdn: false, // Write operations require CDN disabled
+    apiVersion: "2024-01-01",
+    useCdn: false, // Write operations require CDN disabled g
     token, // API token for authenticated requests
-  })
-}
+  });
+};
 
 // Read client for queries
 const getReadClient = () => {
-  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || SANITY_FALLBACKS.PROJECT_ID
-  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || SANITY_FALLBACKS.DATASET
+  const projectId =
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || SANITY_FALLBACKS.PROJECT_ID;
+  const dataset =
+    process.env.NEXT_PUBLIC_SANITY_DATASET || SANITY_FALLBACKS.DATASET;
 
   return createClient({
     projectId,
     dataset,
-    apiVersion: '2024-01-01',
+    apiVersion: "2024-01-01",
     useCdn: true,
-  })
-}
+  });
+};
 
 // Initialize Resend lazily to avoid build-time errors
 function getResend() {
-  const apiKey = process.env.RESEND_API_KEY
+  const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn('RESEND_API_KEY not configured - emails will not be sent')
-    return null
+    console.warn("RESEND_API_KEY not configured - emails will not be sent");
+    return null;
   }
-  return new Resend(apiKey)
+  return new Resend(apiKey);
 }
 
 // Validation schema
@@ -52,54 +58,59 @@ const BookingRequestSchema = z.object({
   matchId: z.string().min(1),
   name: z.string().min(1).max(100).trim(),
   email: z.string().email().max(255),
-  phone: z.string().min(1).max(20).trim().regex(/^[\d\s\-\+\(\)]+$/, 'Invalid phone number format'),
+  phone: z
+    .string()
+    .min(1)
+    .max(20)
+    .trim()
+    .regex(/^[\d\s\-\+\(\)]+$/, "Invalid phone number format"),
   quantity: z.number().int().positive().max(100),
-})
+});
 
 function generateBookingId(): string {
-  const timestamp = Date.now().toString(36).toUpperCase()
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase()
-  return `TKT-${timestamp}-${random}`
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `TKT-${timestamp}-${random}`;
 }
 
 // Sanitize string for HTML output
 function sanitizeHtml(str: string): string {
-  return DOMPurify.sanitize(str, { ALLOWED_TAGS: [] })
+  return DOMPurify.sanitize(str, { ALLOWED_TAGS: [] });
 }
 
 function generateAdminBookingEmailHtml(booking: {
-  bookingId: string
-  name: string
-  email: string
-  phone: string
-  quantity: number
+  bookingId: string;
+  name: string;
+  email: string;
+  phone: string;
+  quantity: number;
   match: {
-    homeTeam: string
-    awayTeam: string
-    competition?: string
-    date: string
-    venue?: string
-  }
-  newAvailability: number
+    homeTeam: string;
+    awayTeam: string;
+    competition?: string;
+    date: string;
+    venue?: string;
+  };
+  newAvailability: number;
 }): string {
-  const safeBookingId = sanitizeHtml(booking.bookingId)
-  const safeName = sanitizeHtml(booking.name)
-  const safeEmail = sanitizeHtml(booking.email)
-  const safePhone = sanitizeHtml(booking.phone)
-  const safeHomeTeam = sanitizeHtml(booking.match.homeTeam)
-  const safeAwayTeam = sanitizeHtml(booking.match.awayTeam)
-  const safeCompetition = sanitizeHtml(booking.match.competition || 'Match')
-  const safeVenue = sanitizeHtml(booking.match.venue || 'TBD')
-  
-  const matchDate = new Date(booking.match.date)
-  const formattedDate = matchDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const safeBookingId = sanitizeHtml(booking.bookingId);
+  const safeName = sanitizeHtml(booking.name);
+  const safeEmail = sanitizeHtml(booking.email);
+  const safePhone = sanitizeHtml(booking.phone);
+  const safeHomeTeam = sanitizeHtml(booking.match.homeTeam);
+  const safeAwayTeam = sanitizeHtml(booking.match.awayTeam);
+  const safeCompetition = sanitizeHtml(booking.match.competition || "Match");
+  const safeVenue = sanitizeHtml(booking.match.venue || "TBD");
+
+  const matchDate = new Date(booking.match.date);
+  const formattedDate = matchDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return `
     <!DOCTYPE html>
@@ -162,41 +173,41 @@ function generateAdminBookingEmailHtml(booking: {
       </div>
     </body>
     </html>
-  `
+  `;
 }
 
 function generateBookingEmailHtml(booking: {
-  bookingId: string
-  name: string
-  email: string
-  phone: string
-  quantity: number
+  bookingId: string;
+  name: string;
+  email: string;
+  phone: string;
+  quantity: number;
   match: {
-    homeTeam: string
-    awayTeam: string
-    competition?: string
-    date: string
-    venue?: string
-  }
+    homeTeam: string;
+    awayTeam: string;
+    competition?: string;
+    date: string;
+    venue?: string;
+  };
 }): string {
-  const safeBookingId = sanitizeHtml(booking.bookingId)
-  const safeName = sanitizeHtml(booking.name)
-  const safeEmail = sanitizeHtml(booking.email)
-  const safePhone = sanitizeHtml(booking.phone)
-  const safeHomeTeam = sanitizeHtml(booking.match.homeTeam)
-  const safeAwayTeam = sanitizeHtml(booking.match.awayTeam)
-  const safeCompetition = sanitizeHtml(booking.match.competition || 'Match')
-  const safeVenue = sanitizeHtml(booking.match.venue || 'TBD')
-  
-  const matchDate = new Date(booking.match.date)
-  const formattedDate = matchDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const safeBookingId = sanitizeHtml(booking.bookingId);
+  const safeName = sanitizeHtml(booking.name);
+  const safeEmail = sanitizeHtml(booking.email);
+  const safePhone = sanitizeHtml(booking.phone);
+  const safeHomeTeam = sanitizeHtml(booking.match.homeTeam);
+  const safeAwayTeam = sanitizeHtml(booking.match.awayTeam);
+  const safeCompetition = sanitizeHtml(booking.match.competition || "Match");
+  const safeVenue = sanitizeHtml(booking.match.venue || "TBD");
+
+  const matchDate = new Date(booking.match.date);
+  const formattedDate = matchDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return `
     <!DOCTYPE html>
@@ -263,36 +274,39 @@ function generateBookingEmailHtml(booking: {
       </div>
     </body>
     </html>
-  `
+  `;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    
+    const body = await request.json();
+
     // Validate request
-    const validationResult = BookingRequestSchema.safeParse(body)
+    const validationResult = BookingRequestSchema.safeParse(body);
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: validationResult.error.issues },
-        { status: 400 }
-      )
+        {
+          error: "Invalid request data",
+          details: validationResult.error.issues,
+        },
+        { status: 400 },
+      );
     }
 
-    const { matchId, name, email, phone, quantity } = validationResult.data
+    const { matchId, name, email, phone, quantity } = validationResult.data;
 
-    const readClient = getReadClient()
-    
+    const readClient = getReadClient();
+
     // Check if API token is configured
     if (!process.env.SANITY_API_TOKEN) {
-      console.error('SANITY_API_TOKEN not configured')
+      console.error("SANITY_API_TOKEN not configured");
       return NextResponse.json(
-        { error: 'Server configuration error. Please contact support.' },
-        { status: 500 }
-      )
+        { error: "Server configuration error. Please contact support." },
+        { status: 500 },
+      );
     }
 
-    const writeClient = getWriteClient()
+    const writeClient = getWriteClient();
 
     // Fetch match to check availability
     const match = await readClient.fetch(
@@ -306,41 +320,40 @@ export async function POST(request: NextRequest) {
         hasTickets,
         ticketAvailability
       }`,
-      { matchId }
-    )
+      { matchId },
+    );
 
     if (!match) {
-      return NextResponse.json(
-        { error: 'Match not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Match not found" }, { status: 404 });
     }
 
     if (!match.hasTickets) {
       return NextResponse.json(
-        { error: 'Tickets are not available for this match' },
-        { status: 400 }
-      )
+        { error: "Tickets are not available for this match" },
+        { status: 400 },
+      );
     }
 
-    const available = match.ticketAvailability ?? 0
+    const available = match.ticketAvailability ?? 0;
     if (available < quantity) {
       return NextResponse.json(
-        { error: `Only ${available} ticket(s) available. You requested ${quantity}.` },
-        { status: 400 }
-      )
+        {
+          error: `Only ${available} ticket(s) available. You requested ${quantity}.`,
+        },
+        { status: 400 },
+      );
     }
 
     // Generate booking ID
-    const bookingId = generateBookingId()
+    const bookingId = generateBookingId();
 
     // Create booking document in Sanity
-    let bookingDoc
+    let bookingDoc;
     try {
       bookingDoc = await writeClient.create({
-        _type: 'booking',
+        _type: "booking",
         match: {
-          _type: 'reference',
+          _type: "reference",
           _ref: matchId,
         },
         name: sanitizeHtml(name),
@@ -348,40 +361,51 @@ export async function POST(request: NextRequest) {
         phone: sanitizeHtml(phone),
         quantity,
         bookingId,
-        status: 'confirmed',
+        status: "confirmed",
         createdAt: new Date().toISOString(),
-      })
+      });
     } catch (createError: any) {
-      console.error('Failed to create booking:', createError)
-      if (createError.statusCode === 403 || createError.message?.includes('permission')) {
+      console.error("Failed to create booking:", createError);
+      if (
+        createError.statusCode === 403 ||
+        createError.message?.includes("permission")
+      ) {
         return NextResponse.json(
-          { error: 'Server configuration error. Please ensure SANITY_API_TOKEN has write permissions. See SANITY_API_TOKEN_SETUP.md for setup instructions.' },
-          { status: 500 }
-        )
+          {
+            error:
+              "Server configuration error. Please ensure SANITY_API_TOKEN has write permissions. See SANITY_API_TOKEN_SETUP.md for setup instructions.",
+          },
+          { status: 500 },
+        );
       }
-      throw createError
+      throw createError;
     }
 
     // Update match availability
-    const newAvailability = available - quantity
-    let availabilityUpdated = false
+    const newAvailability = available - quantity;
+    let availabilityUpdated = false;
     try {
       await writeClient
         .patch(matchId)
         .set({ ticketAvailability: newAvailability })
-        .commit()
-      availabilityUpdated = true
+        .commit();
+      availabilityUpdated = true;
     } catch (patchError: any) {
-      console.error('Failed to update match availability:', patchError)
+      console.error("Failed to update match availability:", patchError);
       // Booking was created but availability update failed - log but don't fail the request
       // The booking is still valid
-      if (patchError.statusCode === 403 || patchError.message?.includes('permission')) {
-        console.warn('Could not update match availability - check SANITY_API_TOKEN permissions')
+      if (
+        patchError.statusCode === 403 ||
+        patchError.message?.includes("permission")
+      ) {
+        console.warn(
+          "Could not update match availability - check SANITY_API_TOKEN permissions",
+        );
       }
     }
 
     // Send confirmation emails
-    const resend = getResend()
+    const resend = getResend();
     if (resend) {
       try {
         // Send confirmation email to customer
@@ -403,7 +427,7 @@ export async function POST(request: NextRequest) {
               venue: match.venue,
             },
           }),
-        })
+        });
 
         // Send notification email to admin
         await resend.emails.send({
@@ -425,26 +449,33 @@ export async function POST(request: NextRequest) {
             },
             newAvailability: availabilityUpdated ? newAvailability : available,
           }),
-        })
+        });
       } catch (emailError) {
-        console.error('Failed to send booking emails:', emailError)
+        console.error("Failed to send booking emails:", emailError);
         // Don't fail the booking if email fails
       }
     } else {
-      console.log('Emails not sent - RESEND_API_KEY not configured')
-      console.log('Booking details:', JSON.stringify({
-        bookingId,
-        name,
-        email,
-        quantity,
-        match: {
-          homeTeam: match.homeTeam,
-          awayTeam: match.awayTeam,
-          competition: match.competition,
-          date: match.date,
-          venue: match.venue,
-        },
-      }, null, 2))
+      console.log("Emails not sent - RESEND_API_KEY not configured");
+      console.log(
+        "Booking details:",
+        JSON.stringify(
+          {
+            bookingId,
+            name,
+            email,
+            quantity,
+            match: {
+              homeTeam: match.homeTeam,
+              awayTeam: match.awayTeam,
+              competition: match.competition,
+              date: match.date,
+              venue: match.venue,
+            },
+          },
+          null,
+          2,
+        ),
+      );
     }
 
     return NextResponse.json({
@@ -458,13 +489,12 @@ export async function POST(request: NextRequest) {
         quantity,
         matchId,
       },
-    })
+    });
   } catch (error) {
-    console.error('Booking error:', error)
+    console.error("Booking error:", error);
     return NextResponse.json(
-      { error: 'Failed to process booking. Please try again.' },
-      { status: 500 }
-    )
+      { error: "Failed to process booking. Please try again." },
+      { status: 500 },
+    );
   }
 }
-

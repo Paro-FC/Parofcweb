@@ -161,6 +161,15 @@ export const product = defineType({
       description: 'Number of items in stock',
       validation: (rule) => rule.min(0),
     }),
+    defineField({
+      name: 'paymentQrCode',
+      title: 'Payment QR code',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      description: 'QR code for customers to scan and pay. Shown at checkout when this product is in the order.',
+    }),
   ],
   preview: {
     select: {
