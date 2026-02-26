@@ -10,6 +10,7 @@ import { product } from './product'
 import { category } from './category'
 import { booking } from './booking'
 import { paymentProof } from './paymentProof'
+import { coachingStaff } from './coachingStaff'
 
-export const schemaTypes = [news, player, match, story, partner, standing, photo, trophy, product, category, booking, paymentProof]
+export const schemaTypes = [news, player, match, story, partner, standing, photo, trophy, product, category, booking, paymentProof, coachingStaff]
 

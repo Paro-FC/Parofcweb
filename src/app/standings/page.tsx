@@ -22,151 +22,6 @@ interface Team {
   form?: ("W" | "D" | "L")[];
 }
 
-// Fallback teams data (used when Sanity data is not available)
-const fallbackTeams: Team[] = [
-  {
-    id: 1,
-    position: 1,
-    name: "Paro FC",
-    logo: "/assets/logo.webp",
-    played: 17,
-    won: 16,
-    drawn: 0,
-    lost: 1,
-    goalsFor: 71,
-    goalsAgainst: 14,
-    goalDifference: 57,
-    points: 48,
-    form: ["W", "W", "W", "W", "W"],
-  },
-  {
-    id: 2,
-    position: 2,
-    name: "Thimphu City FC",
-    played: 16,
-    won: 13,
-    drawn: 1,
-    lost: 3,
-    goalsFor: 57,
-    goalsAgainst: 18,
-    goalDifference: 39,
-    points: 39,
-    form: ["W", "W", "L", "W", "W"],
-  },
-  {
-    id: 3,
-    position: 3,
-    name: "RTC FC",
-    played: 16,
-    won: 12,
-    drawn: 1,
-    lost: 3,
-    goalsFor: 59,
-    goalsAgainst: 15,
-    goalDifference: 44,
-    points: 37,
-    form: ["W", "D", "W", "W", "L"],
-  },
-  {
-    id: 4,
-    position: 4,
-    name: "Transport United FC",
-    played: 15,
-    won: 10,
-    drawn: 0,
-    lost: 4,
-    goalsFor: 38,
-    goalsAgainst: 20,
-    goalDifference: 18,
-    points: 30,
-    form: ["W", "L", "W", "W", "L"],
-  },
-  {
-    id: 5,
-    position: 5,
-    name: "BFF Academy",
-    played: 15,
-    won: 7,
-    drawn: 3,
-    lost: 5,
-    goalsFor: 34,
-    goalsAgainst: 27,
-    goalDifference: 7,
-    points: 24,
-    form: ["D", "W", "L", "D", "W"],
-  },
-  {
-    id: 6,
-    position: 6,
-    name: "Ugyen Academy FC",
-    played: 16,
-    won: 6,
-    drawn: 1,
-    lost: 9,
-    goalsFor: 31,
-    goalsAgainst: 40,
-    goalDifference: -9,
-    points: 19,
-    form: ["L", "W", "L", "L", "W"],
-  },
-  {
-    id: 7,
-    position: 7,
-    name: "Tsirang FC",
-    played: 17,
-    won: 4,
-    drawn: 4,
-    lost: 9,
-    goalsFor: 21,
-    goalsAgainst: 39,
-    goalDifference: -18,
-    points: 16,
-    form: ["D", "L", "D", "L", "W"],
-  },
-  {
-    id: 8,
-    position: 8,
-    name: "Southern City FC",
-    played: 17,
-    won: 3,
-    drawn: 1,
-    lost: 13,
-    goalsFor: 14,
-    goalsAgainst: 57,
-    goalDifference: -43,
-    points: 10,
-    form: ["L", "L", "L", "W", "L"],
-  },
-  {
-    id: 9,
-    position: 9,
-    name: "Samtse FC",
-    played: 17,
-    won: 2,
-    drawn: 2,
-    lost: 14,
-    goalsFor: 14,
-    goalsAgainst: 48,
-    goalDifference: -34,
-    points: 8,
-    form: ["L", "D", "L", "L", "L"],
-  },
-  {
-    id: 10,
-    position: 10,
-    name: "Tensung FC",
-    played: 18,
-    won: 2,
-    drawn: 2,
-    lost: 14,
-    goalsFor: 22,
-    goalsAgainst: 87,
-    goalDifference: -65,
-    points: 8,
-    form: ["L", "L", "D", "L", "L"],
-  },
-];
-
 const competitions = [
   { id: "bpl", name: "BOB Premier League" },
   { id: "cup", name: "National Cup" },
@@ -237,12 +92,11 @@ export default function StandingsPage() {
           );
           setTeams(teamsData);
         } else {
-          // Use fallback data if no Sanity data
-          setTeams(fallbackTeams);
+          setTeams([]);
         }
       } catch (error) {
         console.error("Error fetching standings:", error);
-        setTeams(fallbackTeams);
+        setTeams([]);
       } finally {
         setLoading(false);
       }

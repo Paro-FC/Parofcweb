@@ -102,6 +102,14 @@ export const RELATED_PLAYERS_QUERY = `*[_type == "player" && (slug.current != $s
   "slug": slug.current
 }`
 
+// Coaching staff query
+export const COACHING_STAFF_QUERY = `*[_type == "coachingStaff"] | order(order asc, name asc) {
+  _id,
+  name,
+  role,
+  "image": image.asset->url
+}`
+
 // Matches queries
 export const MATCHES_QUERY = `*[_type == "match"] | order(date asc) [0...3] {
   _id,
