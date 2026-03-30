@@ -1,25 +1,24 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { urlFor } from "@/sanity/lib/image"
-import { useMemo } from "react"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { urlFor } from "@/sanity/lib/image";
+import { useMemo } from "react";
 
 interface NewsItem {
-  _id: string
-  image: unknown
-  title: string
-  badge?: string
-  publishedAt: string
-  slug: string
+  _id: string;
+  image: unknown;
+  title: string;
+  badge?: string;
+  publishedAt: string;
+  slug: string;
 }
 
 interface HeroProps {
-  news?: NewsItem[]
+  news?: NewsItem[];
 }
 
-// Fallback data
 const fallbackNews: NewsItem = {
   _id: "1",
   image: null,
@@ -27,26 +26,77 @@ const fallbackNews: NewsItem = {
   badge: "FIRST TEAM",
   publishedAt: new Date().toISOString(),
   slug: "",
-}
+};
 
 function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: '2-digit' })
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "2-digit",
+  });
 }
 
 export function Hero({ news }: HeroProps) {
-  // Get the first/latest news item
-  const newsItem = news && news.length > 0 ? news[0] : fallbackNews
-  
-  // Memoize date formatting
+  const newsItem = news && news.length > 0 ? news[0] : fallbackNews;
+
   const formattedDate = useMemo(() => {
-    return formatDate(newsItem.publishedAt)
-  }, [newsItem.publishedAt])
+    return formatDate(newsItem.publishedAt);
+  }, [newsItem.publishedAt]);
+
+  const content = (
+    <div className="container mx-auto relative z-10 flex flex-col items-center justify-end h-full pb-16 md:pb-24 px-4">
+      {/* Diagonal accent line */}
+      <motion.div
+        className="absolute top-0 right-0 w-1 h-32 md:h-48 bg-gradient-to-b from-barca-gold to-transparent origin-top"
+        style={{ transform: "rotate(-15deg)", right: "15%" }}
+        initial={{ scaleY: 0 }}
+        animate={{ scaleY: 1 }}
+        transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+      />
+
+      {/* Badge */}
+      {newsItem.badge && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="mb-4"
+        >
+          <span className="inline-block bg-barca-gold text-dark-charcoal text-xs font-bold px-4 py-1.5 uppercase tracking-widest">
+            {newsItem.badge}
+          </span>
+        </motion.div>
+      )}
+
+      {/* Main Headline */}
+      <motion.h1
+        className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight mb-4 text-center text-white max-w-5xl leading-[0.95]"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
+      >
+        {newsItem.title}
+      </motion.h1>
+
+      {/* Date line */}
+      <motion.div
+        className="flex items-center gap-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <div className="w-8 h-[2px] bg-barca-gold" />
+        <span className="text-white/70 text-sm font-medium tracking-wider uppercase">
+          {formattedDate}
+        </span>
+        <div className="w-8 h-[2px] bg-barca-gold" />
+      </motion.div>
+    </div>
+  );
 
   return (
-    <section 
-      className="relative py-20 px-4 overflow-hidden"
-    >
+    <section className="relative h-[85vh] md:h-[90vh] overflow-hidden">
       {newsItem.image ? (
         <Image
           src={urlFor(newsItem.image).width(1920).height(1080).url()}
@@ -56,72 +106,28 @@ export function Hero({ news }: HeroProps) {
           priority
         />
       ) : (
-      <Image
-        src="/assets/Timezones K Benhavn.webp"
-        alt="Hero Background"
-        fill
-        className="object-cover"
-        priority
-      />
+        <Image
+          src="/assets/Timezones K Benhavn.webp"
+          alt="Hero Background"
+          fill
+          className="object-cover"
+          priority
+        />
       )}
-      <div className="absolute inset-0 bg-black/60" />
-      
-      <div className="container mx-auto relative z-10 pt-16 md:pt-32 lg:pt-40">
-        {newsItem.slug ? (
-          <Link href={`/news/${newsItem.slug}`} className="block">
-            {/* Main Headline */}
-            <motion.h1
-              className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider mb-6 text-center text-white mt-12 md:mt-16 underline"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              {newsItem.title}
-            </motion.h1>
 
-            {/* Metadata */}
-            <motion.div
-              className="flex justify-center items-center gap-3 mb-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <div className="w-3 h-3 bg-orange-500"></div>
-              {newsItem.badge && (
-                <span className="text-white text-sm font-semibold uppercase">{newsItem.badge}</span>
-              )}
-              <span className="text-white text-sm">{formattedDate}</span>
-            </motion.div>
-          </Link>
-        ) : (
-          <>
-        {/* Main Headline */}
-        <motion.h1
-          className="text-3xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wider mb-6 text-center text-white mt-12 md:mt-16 underline"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-              {newsItem.title}
-        </motion.h1>
+      {/* Gradient overlay — dark at bottom for text, lighter at top to show image */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-        {/* Metadata */}
-        <motion.div
-          className="flex justify-center items-center gap-3 mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+      {newsItem.slug ? (
+        <Link
+          href={`/news/${newsItem.slug}`}
+          className="absolute inset-0 flex cursor-pointer"
         >
-          <div className="w-3 h-3 bg-orange-500"></div>
-              {newsItem.badge && (
-                <span className="text-white text-sm font-semibold uppercase">{newsItem.badge}</span>
-              )}
-              <span className="text-white text-sm">{formattedDate}</span>
-        </motion.div>
-          </>
-        )}
-      </div>
+          {content}
+        </Link>
+      ) : (
+        <div className="absolute inset-0 flex">{content}</div>
+      )}
     </section>
-  )
+  );
 }
-

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, SlidersHorizontal, ChevronDown, ShoppingBag } from 'lucide-react'
+import { SlidersHorizontal, ChevronDown, ShoppingBag, ArrowRight } from 'lucide-react'
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PRODUCTS_QUERY, CATEGORIES_QUERY } from '@/sanity/lib/queries'
@@ -34,38 +34,42 @@ interface Product {
 }
 
 const badgeStyles: Record<string, string> = {
-  'new': 'bg-green-500 text-white',
-  'exclusive': 'bg-gradient-to-r from-blue-600 to-purple-600 text-white',
-  'sale': 'bg-red-500 text-white',
-  'limited': 'bg-amber-500 text-white',
+  'new': 'bg-emerald-500 text-white',
+  'exclusive': 'bg-dark-charcoal text-white',
+  'sale': 'bg-barca-red text-white',
+  'limited': 'bg-barca-gold text-dark-charcoal',
   'bestseller': 'bg-barca-gold text-dark-charcoal',
 }
 
 const badgeLabels: Record<string, string> = {
   'new': 'NEW',
-  'exclusive': '⭐ PARO FC EXCLUSIVE',
+  'exclusive': 'EXCLUSIVE',
   'sale': 'SALE',
-  'limited': 'LIMITED EDITION',
+  'limited': 'LIMITED',
   'bestseller': 'BEST SELLER',
 }
 
 const ProductCard = React.memo(function ProductCard({ product, index }: { product: Product; index: number }) {
   const [isHovered, setIsHovered] = useState(false)
-  
-  // Memoize price formatting
+
   const formattedPrice = useMemo(() => {
     const price = product.salePrice || product.price
     if (product.currency === 'BTN') {
       return `Nu. ${price.toLocaleString()}`
     }
-    return `$${price.toFixed(2)} USD`
+    return `$${price.toFixed(2)}`
   }, [product.salePrice, product.price, product.currency])
 
-  // Memoize image URLs
-  const mainImageUrl = useMemo(() => {
-    if (typeof product.image === 'string') {
-      return product.image
+  const originalPrice = useMemo(() => {
+    if (!product.salePrice) return null
+    if (product.currency === 'BTN') {
+      return `Nu. ${product.price.toLocaleString()}`
     }
+    return `$${product.price.toFixed(2)}`
+  }, [product.salePrice, product.price, product.currency])
+
+  const mainImageUrl = useMemo(() => {
+    if (typeof product.image === 'string') return product.image
     try {
       return urlFor(product.image).width(600).height(750).url()
     } catch {
@@ -75,9 +79,7 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
 
   const hoverImageUrl = useMemo(() => {
     if (!product.hoverImage) return null
-    if (typeof product.hoverImage === 'string') {
-      return product.hoverImage
-    }
+    if (typeof product.hoverImage === 'string') return product.hoverImage
     try {
       return urlFor(product.hoverImage).width(600).height(750).url()
     } catch {
@@ -85,110 +87,88 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
     }
   }, [product.hoverImage])
 
-  // Memoize badge style
-  const badgeStyle = useMemo(() => {
-    return product.badge ? badgeStyles[product.badge] : ''
-  }, [product.badge])
-
-  // Memoize category title
-  const categoryTitle = useMemo(() => {
-    return product.category?.title || ''
-  }, [product.category])
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
-      className="group relative"
+      transition={{ delay: index * 0.04, duration: 0.4 }}
+      className="group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link href={`/shop/${product.slug}`} className="block">
-        {/* Image Container */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
-          {/* Main Image */}
+      <Link href={`/shop/${product.slug}`} className="block cursor-pointer">
+        {/* Image */}
+        <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
           <Image
             src={mainImageUrl}
             alt={product.name}
             fill
-            className={`object-cover transition-all duration-500 ${
-              isHovered && hoverImageUrl ? 'opacity-0' : 'opacity-100'
+            className={`object-cover transition-all duration-700 ${
+              isHovered && hoverImageUrl ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
           />
-          
-          {/* Hover Image */}
+
           {hoverImageUrl && (
             <Image
               src={hoverImageUrl}
               alt={`${product.name} - alternate view`}
               fill
-              className={`object-cover transition-all duration-500 absolute inset-0 ${
-                isHovered ? 'opacity-100' : 'opacity-0'
+              className={`object-cover transition-all duration-700 absolute inset-0 ${
+                isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}
             />
           )}
 
-          {/* Category Badge (top-left) */}
-          {categoryTitle && (
-            <div className="absolute top-3 left-3 z-10">
-              <span className="bg-barca-gold/90 text-dark-charcoal text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider">
-                {categoryTitle}
-              </span>
-            </div>
-          )}
-
-          {/* Special Badge (bottom-left) */}
+          {/* Badge */}
           {product.badge && (
-            <div className="absolute bottom-3 left-3 z-10">
-              <span className={`${badgeStyle} text-[10px] font-bold px-3 py-1.5 rounded-full tracking-wider`}>
+            <div className="absolute top-3 left-3 z-10">
+              <span className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1 tracking-widest`}>
                 {badgeLabels[product.badge]}
               </span>
             </div>
           )}
 
-          {/* Quick Add Button (appears on hover) */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
-            className="absolute bottom-3 right-3"
-          >
-            <button className="bg-white/95 hover:bg-white text-barca-gold p-2.5 rounded-full shadow-lg transition-all hover:scale-110">
-              <ShoppingBag size={18} />
-            </button>
-          </motion.div>
+          {/* Sale percentage */}
+          {product.salePrice && product.price > 0 && (
+            <div className="absolute top-3 right-3 z-10">
+              <span className="bg-barca-red text-white text-[10px] font-bold px-2 py-1">
+                -{Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+              </span>
+            </div>
+          )}
+
+          {/* Quick view overlay */}
+          <div className={`absolute inset-0 bg-dark-charcoal/0 group-hover:bg-dark-charcoal/5 transition-colors duration-300`} />
+
+          {/* Out of stock overlay */}
+          {!product.inStock && (
+            <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
+              <span className="bg-dark-charcoal text-white text-xs font-bold px-4 py-2 uppercase tracking-widest">
+                Sold Out
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Product Info */}
-        <div className="mt-4 space-y-2">
-          {/* Category Label */}
-          {categoryTitle && (
-            <p className="text-barca-gold text-xs font-semibold tracking-wider uppercase">
-              {categoryTitle}
+        {/* Info */}
+        <div className="mt-3 space-y-1">
+          {product.category?.title && (
+            <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+              {product.category.title}
             </p>
           )}
-          
-          {/* Product Name */}
-          <h3 className="text-gray-900 font-medium text-sm leading-snug line-clamp-2 group-hover:text-barca-gold transition-colors">
+
+          <h3 className="text-sm font-semibold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-barca-red transition-colors duration-200">
             {product.name}
           </h3>
-          
-          {/* Price */}
-          <div className="flex items-center gap-2">
-            {product.salePrice ? (
-              <>
-                <span className="text-red-600 font-bold">
-                  {formattedPrice}
-                </span>
-                <span className="text-gray-400 line-through text-sm">
-                  {product.currency === 'BTN' 
-                    ? `Nu. ${product.price.toLocaleString()}`
-                    : `$${product.price.toFixed(2)} USD`}
-                </span>
-              </>
-            ) : (
-              <span className="text-gray-900 font-bold">
-                {formattedPrice}
+
+          <div className="flex items-baseline gap-2 pt-0.5">
+            <span className={`text-sm font-bold ${product.salePrice ? 'text-barca-red' : 'text-dark-charcoal'}`}>
+              {formattedPrice}
+            </span>
+            {originalPrice && (
+              <span className="text-xs text-gray-400 line-through">
+                {originalPrice}
               </span>
             )}
           </div>
@@ -205,7 +185,6 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [sortBy, setSortBy] = useState<string>('newest')
-  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -214,23 +193,16 @@ export default function ShopPage() {
           client.fetch(PRODUCTS_QUERY),
           client.fetch(CATEGORIES_QUERY)
         ])
-        
-        console.log('Fetched products:', productsData)
-        console.log('Fetched categories:', categoriesData)
-        
+
         if (productsData && Array.isArray(productsData)) {
-          console.log(`Found ${productsData.length} products`)
           setProducts(productsData)
         } else {
-          console.warn('No products data or invalid format:', productsData)
           setProducts([])
         }
-        
+
         if (categoriesData && Array.isArray(categoriesData)) {
-          console.log(`Found ${categoriesData.length} categories`)
           setCategories(categoriesData)
         } else {
-          console.warn('No categories data or invalid format:', categoriesData)
           setCategories([])
         }
       } catch (error) {
@@ -244,17 +216,6 @@ export default function ShopPage() {
     fetchData()
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      setIsScrolled(scrollPosition > 50)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-
   const filteredProducts = products.filter(product => {
     if (!product) return false
     if (selectedCategory === 'all') return true
@@ -264,22 +225,16 @@ export default function ShopPage() {
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'newest':
-        // Sort by creation date (newest first)
         if (a._createdAt && b._createdAt) {
           return new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime()
         }
-        // If one doesn't have _createdAt, prioritize the one that does
         if (a._createdAt && !b._createdAt) return -1
         if (!a._createdAt && b._createdAt) return 1
         return 0
       case 'price-low':
-        const priceA = a.salePrice ?? a.price ?? 0
-        const priceB = b.salePrice ?? b.price ?? 0
-        return priceA - priceB
+        return (a.salePrice ?? a.price ?? 0) - (b.salePrice ?? b.price ?? 0)
       case 'price-high':
-        const priceAHigh = a.salePrice ?? a.price ?? 0
-        const priceBHigh = b.salePrice ?? b.price ?? 0
-        return priceBHigh - priceAHigh
+        return (b.salePrice ?? b.price ?? 0) - (a.salePrice ?? a.price ?? 0)
       case 'name':
         return (a.name || '').localeCompare(b.name || '')
       default:
@@ -287,55 +242,73 @@ export default function ShopPage() {
     }
   })
 
+  const selectedCategoryName = selectedCategory === 'all'
+    ? 'All Products'
+    : categories.find(c => c._id === selectedCategory)?.title || 'All Products'
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Floating Close Button */}
-      <Link
-        href="/"
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
-      >
-        <X size={24} />
-      </Link>
+      {/* Hero Header */}
+      <div className="relative bg-dark-charcoal overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+          }}
+        />
 
-      {/* Fixed Header Section - Moves up on scroll */}
-      <div className={`fixed left-0 right-0 bg-white z-40 transition-all duration-300 ${
-        isScrolled ? 'top-0' : 'top-0 md:top-[150px]'
-      }`}>
-        {/* Header */}
-        <div className="border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-black italic text-gray-900 tracking-tight"
-            >
-              SHOP
-            </motion.h1>
-          </div>
+        <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+              Official Merchandise
+            </p>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
+              Paro FC
+              <br />
+              <span className="text-barca-gold">Shop</span>
+            </h1>
+          </motion.div>
         </div>
 
-        {/* Filter Bar */}
-        <div className="border-b border-gray-200 bg-white z-30">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+      </div>
+
+      {/* Sticky Filter Bar */}
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-12 md:h-14">
             {/* Filter Toggle */}
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-barca-gold transition-colors"
+              className="flex items-center gap-2 text-xs font-bold text-dark-charcoal uppercase tracking-wider hover:text-barca-red transition-colors duration-200 cursor-pointer"
             >
-              <SlidersHorizontal size={18} />
-              <span>FILTER AND SORT</span>
+              <SlidersHorizontal size={14} />
+              <span>Filter & Sort</span>
               <ChevronDown
-                size={16}
-                className={`transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
+                size={12}
+                className={`transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`}
               />
             </button>
 
-            {/* Product Count */}
-            <span className="text-sm text-gray-500">
-              {sortedProducts.length} products
-            </span>
+            {/* Active filter + count */}
+            <div className="flex items-center gap-3">
+              {selectedCategory !== 'all' && (
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className="text-[10px] font-bold text-barca-red uppercase tracking-wider cursor-pointer hover:underline"
+                >
+                  Clear filter
+                </button>
+              )}
+              <span className="text-xs text-gray-400 tabular-nums">
+                {sortedProducts.length} {sortedProducts.length === 1 ? 'product' : 'products'}
+              </span>
+            </div>
           </div>
 
           {/* Filter Panel */}
@@ -345,31 +318,34 @@ export default function ShopPage() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="pb-5 grid grid-cols-1 md:grid-cols-2 gap-5">
                   {/* Category Filter */}
                   <div>
-                    <h3 className="text-xs font-bold text-gray-500 mb-3 tracking-wider">CATEGORY</h3>
+                    <h3 className="text-[10px] font-bold text-gray-400 mb-3 tracking-widest uppercase">
+                      Category
+                    </h3>
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => setSelectedCategory('all')}
-                        className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                        className={`px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                           selectedCategory === 'all'
-                            ? 'bg-barca-gold text-dark-charcoal'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-dark-charcoal text-white'
+                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                         }`}
                       >
-                        All Products
+                        All
                       </button>
                       {categories.map((category) => (
                         <button
                           key={category._id}
                           onClick={() => setSelectedCategory(category._id)}
-                          className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                          className={`px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                             selectedCategory === category._id
-                              ? 'bg-barca-gold text-dark-charcoal'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              ? 'bg-dark-charcoal text-white'
+                              : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                           }`}
                         >
                           {category.title}
@@ -380,21 +356,23 @@ export default function ShopPage() {
 
                   {/* Sort Options */}
                   <div>
-                    <h3 className="text-xs font-bold text-gray-500 mb-3 tracking-wider">SORT BY</h3>
+                    <h3 className="text-[10px] font-bold text-gray-400 mb-3 tracking-widest uppercase">
+                      Sort by
+                    </h3>
                     <div className="flex flex-wrap gap-2">
                       {[
                         { value: 'newest', label: 'Newest' },
-                        { value: 'price-low', label: 'Price: Low to High' },
-                        { value: 'price-high', label: 'Price: High to Low' },
-                        { value: 'name', label: 'Name A-Z' },
+                        { value: 'price-low', label: 'Price: Low' },
+                        { value: 'price-high', label: 'Price: High' },
+                        { value: 'name', label: 'A - Z' },
                       ].map((option) => (
                         <button
                           key={option.value}
                           onClick={() => setSortBy(option.value)}
-                          className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                          className={`px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                             sortBy === option.value
-                              ? 'bg-barca-gold text-dark-charcoal'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              ? 'bg-dark-charcoal text-white'
+                              : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                           }`}
                         >
                           {option.label}
@@ -408,43 +386,43 @@ export default function ShopPage() {
           </AnimatePresence>
         </div>
       </div>
-      </div>
 
       {/* Products Grid */}
-      <div className={`max-w-7xl mx-auto px-4 py-8 transition-all duration-300 ${
-        isScrolled ? 'pt-[180px] md:pt-[180px]' : 'pt-[180px] md:pt-[300px]'
-      }`}>
+      <div className="container mx-auto px-4 py-8 md:py-12">
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="aspect-[4/5] bg-gray-200 rounded-lg" />
-                <div className="mt-4 space-y-2">
-                  <div className="h-3 bg-gray-200 rounded w-1/3" />
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-4 bg-gray-200 rounded w-1/4" />
+                <div className="aspect-[3/4] bg-gray-100" />
+                <div className="mt-3 space-y-2">
+                  <div className="h-2 bg-gray-100 rounded w-1/3" />
+                  <div className="h-3 bg-gray-100 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-1/4" />
                 </div>
               </div>
             ))}
           </div>
         ) : sortedProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-x-6 md:gap-y-10">
             {sortedProducts.map((product, index) => (
               <ProductCard key={product._id} product={product} index={index} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 mb-2">
-              {products.length === 0 
-                ? 'No products found. Add products in Sanity Studio to see them here.'
-                : `No products found in "${selectedCategory === 'all' ? 'all categories' : categories.find(c => c._id === selectedCategory)?.title || 'this category'}".`}
+          <div className="text-center py-24">
+            <ShoppingBag size={40} className="mx-auto text-gray-200 mb-4" />
+            <p className="text-sm font-semibold text-gray-400 mb-1">
+              {products.length === 0
+                ? 'No products available yet'
+                : `No products in "${selectedCategoryName}"`}
             </p>
-            {products.length === 0 && (
-              <p className="text-sm text-gray-400 mt-2">
-                Make sure products have the required fields: name, slug, image, price, currency, category, and inStock.
-              </p>
+            {selectedCategory !== 'all' && (
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className="text-xs font-bold text-barca-red hover:underline cursor-pointer mt-2"
+              >
+                View all products
+              </button>
             )}
           </div>
         )}
@@ -452,4 +430,3 @@ export default function ShopPage() {
     </div>
   )
 }
-

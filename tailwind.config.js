@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Excon", "Arial", "sans-serif"],
+        sans: ["Plein", "system-ui", "sans-serif"],
       },
       fontSize: {
         xs: ["11px", { lineHeight: "1.5", letterSpacing: "0.01em" }],

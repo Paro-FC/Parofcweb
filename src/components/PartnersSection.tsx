@@ -1,58 +1,59 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Partner {
-  _id: string
-  name: string
-  logo: string
-  url: string
-  category?: string
+  _id: string;
+  name: string;
+  logo: string;
+  url: string;
+  category?: string;
 }
 
 interface PartnersSectionProps {
-  partners?: Partner[]
-  category?: string
-  title?: string
+  partners?: Partner[];
+  category?: string;
+  title?: string;
 }
 
-export function PartnersSection({ 
-  partners = [], 
+export function PartnersSection({
+  partners = [],
   category,
-  title = "Main Partners" 
+  title = "Main Partners",
 }: PartnersSectionProps) {
-  // Filter by category if provided
-  const filteredPartners = category 
-    ? partners.filter(p => p.category === category)
-    : partners
+  const filteredPartners = category
+    ? partners.filter((p) => p.category === category)
+    : partners;
 
   if (filteredPartners.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <section className="py-12 px-4 bg-dark-charcoal">
+    <section className="py-12 md:py-16 px-4 bg-dark-charcoal border-t border-white/5">
       <div className="container mx-auto">
-        <h3 className="text-2xl font-bold text-center text-white mb-8">{title}</h3>
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
+        <p className="text-xs font-semibold text-center text-white/30 uppercase tracking-[0.2em] mb-8">
+          {title}
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">
           {filteredPartners.map((partner, index) => (
             <motion.div
               key={partner._id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              transition={{ delay: index * 0.08 }}
               className="flex-shrink-0"
             >
               <Link
                 href={partner.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="block opacity-50 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
               >
-                <div className="relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
+                <div className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
@@ -66,6 +67,5 @@ export function PartnersSection({
         </div>
       </div>
     </section>
-  )
+  );
 }
-

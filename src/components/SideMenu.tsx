@@ -1,60 +1,60 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { X, ChevronRight, ChevronDown } from "lucide-react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react";
+import { X, ChevronRight, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface MenuItem {
-  label: string
-  href?: string
-  icon?: string
-  children?: MenuItem[]
-  external?: boolean
-  showArrow?: boolean
+  label: string;
+  href?: string;
+  icon?: string;
+  children?: MenuItem[];
+  external?: boolean;
+  showArrow?: boolean;
 }
 
 interface SideMenuProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const toggleItem = (label: string) => {
-    const newExpanded = new Set(expandedItems)
+    const newExpanded = new Set(expandedItems);
     if (newExpanded.has(label)) {
-      newExpanded.delete(label)
+      newExpanded.delete(label);
     } else {
-      newExpanded.add(label)
+      newExpanded.add(label);
     }
-    setExpandedItems(newExpanded)
-  }
+    setExpandedItems(newExpanded);
+  };
 
   // Close menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
-        onClose()
+        onClose();
       }
-    }
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [isOpen, onClose])
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = ""
-    }
-  }, [isOpen])
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const menuItems: MenuItem[] = [
     { label: "Standings", href: "/standings", showArrow: true },
@@ -62,12 +62,13 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
     { label: "Photos", href: "/photos", showArrow: true },
     { label: "Players", href: "/players", showArrow: true },
     { label: "News", href: "/news", showArrow: true },
-  ]
+  ];
 
   const renderMenuItem = (item: MenuItem, level: number = 0) => {
-    const hasChildren = item.children && item.children.length > 0
-    const isExpanded = expandedItems.has(item.label)
-    const indentClass = level === 0 ? "" : level === 1 ? "pl-4" : level === 2 ? "pl-8" : "pl-12"
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = expandedItems.has(item.label);
+    const indentClass =
+      level === 0 ? "" : level === 1 ? "pl-4" : level === 2 ? "pl-8" : "pl-12";
 
     if (hasChildren) {
       return (
@@ -76,10 +77,12 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
             onClick={() => toggleItem(item.label)}
             className={cn(
               "w-full flex items-center justify-between py-4 px-6 text-left hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
-              indentClass
+              indentClass,
             )}
           >
-            <span className="text-base font-semibold text-dark-charcoal">{item.label}</span>
+            <span className="text-base font-semibold text-dark-charcoal">
+              {item.label}
+            </span>
             {isExpanded ? (
               <ChevronDown className="w-5 h-5 text-medium-grey group-hover:text-barca-gold" />
             ) : (
@@ -96,27 +99,31 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                 className="overflow-hidden"
               >
                 <div className="bg-light-gold/20">
-                  {item.children?.map((child) => renderMenuItem(child, level + 1))}
+                  {item.children?.map((child) =>
+                    renderMenuItem(child, level + 1),
+                  )}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      )
+      );
     }
 
     if (item.href) {
       const content = (
-        <div className={cn(
-          "flex items-center justify-between py-3 px-6 hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
-          indentClass
-        )}>
+        <div
+          className={cn(
+            "flex items-center justify-between py-3 px-6 hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
+            indentClass,
+          )}
+        >
           <span className="text-sm text-dark-charcoal">{item.label}</span>
           {(item.external || item.showArrow) && (
             <span className="text-xs text-medium-grey">↗</span>
           )}
         </div>
-      )
+      );
 
       if (item.external) {
         return (
@@ -129,7 +136,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
           >
             {content}
           </a>
-        )
+        );
       }
 
       return (
@@ -141,11 +148,11 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
         >
           {content}
         </Link>
-      )
+      );
     }
 
-    return null
-  }
+    return null;
+  };
 
   return (
     <AnimatePresence>
@@ -191,6 +198,5 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }
-

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, RefreshCw, ExternalLink, ArrowRight } from "lucide-react";
+import { Calendar, RefreshCw, ArrowRight } from "lucide-react";
 import { Countdown } from "./ui/countdown";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -26,8 +26,8 @@ interface Match {
 function formatMatchDate(dateString: string) {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
+    weekday: "short",
+    month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
@@ -41,65 +41,87 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
   const matchList = matches ?? [];
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
-  // Get the first match date for countdown (only when we have matches)
   const targetDate = matchList[0] ? new Date(matchList[0].date) : null;
 
-  // When no matches: show only coming soon cards. When matches: show match cards + fill to 3 with coming soon
   const matchCount = matchList.length;
-  const comingSoonCount = matchCount < COMING_SOON_CARD_COUNT ? COMING_SOON_CARD_COUNT - matchCount : 0;
+  const comingSoonCount =
+    matchCount < COMING_SOON_CARD_COUNT
+      ? COMING_SOON_CARD_COUNT - matchCount
+      : 0;
 
   return (
-    <section className="py-16 px-4">
+    <section className="py-12 md:py-20 px-4">
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-6">
-            <div className="flex flex-col md:flex-row md:items-center gap-6">
-              <h3 className="text-4xl md:text-5xl font-bold text-gray-900 uppercase tracking-tight">
-                Calendar
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
+            <div>
+              <h3 className="text-4xl md:text-5xl font-black text-dark-charcoal uppercase tracking-tight leading-none">
+                Matches
               </h3>
-
-              <p className="text-sm text-gray-600 uppercase font-semibold italic">
-                Next Match
-              </p>
-
-              <div className="flex items-center gap-2">
-                {targetDate ? (
+              {targetDate && (
+                <div className="flex items-center gap-3 mt-3">
+                  <span className="text-xs font-bold text-barca-red uppercase tracking-widest">
+                    Next match in
+                  </span>
                   <Countdown targetDate={targetDate} />
-                ) : (
-                  <span className="text-sm font-semibold text-gray-500">—</span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             <Button
               variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-barca-gold hover:text-barca-gold"
+              className="border-dark-charcoal/20 text-dark-charcoal hover:bg-dark-charcoal hover:text-white transition-all duration-200 cursor-pointer"
               onClick={() => setIsSyncModalOpen(true)}
             >
               <Calendar className="w-4 h-4 mr-2" />
               Sync Calendar
-              <RefreshCw className="w-4 h-4 ml-2" />
+              <RefreshCw className="w-3.5 h-3.5 ml-2" />
             </Button>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
-              {matchList.map((match, index) => (
-                <motion.div
-                  key={match._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-barca-red rounded-2xl p-6 text-white flex flex-col h-full"
-                >
+          {/* Match Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {matchList.map((match, index) => (
+              <motion.div
+                key={match._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative bg-dark-charcoal rounded-2xl overflow-hidden"
+              >
+                {/* Top accent bar */}
+                <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+
+                <div className="p-6">
+                  {/* Competition */}
+                  <div className="flex items-center gap-2 mb-6">
+                    {match.competitionLogo &&
+                    match.competitionLogo.startsWith("http") ? (
+                      <div className="relative w-5 h-5">
+                        <Image
+                          src={match.competitionLogo}
+                          alt={match.competition}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    ) : null}
+                    <span className="text-[11px] text-white/50 uppercase tracking-widest font-semibold">
+                      {match.competition}
+                    </span>
+                  </div>
+
+                  {/* Teams */}
                   <div className="flex items-center justify-between mb-6">
-                    <div className="flex flex-col items-center gap-2">
-                      {match.homeCrest && match.homeCrest.startsWith("http") ? (
+                    <div className="flex flex-col items-center gap-3 flex-1">
+                      {match.homeCrest &&
+                      match.homeCrest.startsWith("http") ? (
                         <div className="relative w-16 h-16">
                           <Image
                             src={match.homeCrest}
@@ -109,38 +131,26 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                           />
                         </div>
                       ) : (
-                        <div className="text-4xl">
-                          {match.homeCrest || "🏔️"}
+                        <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                          <span className="text-2xl font-black text-white/40">
+                            {match.homeTeam.charAt(0)}
+                          </span>
                         </div>
                       )}
-                      <span className="text-sm font-semibold text-center">
+                      <span className="text-xs font-bold text-white text-center uppercase tracking-wide">
                         {match.homeTeam}
                       </span>
                     </div>
 
-                    <div className="flex flex-col items-center gap-2 px-4">
-                      {match.competitionLogo &&
-                      match.competitionLogo.startsWith("http") ? (
-                        <div className="relative w-12 h-12">
-                          <Image
-                            src={match.competitionLogo}
-                            alt={match.competition}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      ) : (
-                        <div className="text-2xl font-bold">
-                          {match.competitionLogo || "🏆"}
-                        </div>
-                      )}
-                      <span className="text-xs text-center text-white/80 uppercase">
-                        {match.competition}
+                    <div className="px-4">
+                      <span className="text-2xl font-black text-white/20">
+                        VS
                       </span>
                     </div>
 
-                    <div className="flex flex-col items-center gap-2">
-                      {match.awayCrest && match.awayCrest.startsWith("http") ? (
+                    <div className="flex flex-col items-center gap-3 flex-1">
+                      {match.awayCrest &&
+                      match.awayCrest.startsWith("http") ? (
                         <div className="relative w-16 h-16">
                           <Image
                             src={match.awayCrest}
@@ -150,111 +160,78 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                           />
                         </div>
                       ) : (
-                        <div className="text-4xl">
-                          {match.awayCrest || "⚽"}
+                        <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                          <span className="text-2xl font-black text-white/40">
+                            {match.awayTeam.charAt(0)}
+                          </span>
                         </div>
                       )}
-                      <span className="text-sm font-semibold text-center">
+                      <span className="text-xs font-bold text-white text-center uppercase tracking-wide">
                         {match.awayTeam}
                       </span>
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-6 flex-1">
-                    <p className="font-bold text-sm">
+                  {/* Match info */}
+                  <div className="border-t border-white/10 pt-4 mb-4">
+                    <p className="text-sm font-bold text-white">
                       {formatMatchDate(match.date)}
                     </p>
-                    <p className="text-xs text-white/80">{match.event}</p>
-                    <p className="text-xs text-white/80">{match.venue}</p>
+                    <p className="text-xs text-white/40 mt-1">{match.venue}</p>
                   </div>
 
-                  <div className="mt-auto pt-4">
-                    <Link href={`/matches/${match._id}`}>
-                      <Button
-                        variant="outline"
-                        className="w-full border-white/30 bg-white/10 hover:bg-white/20 text-white hover:text-barca-gold hover:border-barca-gold transition-all"
-                      >
-                        <span className="mr-2">⚽</span>
-                        TICKETS
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Coming Soon Cards */}
-              {Array.from({ length: comingSoonCount }).map((_, index) => (
-                <motion.div
-                  key={`coming-soon-${index}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: (matchCount + index) * 0.1 }}
-                  className="bg-gradient-barca rounded-2xl p-6 text-white flex flex-col h-full opacity-60"
-                >
-                  <div className="flex items-center justify-center mb-6">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="text-6xl">⏳</div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 mb-6 flex-1 flex flex-col items-center justify-center">
-                    <p className="font-bold text-lg text-center">Coming Soon</p>
-                    <p className="text-xs text-white/80 text-center">
-                      Match details will be announced soon
-                    </p>
-                  </div>
-
-                  <div className="mt-auto pt-4">
+                  {/* CTA */}
+                  <Link href={`/matches/${match._id}`}>
                     <Button
                       variant="outline"
-                      className="w-full border-white/30 bg-white/10 text-white/50 cursor-not-allowed"
-                      disabled
+                      className="w-full border-barca-gold/30 bg-barca-gold/5 hover:bg-barca-gold hover:text-dark-charcoal text-barca-gold transition-all duration-200 cursor-pointer font-bold text-xs uppercase tracking-wider"
                     >
-                      <span className="mr-2">⏳</span>
-                      COMING SOON
+                      Get Tickets
+                      <ArrowRight className="w-3.5 h-3.5 ml-2" />
                     </Button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="lg:w-80 flex-shrink-0"
-            >
-              <div className="relative rounded-2xl overflow-hidden h-full min-h-[400px]">
-                <Image
-                  src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop"
-                  alt="Next Games"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                <div className="relative z-10 h-full flex flex-col">
-                  <h4 className="text-3xl font-bold text-white uppercase p-6 pb-4">
-                    Next Games
-                  </h4>
-                  <div className="flex-1 flex items-end p-4">
-                    <Link
-                      href="/calendar"
-                      className="flex items-center gap-2 text-white hover:text-barca-gold transition-colors text-sm font-semibold"
-                    >
-                      See The Calendar
-                      <ExternalLink className="w-4 h-4" />
-                    </Link>
-                  </div>
+                  </Link>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
+
+            {/* Coming Soon Cards */}
+            {Array.from({ length: comingSoonCount }).map((_, index) => (
+              <motion.div
+                key={`coming-soon-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (matchCount + index) * 0.1 }}
+                className="relative bg-dark-charcoal/50 rounded-2xl overflow-hidden border border-dashed border-white/10"
+              >
+                <div className="p-6 flex flex-col items-center justify-center min-h-[320px]">
+                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                    <Calendar className="w-6 h-6 text-white/20" />
+                  </div>
+                  <p className="font-bold text-sm text-white/30 uppercase tracking-wider">
+                    Coming Soon
+                  </p>
+                  <p className="text-xs text-white/15 mt-1">
+                    Match details TBA
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* See full calendar link */}
+          <div className="flex justify-center mt-8">
+            <Link
+              href="/calendar"
+              className="inline-flex items-center gap-2 text-sm font-bold text-dark-charcoal hover:text-barca-red transition-colors duration-200 uppercase tracking-wider cursor-pointer"
+            >
+              See Full Calendar
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </motion.div>
       </div>
 
-      {/* Calendar Sync Modal */}
       <CalendarSyncModal
         isOpen={isSyncModalOpen}
         onClose={() => setIsSyncModalOpen(false)}

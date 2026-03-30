@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { ChevronDown, Info } from "lucide-react";
+import { ChevronDown, Trophy, Shield, ArrowDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { sanityFetch } from "@/sanity/lib/live";
-import { STANDINGS_QUERY, STANDINGS_SEASONS_QUERY } from "@/sanity/lib/queries";
+import {
+  STANDINGS_QUERY,
+  STANDINGS_SEASONS_QUERY,
+} from "@/sanity/lib/queries";
 
 interface Team {
   id: number;
@@ -23,9 +27,9 @@ interface Team {
 }
 
 const competitions = [
-  { id: "bpl", name: "BOB Premier League" },
-  { id: "cup", name: "National Cup" },
-  { id: "afc", name: "AFC Qualifiers" },
+  { id: "bpl", name: "BOB Premier League", short: "BPL" },
+  { id: "cup", name: "National Cup", short: "Cup" },
+  { id: "afc", name: "AFC Qualifiers", short: "AFC" },
 ];
 
 export default function StandingsPage() {
@@ -36,7 +40,6 @@ export default function StandingsPage() {
   const [seasons, setSeasons] = useState<string[]>(["2025", "2024", "2023"]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch standings data from Sanity
   useEffect(() => {
     const fetchStandings = async () => {
       setLoading(true);
@@ -55,7 +58,6 @@ export default function StandingsPage() {
           }).catch(() => ({ data: [] })),
         ]);
 
-        // Update seasons list
         if (seasonsResult.data && Array.isArray(seasonsResult.data)) {
           const uniqueSeasons = Array.from(
             new Set(
@@ -70,7 +72,6 @@ export default function StandingsPage() {
           }
         }
 
-        // Update teams data
         const standingsData = standingsResult.data as any;
         if (standingsData?.teams) {
           const teamsData = standingsData.teams.map(
@@ -105,152 +106,194 @@ export default function StandingsPage() {
     fetchStandings();
   }, [selectedCompetition, selectedSeason]);
 
-  const getPositionClass = (position: number) => {
-    if (position === 1) return "bg-[#00ff87]"; // Champion - Green
-    if (position <= 2) return "bg-[#04f5ff]"; // AFC Qualification - Cyan
-    if (position >= 9) return "bg-[#ff0046]"; // Relegation - Red
-    return "";
+  const getPositionIndicator = (position: number) => {
+    if (position === 1)
+      return { color: "bg-emerald-400", label: "Champion" };
+    if (position <= 2)
+      return { color: "bg-cyan-400", label: "AFC Qualification" };
+    if (position >= 9)
+      return { color: "bg-rose-500", label: "Relegation" };
+    return { color: "bg-transparent", label: "" };
   };
 
   const getFormColor = (result: "W" | "D" | "L") => {
     switch (result) {
       case "W":
-        return "bg-green-500";
+        return "bg-emerald-500 text-white";
       case "D":
-        return "bg-gray-400";
+        return "bg-gray-300 text-gray-600";
       case "L":
-        return "bg-red-500";
+        return "bg-rose-500 text-white";
     }
   };
 
+  const selectedCompName =
+    competitions.find((c) => c.id === selectedCompetition)?.name ||
+    "BOB Premier League";
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Page Header */}
-      <div className="bg-gradient-to-r from-dark-charcoal to-bronze py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-light-gold">
-            Tables
-          </h1>
+      {/* Hero Header */}
+      <div className="relative bg-dark-charcoal overflow-hidden">
+        {/* Diagonal pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+          }}
+        />
+
+        <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+              Standings
+            </p>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
+              League
+              <br />
+              <span className="text-barca-gold">Tables</span>
+            </h1>
+          </motion.div>
         </div>
+
+        {/* Bottom accent */}
+        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
       </div>
 
-      {/* Competition Tabs */}
-      <div className="bg-white border-b border-gray-200">
+      {/* Competition Tabs + Season Filter */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 overflow-x-auto">
-            {competitions.map((comp) => (
+          <div className="flex items-center justify-between">
+            {/* Tabs */}
+            <div className="flex items-center gap-0 overflow-x-auto -mb-px">
+              {competitions.map((comp) => (
+                <button
+                  key={comp.id}
+                  onClick={() => setSelectedCompetition(comp.id)}
+                  className={`relative px-5 md:px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors duration-200 uppercase tracking-wider cursor-pointer ${
+                    selectedCompetition === comp.id
+                      ? "text-dark-charcoal"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  <span className="hidden md:inline">{comp.name}</span>
+                  <span className="md:hidden">{comp.short}</span>
+                  {selectedCompetition === comp.id && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-barca-gold"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Season Selector */}
+            <div className="relative">
               <button
-                key={comp.id}
-                onClick={() => setSelectedCompetition(comp.id)}
-                className={`px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-4 ${
-                  selectedCompetition === comp.id
-                    ? "text-barca-gold border-barca-gold"
-                    : "text-gray-600 border-transparent hover:text-barca-gold"
-                }`}
+                onClick={() => setShowSeasonDropdown(!showSeasonDropdown)}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-dark-charcoal hover:text-barca-red transition-colors duration-200 cursor-pointer"
               >
-                {comp.name}
+                <span>{selectedSeason}</span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-200 ${showSeasonDropdown ? "rotate-180" : ""}`}
+                />
               </button>
-            ))}
+
+              <AnimatePresence>
+                {showSeasonDropdown && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowSeasonDropdown(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-20 overflow-hidden min-w-[100px]"
+                    >
+                      {seasons.map((season) => (
+                        <button
+                          key={season}
+                          onClick={() => {
+                            setSelectedSeason(season);
+                            setShowSeasonDropdown(false);
+                          }}
+                          className={`w-full px-4 py-2.5 text-sm text-left transition-colors duration-150 cursor-pointer ${
+                            selectedSeason === season
+                              ? "bg-dark-charcoal text-white font-bold"
+                              : "text-gray-600 font-medium hover:bg-gray-50"
+                          }`}
+                        >
+                          {season}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        {/* Season Filter */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3">
-            <label className="text-sm font-semibold text-gray-700">
-              Filter by Season:
-            </label>
-            <div className="relative">
-              <button
-                onClick={() => setShowSeasonDropdown(!showSeasonDropdown)}
-                className="flex items-center gap-3 px-5 py-2.5 bg-white border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-900 hover:border-barca-gold hover:bg-gray-50 transition-all min-w-[120px] shadow-sm"
-              >
-                <span>{selectedSeason}</span>
-                <ChevronDown
-                  size={18}
-                  className={`text-gray-500 transition-transform duration-200 ${showSeasonDropdown ? "rotate-180" : ""}`}
-                />
-              </button>
-              {showSeasonDropdown && (
-                <>
-                  {/* Backdrop */}
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowSeasonDropdown(false)}
-                  />
-                  {/* Dropdown Menu */}
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white border-2 border-gray-200 rounded-lg shadow-xl z-20 overflow-hidden min-w-[120px]">
-                    {seasons.map((season) => (
-                      <button
-                        key={season}
-                        onClick={() => {
-                          setSelectedSeason(season);
-                          setShowSeasonDropdown(false);
-                        }}
-                        className={`w-full px-5 py-3 text-sm text-left hover:bg-barca-gold hover:text-dark-charcoal transition-colors ${
-                          selectedSeason === season
-                            ? "bg-barca-gold text-dark-charcoal font-semibold"
-                            : "text-gray-700 font-medium"
-                        }`}
-                      >
-                        {season}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        {/* Table Title */}
+        <div className="flex items-center gap-3 mb-6">
+          <Shield className="w-5 h-5 text-barca-gold" />
+          <h2 className="text-lg font-bold text-dark-charcoal">
+            {selectedCompName}{" "}
+            <span className="text-gray-400 font-medium">{selectedSeason}</span>
+          </h2>
         </div>
 
-        {/* Table Card */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          {/* Table Header */}
-          <div className="bg-dark-charcoal text-light-gold px-6 py-4">
-            <h2 className="text-xl font-bold">
-              BOB Bhutan Premier League {selectedSeason}
-            </h2>
-          </div>
-
-          {/* Table */}
+        {/* Table */}
+        <div className="rounded-xl overflow-hidden border border-gray-100">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16">
-                    Position
+                <tr className="bg-dark-charcoal">
+                  <th className="text-left py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest w-14">
+                    #
                   </th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th className="text-left py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest">
                     Club
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
                     Pl
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
                     W
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
                     D
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
                     L
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
                     GF
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
                     GA
                   </th>
-                  <th className="text-center py-3 px-2 text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
                     GD
                   </th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-16">
+                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-barca-gold uppercase tracking-widest w-14">
                     Pts
                   </th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">
+                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest hidden md:table-cell">
                     Form
                   </th>
                 </tr>
@@ -258,157 +301,188 @@ export default function StandingsPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={11} className="py-8 text-center text-gray-500">
-                      Loading standings...
+                    <td colSpan={11} className="py-16 text-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="w-8 h-8 border-2 border-barca-gold border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm text-gray-400 font-medium">
+                          Loading standings...
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ) : teams.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="py-8 text-center text-gray-500">
-                      No standings data available
+                    <td colSpan={11} className="py-16 text-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <Trophy className="w-8 h-8 text-gray-200" />
+                        <span className="text-sm text-gray-400 font-medium">
+                          No standings data available
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ) : (
-                  teams.map((team, index) => (
-                    <tr
-                      key={team.id}
-                      className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-50/50"
-                      }`}
-                    >
-                      {/* Position with Color Indicator */}
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`w-1 h-8 rounded-sm ${getPositionClass(team.position)}`}
-                          />
-                          <span className="font-bold text-gray-900">
-                            {team.position}
-                          </span>
-                        </div>
-                      </td>
+                  teams.map((team, index) => {
+                    const posIndicator = getPositionIndicator(team.position);
+                    const isParoFC = team.name
+                      .toLowerCase()
+                      .includes("paro");
 
-                      {/* Club */}
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-8 h-8 flex-shrink-0">
-                            {team.logo ? (
-                              <Image
-                                src={team.logo}
-                                alt={team.name}
-                                fill
-                                className="object-contain"
-                              />
-                            ) : (
-                              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-500">
-                                {team.name.charAt(0)}
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-semibold text-gray-900 truncate">
-                            {team.name}
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Stats */}
-                      <td className="py-4 px-2 text-center text-gray-700">
-                        {team.played}
-                      </td>
-                      <td className="py-4 px-2 text-center text-gray-700">
-                        {team.won}
-                      </td>
-                      <td className="py-4 px-2 text-center text-gray-700">
-                        {team.drawn}
-                      </td>
-                      <td className="py-4 px-2 text-center text-gray-700">
-                        {team.lost}
-                      </td>
-                      <td className="py-4 px-2 text-center text-gray-700">
-                        {team.goalsFor}
-                      </td>
-                      <td className="py-4 px-2 text-center text-gray-700">
-                        {team.goalsAgainst}
-                      </td>
-                      <td className="py-4 px-2 text-center font-semibold text-gray-900">
-                        {team.goalDifference > 0
-                          ? `+${team.goalDifference}`
-                          : team.goalDifference}
-                      </td>
-                      <td className="py-4 px-4 text-center font-bold text-gray-900 text-lg">
-                        {team.points}
-                      </td>
-
-                      {/* Form */}
-                      <td className="py-4 px-4 hidden md:table-cell">
-                        <div className="flex items-center justify-center gap-1">
-                          {team.form?.map((result, i) => (
+                    return (
+                      <motion.tr
+                        key={team.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          delay: index * 0.03,
+                          duration: 0.3,
+                        }}
+                        className={`border-b border-gray-50 transition-colors duration-150 ${
+                          isParoFC
+                            ? "bg-barca-gold/5 hover:bg-barca-gold/10"
+                            : "hover:bg-gray-50/80"
+                        }`}
+                      >
+                        {/* Position */}
+                        <td className="py-3.5 px-3 md:px-4">
+                          <div className="flex items-center gap-2">
                             <div
-                              key={i}
-                              className={`w-6 h-6 rounded-full ${getFormColor(result)} flex items-center justify-center text-white text-xs font-bold`}
+                              className={`w-[3px] h-5 rounded-full ${posIndicator.color}`}
+                            />
+                            <span
+                              className={`text-sm font-bold ${
+                                team.position <= 3
+                                  ? "text-dark-charcoal"
+                                  : "text-gray-400"
+                              }`}
                             >
-                              {result}
+                              {team.position}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Club */}
+                        <td className="py-3.5 px-3 md:px-4">
+                          <div className="flex items-center gap-3">
+                            <div className="relative w-7 h-7 flex-shrink-0">
+                              {team.logo ? (
+                                <Image
+                                  src={team.logo}
+                                  alt={team.name}
+                                  fill
+                                  className="object-contain"
+                                />
+                              ) : (
+                                <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center">
+                                  <span className="text-[10px] font-black text-gray-400">
+                                    {team.name.charAt(0)}
+                                  </span>
+                                </div>
+                              )}
                             </div>
-                          ))}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                            <span
+                              className={`text-sm truncate ${
+                                isParoFC
+                                  ? "font-black text-dark-charcoal"
+                                  : "font-semibold text-gray-800"
+                              }`}
+                            >
+                              {team.name}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Stats */}
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
+                          {team.played}
+                        </td>
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
+                          {team.won}
+                        </td>
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
+                          {team.drawn}
+                        </td>
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
+                          {team.lost}
+                        </td>
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums hidden sm:table-cell">
+                          {team.goalsFor}
+                        </td>
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums hidden sm:table-cell">
+                          {team.goalsAgainst}
+                        </td>
+                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm font-semibold tabular-nums text-gray-700">
+                          {team.goalDifference > 0
+                            ? `+${team.goalDifference}`
+                            : team.goalDifference}
+                        </td>
+                        <td
+                          className={`py-3.5 px-3 md:px-4 text-center text-base tabular-nums ${
+                            isParoFC
+                              ? "font-black text-barca-red"
+                              : "font-black text-dark-charcoal"
+                          }`}
+                        >
+                          {team.points}
+                        </td>
+
+                        {/* Form */}
+                        <td className="py-3.5 px-3 md:px-4 hidden md:table-cell">
+                          <div className="flex items-center justify-center gap-1">
+                            {team.form?.map((result, i) => (
+                              <div
+                                key={i}
+                                className={`w-5 h-5 rounded-sm ${getFormColor(result)} flex items-center justify-center text-[9px] font-bold`}
+                              >
+                                {result}
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                      </motion.tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
           </div>
-
-          {/* Legend */}
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <div className="flex flex-wrap items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Info size={16} className="text-gray-400" />
-                <span className="font-semibold text-gray-600">
-                  Qualification/Relegation
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-[#00ff87]" />
-                <span className="text-gray-600">Champion</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-[#04f5ff]" />
-                <span className="text-gray-600">AFC Cup Qualification</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-sm bg-[#ff0046]" />
-                <span className="text-gray-600">Relegation</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Table Key - Additional Info */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-gray-600">
-          <div>
-            <span className="font-semibold">Pl</span> = Played
+        {/* Legend */}
+        <div className="mt-6 flex flex-wrap items-center gap-5 text-xs text-gray-400">
+          <span className="font-bold text-gray-500 uppercase tracking-wider">
+            Key
+          </span>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" />
+            <span>Champion</span>
           </div>
-          <div>
-            <span className="font-semibold">W</span> = Won
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-sm bg-cyan-400" />
+            <span>AFC Cup Qualification</span>
           </div>
-          <div>
-            <span className="font-semibold">D</span> = Drawn
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-sm bg-rose-500" />
+            <span>Relegation</span>
           </div>
-          <div>
-            <span className="font-semibold">L</span> = Lost
+          <div className="w-px h-3 bg-gray-200 hidden sm:block" />
+          <div className="hidden sm:flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded-sm bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white">
+              W
+            </div>
+            <span>Win</span>
           </div>
-          <div>
-            <span className="font-semibold">GF</span> = Goals For
+          <div className="hidden sm:flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded-sm bg-gray-300 flex items-center justify-center text-[8px] font-bold text-gray-600">
+              D
+            </div>
+            <span>Draw</span>
           </div>
-          <div>
-            <span className="font-semibold">GA</span> = Goals Against
-          </div>
-          <div>
-            <span className="font-semibold">GD</span> = Goal Difference
-          </div>
-          <div>
-            <span className="font-semibold">Pts</span> = Points
+          <div className="hidden sm:flex items-center gap-1.5">
+            <div className="w-4 h-4 rounded-sm bg-rose-500 flex items-center justify-center text-[8px] font-bold text-white">
+              L
+            </div>
+            <span>Loss</span>
           </div>
         </div>
       </div>

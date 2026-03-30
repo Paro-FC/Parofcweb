@@ -1,87 +1,90 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 interface Trophy {
-  _id: string
-  name: string
-  total: number
+  _id: string;
+  name: string;
+  total: number;
 }
 
 interface TrophiesSectionProps {
-  trophies?: Trophy[]
+  trophies?: Trophy[];
 }
 
-// Fallback trophies data
 const fallbackTrophies: Trophy[] = [
-  {
-    _id: "1",
-    name: "La Liga",
-    total: 28,
-  },
-  {
-    _id: "2",
-    name: "UEFA Champions League",
-    total: 5,
-  },
-  {
-    _id: "3",
-    name: "FIFA Club World Cup",
-    total: 3,
-  },
-  {
-    _id: "4",
-    name: "Copa Del Rey",
-    total: 32,
-  },
-]
+  { _id: "1", name: "La Liga", total: 28 },
+  { _id: "2", name: "UEFA Champions League", total: 5 },
+  { _id: "3", name: "FIFA Club World Cup", total: 3 },
+  { _id: "4", name: "Copa Del Rey", total: 32 },
+];
 
-export function TrophiesSection({ trophies = fallbackTrophies }: TrophiesSectionProps) {
-  const trophyList = trophies && trophies.length > 0 ? trophies : fallbackTrophies
+export function TrophiesSection({
+  trophies = fallbackTrophies,
+}: TrophiesSectionProps) {
+  const trophyList =
+    trophies && trophies.length > 0 ? trophies : fallbackTrophies;
 
   return (
-    <section className="py-16 px-4 bg-dark-charcoal">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section className="py-16 md:py-24 px-4 bg-dark-charcoal relative overflow-hidden">
+      {/* Background pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+        }}
+      />
+
+      <div className="container mx-auto relative z-10">
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-4xl md:text-5xl font-black uppercase tracking-tight text-white mb-12 text-center"
+        >
+          Honours
+        </motion.h3>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {trophyList.map((trophy, index) => (
             <motion.div
               key={trophy._id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="relative bg-dark-charcoal border border-medium-grey/30 rounded-xl p-6 overflow-hidden"
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              className="group relative text-center py-8 md:py-12 px-4"
             >
-              {/* Gradient Pattern at Top */}
-              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-barca-red via-barca-gold to-bronze opacity-80" />
-              
-              {/* Competition Name */}
-              <div className="text-white text-sm font-normal mb-8">
+              {/* Hover border effect */}
+              <div className="absolute inset-0 border border-white/0 group-hover:border-white/10 rounded-xl transition-all duration-300" />
+
+              {/* Big number */}
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                  delay: index * 0.1 + 0.2,
+                  duration: 0.5,
+                  type: "spring",
+                  stiffness: 200,
+                }}
+                className="mb-3"
+              >
+                <span className="text-6xl md:text-8xl font-black text-barca-gold leading-none">
+                  {trophy.total}
+                </span>
+              </motion.div>
+
+              {/* Competition name */}
+              <p className="text-xs md:text-sm font-semibold text-white/50 uppercase tracking-wider">
                 {trophy.name}
-              </div>
-              
-              {/* Trophy Icon, Number, and Label */}
-              <div className="flex items-center gap-4">
-                {/* Trophy Icon */}
-                <div className="flex-shrink-0 text-5xl">
-                  🏆
-                </div>
-                
-                {/* Number and Label */}
-                <div className="flex-1 flex items-baseline gap-3">
-                  <span className="text-7xl font-bold text-barca-gold leading-none">
-                    {trophy.total}
-                  </span>
-                  <span className="text-white text-sm font-medium">
-                    TROPHIES
-                  </span>
-                </div>
-              </div>
+              </p>
             </motion.div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
-

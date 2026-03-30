@@ -2,64 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Excon Font Declarations */
+/* Plein Font Declarations */
 @font-face {
-  font-family: 'Excon';
-  src: url('/fonts/Excon-Thin.woff2') format('woff2'),
-       url('/fonts/Excon-Thin.woff') format('woff'),
-       url('/fonts/Excon-Thin.ttf') format('truetype');
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Excon';
-  src: url('/fonts/Excon-Light.woff2') format('woff2'),
-       url('/fonts/Excon-Light.woff') format('woff'),
-       url('/fonts/Excon-Light.ttf') format('truetype');
+  font-family: "Plein";
+  src: url("/fonts/Plein-Light.otf") format("opentype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Excon';
-  src: url('/fonts/Excon-Regular.woff2') format('woff2'),
-       url('/fonts/Excon-Regular.woff') format('woff'),
-       url('/fonts/Excon-Regular.ttf') format('truetype');
+  font-family: "Plein";
+  src: url("/fonts/Plein-LightItalic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plein";
+  src: url("/fonts/Plein-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Excon';
-  src: url('/fonts/Excon-Medium.woff2') format('woff2'),
-       url('/fonts/Excon-Medium.woff') format('woff'),
-       url('/fonts/Excon-Medium.ttf') format('truetype');
+  font-family: "Plein";
+  src: url("/fonts/Plein-Italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plein";
+  src: url("/fonts/Plein-Medium.otf") format("opentype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Excon';
-  src: url('/fonts/Excon-Bold.woff2') format('woff2'),
-       url('/fonts/Excon-Bold.woff') format('woff'),
-       url('/fonts/Excon-Bold.ttf') format('truetype');
+  font-family: "Plein";
+  src: url("/fonts/Plein-MediumItalic.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plein";
+  src: url("/fonts/Plein-Bold.otf") format("opentype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Excon';
-  src: url('/fonts/Excon-Black.woff2') format('woff2'),
-       url('/fonts/Excon-Black.woff') format('woff'),
-       url('/fonts/Excon-Black.ttf') format('truetype');
+  font-family: "Plein";
+  src: url("/fonts/Plein-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plein";
+  src: url("/fonts/Plein-Black.otf") format("opentype");
   font-weight: 900;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plein";
+  src: url("/fonts/Plein-BlackItalic.otf") format("opentype");
+  font-weight: 900;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -74,4 +94,3 @@
     text-wrap: balance;
   }
 }
-

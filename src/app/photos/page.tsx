@@ -1,9 +1,9 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
-import { useState, useEffect } from "react"
-import { X, Camera, Clock, ImagePlus, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { X, Camera, ChevronLeft, ChevronRight } from "lucide-react"
 import { sanityFetch } from "@/sanity/lib/live"
 import { PHOTOS_QUERY } from "@/sanity/lib/queries"
 
@@ -24,12 +24,12 @@ interface Photo {
   images?: PhotoImage[]
 }
 
-// Fallback photos data
 const fallbackPhotos: Photo[] = [
   {
     _id: "1",
-    coverImage: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop",
-    title: "Last session before Barça v Copenhagen",
+    coverImage:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop",
+    title: "Last session before Paro FC v Thimphu City",
     category: "FIRST TEAM",
     date: new Date().toISOString(),
     photoCount: 27,
@@ -37,41 +37,42 @@ const fallbackPhotos: Photo[] = [
   },
 ]
 
-const categories = ["All", "Match", "Training", "Press", "Team", "FIRST TEAM"]
-
-function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })
-}
-
 function getTimeAgo(dateString: string) {
   const date = new Date(dateString)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
   const diffDays = Math.floor(diffHours / 24)
-  
-  if (diffHours < 1) return 'Just now'
-  if (diffHours < 24) return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`
-  if (diffDays === 1) return '1 day ago'
-  return `${diffDays} days ago`
+
+  if (diffHours < 1) return "Just now"
+  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffDays === 1) return "1d ago"
+  if (diffDays < 30) return `${diffDays}d ago`
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+  })
 }
 
 export default function PhotosPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [photos, setPhotos] = useState<Photo[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch photos from Sanity
   useEffect(() => {
     const fetchPhotos = async () => {
       setLoading(true)
       try {
-        const photosResult = await sanityFetch({ query: PHOTOS_QUERY }).catch(() => ({ data: [] }))
-        
-        if (photosResult.data && Array.isArray(photosResult.data) && photosResult.data.length > 0) {
+        const photosResult = await sanityFetch({
+          query: PHOTOS_QUERY,
+        }).catch(() => ({ data: [] }))
+
+        if (
+          photosResult.data &&
+          Array.isArray(photosResult.data) &&
+          photosResult.data.length > 0
+        ) {
           const photosData = photosResult.data.map((photo: any) => ({
             _id: photo._id,
             coverImage: photo.coverImage,
@@ -87,7 +88,7 @@ export default function PhotosPage() {
           setPhotos(fallbackPhotos)
         }
       } catch (error) {
-        console.error('Error fetching photos:', error)
+        console.error("Error fetching photos:", error)
         setPhotos(fallbackPhotos)
       } finally {
         setLoading(false)
@@ -97,228 +98,288 @@ export default function PhotosPage() {
     fetchPhotos()
   }, [])
 
-  // Keyboard navigation for lightbox
+  // Lightbox helpers
+  const getAllImages = useCallback(
+    (photo: Photo) => {
+      return photo.images && photo.images.length > 0
+        ? [photo.coverImage, ...photo.images.map((img) => img.url)]
+        : [photo.coverImage]
+    },
+    [],
+  )
+
+  const openLightbox = (photo: Photo) => {
+    setSelectedPhoto(photo)
+    setCurrentImageIndex(0)
+    document.body.style.overflow = "hidden"
+  }
+
+  const closeLightbox = () => {
+    setSelectedPhoto(null)
+    setCurrentImageIndex(0)
+    document.body.style.overflow = ""
+  }
+
+  // Keyboard navigation
   useEffect(() => {
     if (!selectedPhoto) return
 
-    // Get all images for current photo
-    const allImages = selectedPhoto.images && selectedPhoto.images.length > 0
-      ? [selectedPhoto.coverImage, ...selectedPhoto.images.map(img => img.url)]
-      : [selectedPhoto.coverImage]
-
-    const hasPrevious = currentImageIndex > 0
-    const hasNext = currentImageIndex < allImages.length - 1
+    const allImages = getAllImages(selectedPhoto)
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' && hasPrevious) {
+      if (e.key === "ArrowLeft" && currentImageIndex > 0) {
         setCurrentImageIndex(currentImageIndex - 1)
-      } else if (e.key === 'ArrowRight' && hasNext) {
+      } else if (
+        e.key === "ArrowRight" &&
+        currentImageIndex < allImages.length - 1
+      ) {
         setCurrentImageIndex(currentImageIndex + 1)
-      } else if (e.key === 'Escape') {
-        setSelectedPhoto(null)
-        setCurrentImageIndex(0)
+      } else if (e.key === "Escape") {
+        closeLightbox()
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedPhoto, currentImageIndex])
-
-  const filteredPhotos = selectedCategory === "All"
-    ? photos
-    : photos.filter(photo => photo.category === selectedCategory)
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [selectedPhoto, currentImageIndex, getAllImages])
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Hero Header */}
+      <div className="relative bg-dark-charcoal overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+          }}
+        />
 
-      {/* Main Content */}
-      <section className="bg-white py-16 px-4">
-        <div className="container mx-auto">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tight text-gray-900 mb-4 md:mb-0">
-              Photos
-            </h2>
+        <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+              Gallery
+            </p>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
+              Match Day
+              <br />
+              <span className="text-barca-gold">Photos</span>
+            </h1>
+          </motion.div>
+        </div>
+
+        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+      </div>
+
+      {/* Gallery Grid */}
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[16/10] bg-gray-100" />
+                <div className="mt-3 space-y-2">
+                  <div className="h-3 bg-gray-100 rounded w-3/4" />
+                  <div className="h-2 bg-gray-100 rounded w-1/3" />
+                </div>
+              </div>
+            ))}
           </div>
-
-          {/* Photo Gallery Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {loading ? (
-              <div className="col-span-full text-center py-12 text-gray-500">
-                Loading photos...
-              </div>
-            ) : filteredPhotos.length === 0 ? (
-              <div className="col-span-full text-center py-12 text-gray-500">
-                No photos found
-              </div>
-            ) : (
-              filteredPhotos.map((photo, index) => (
+        ) : photos.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <Camera className="w-8 h-8 text-gray-200 mb-3" />
+            <span className="text-sm text-gray-400 font-medium">
+              No photos available yet
+            </span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {photos.map((photo, index) => (
               <motion.div
                 key={photo._id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="relative group cursor-pointer border border-gray-200 p-2"
-                onClick={() => {
-                  setSelectedPhoto(photo)
-                  setCurrentImageIndex(0)
-                }}
+                transition={{ delay: index * 0.04, duration: 0.3 }}
+                className="group cursor-pointer"
+                onClick={() => openLightbox(photo)}
               >
-                <div className="relative aspect-[16/9] overflow-hidden bg-gray-100">
+                {/* Image */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
                   <Image
-                      src={photo.coverImage}
+                    src={photo.coverImage}
                     alt={photo.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  
-                  {/* Camera Icon with Count - Top Right */}
-                  <div className="absolute top-3 right-3 bg-barca-gold/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-1.5 z-10">
-                    <span className="text-white text-sm font-semibold">{photo.photoCount}</span>
-                    <Camera className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                
-                {/* Two Thick Light Gray Lines Below Image */}
-                <div className="flex flex-col">
-                  <div className="h-2 bg-gray-300 w-[95%] mx-auto"></div>
-                  <div className="h-2 bg-gray-200 w-11/12 mx-auto"></div>
-                </div>
-                
-                {/* Title - Below Image */}
-                <h3 className="text-gray-900 font-semibold text-sm mt-3 mb-3 text-center">
-                  {photo.title}
-                </h3>
-                
-                {/* Footer - Category and Time */}
-                <div className="flex items-center justify-between">
-                  {/* Category Badge - Bottom Left */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-sm">
-                     <ImagePlus className="w-4 h-4 text-barca-red" />
-                    </div>
-                    <span className="text-barca-red font-bold text-sm uppercase">
-                      {photo.category}
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-dark-charcoal/0 group-hover:bg-dark-charcoal/30 transition-colors duration-300" />
+
+                  {/* Photo count badge */}
+                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-dark-charcoal/70 backdrop-blur-sm px-2 py-1">
+                    <Camera size={12} className="text-white" />
+                    <span className="text-white text-[11px] font-bold tabular-nums">
+                      {photo.photoCount}
                     </span>
                   </div>
-                  
-                  {/* Timestamp - Bottom Right */}
-                  <div className="flex items-center gap-1.5 text-gray-600 text-sm">
-                    <Clock className="w-4 h-4" />
-                      <span>{getTimeAgo(photo.date)}</span>
+
+                  {/* View indicator on hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-xs font-bold text-white uppercase tracking-widest">
+                      View Gallery
+                    </span>
                   </div>
                 </div>
+
+                {/* Info */}
+                <div className="mt-3 mb-1">
+                  <h3 className="text-sm font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-barca-red transition-colors duration-200">
+                    {photo.title}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-barca-red uppercase tracking-widest">
+                    {photo.category}
+                  </span>
+                  <span className="text-gray-300">·</span>
+                  <span className="text-[10px] text-gray-400 font-medium">
+                    {getTimeAgo(photo.date)}
+                  </span>
+                </div>
               </motion.div>
-              ))
-            )}
+            ))}
           </div>
-        </div>
-      </section>
+        )}
+      </div>
 
-      {/* Lightbox Modal */}
-      {selectedPhoto && (() => {
-        // Get all images: cover image + gallery images
-        const allImages = selectedPhoto.images && selectedPhoto.images.length > 0
-          ? [selectedPhoto.coverImage, ...selectedPhoto.images.map(img => img.url)]
-          : [selectedPhoto.coverImage]
-        
-        const currentImage = allImages[currentImageIndex]
-        const hasPrevious = currentImageIndex > 0
-        const hasNext = currentImageIndex < allImages.length - 1
+      {/* Lightbox */}
+      <AnimatePresence>
+        {selectedPhoto &&
+          (() => {
+            const allImages = getAllImages(selectedPhoto)
+            const currentImage = allImages[currentImageIndex]
+            const hasPrevious = currentImageIndex > 0
+            const hasNext = currentImageIndex < allImages.length - 1
+            const currentCaption =
+              currentImageIndex === 0
+                ? selectedPhoto.title
+                : selectedPhoto.images?.[currentImageIndex - 1]?.caption ||
+                  selectedPhoto.title
 
-        const handlePrevious = (e: React.MouseEvent) => {
-          e.stopPropagation()
-          if (hasPrevious) {
-            setCurrentImageIndex(currentImageIndex - 1)
-          }
-        }
-
-        const handleNext = (e: React.MouseEvent) => {
-          e.stopPropagation()
-          if (hasNext) {
-            setCurrentImageIndex(currentImageIndex + 1)
-          }
-        }
-
-        return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-            onClick={() => {
-              setSelectedPhoto(null)
-              setCurrentImageIndex(0)
-            }}
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="relative max-w-6xl max-h-[90vh] w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-              {/* Close Button */}
-            <button
-                onClick={() => {
-                  setSelectedPhoto(null)
-                  setCurrentImageIndex(0)
-                }}
-              className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-              {/* Previous Button */}
-              {hasPrevious && (
-                <button
-                  onClick={handlePrevious}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
+            return (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-50 bg-black flex flex-col"
+                onClick={closeLightbox}
+              >
+                {/* Top bar */}
+                <div
+                  className="flex items-center justify-between px-4 py-3 flex-shrink-0"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-              )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-white/40 uppercase tracking-wider">
+                      {selectedPhoto.title}
+                    </span>
+                    {allImages.length > 1 && (
+                      <span className="text-xs text-white/20 tabular-nums">
+                        {currentImageIndex + 1} / {allImages.length}
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    onClick={closeLightbox}
+                    className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"
+                    aria-label="Close lightbox"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
 
-              {/* Next Button */}
-              {hasNext && (
-                <button
-                  onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
+                {/* Image area */}
+                <div
+                  className="flex-1 relative flex items-center justify-center px-4 min-h-0"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-              )}
+                  {/* Previous */}
+                  {hasPrevious && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setCurrentImageIndex(currentImageIndex - 1)
+                      }}
+                      className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white/30 hover:text-white transition-colors cursor-pointer"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                  )}
 
-              {/* Current Image */}
-            <div className="relative w-full h-[80vh]">
-              <Image
-                  key={currentImageIndex}
-                  src={currentImage}
-                alt={selectedPhoto.title}
-                fill
-                className="object-contain"
-              />
-            </div>
+                  {/* Next */}
+                  {hasNext && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setCurrentImageIndex(currentImageIndex + 1)
+                      }}
+                      className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white/30 hover:text-white transition-colors cursor-pointer"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  )}
 
-              {/* Carousel Thumbnails */}
-              {allImages.length > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-                  <style dangerouslySetInnerHTML={{
-                    __html: `
-                      .thumbnail-scroll::-webkit-scrollbar {
-                        display: none;
-                      }
-                    `
-                  }} />
-              </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )
-      })()}
+                  {/* Current Image */}
+                  <div className="relative w-full h-full max-h-[80vh]">
+                    <Image
+                      key={currentImageIndex}
+                      src={currentImage}
+                      alt={currentCaption}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
 
+                {/* Bottom bar — caption + thumbnail dots */}
+                <div
+                  className="px-4 py-3 flex-shrink-0 flex items-center justify-between"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p className="text-xs text-white/30 font-medium truncate max-w-[60%]">
+                    {currentCaption}
+                  </p>
+
+                  {/* Dot indicators */}
+                  {allImages.length > 1 && (
+                    <div className="flex items-center gap-1">
+                      {allImages.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentImageIndex(idx)}
+                          className={`rounded-full transition-all duration-200 cursor-pointer ${
+                            currentImageIndex === idx
+                              ? "w-4 h-1.5 bg-white"
+                              : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"
+                          }`}
+                          aria-label={`Go to image ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )
+          })()}
+      </AnimatePresence>
     </div>
   )
 }
-

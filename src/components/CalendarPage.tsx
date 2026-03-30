@@ -6,8 +6,7 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import { CalendarSyncModal } from "./CalendarSyncModal";
 import { useState, useMemo } from "react";
-import { Calendar, RefreshCw, X, ArrowRight } from "lucide-react";
-import { Button } from "./ui/button";
+import { Calendar, RefreshCw, ArrowRight, MapPin, Clock } from "lucide-react";
 
 interface Match {
   _id: string;
@@ -27,209 +26,293 @@ interface CalendarPageProps {
   matches: Match[];
 }
 
-function formatMatchDate(dateString: string) {
+function formatMatchDay(dateString: string) {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
+  return date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
+}
+
+function formatMatchDayNum(dateString: string) {
+  const date = new Date(dateString);
+  return date.getDate().toString().padStart(2, "0");
+}
+
+function formatMatchTime(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   });
+}
+
+function formatMatchMonth(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
 }
 
 function groupMatchesByMonth(matches: Match[]) {
   const grouped: { [key: string]: Match[] } = {};
-
   matches.forEach((match) => {
     const date = new Date(match.date);
     const monthKey = date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
     });
-
-    if (!grouped[monthKey]) {
-      grouped[monthKey] = [];
-    }
+    if (!grouped[monthKey]) grouped[monthKey] = [];
     grouped[monthKey].push(match);
   });
-
   return grouped;
+}
+
+function getImageUrl(image: unknown): string | null {
+  if (!image) return null;
+  if (typeof image === "string") return image;
+  try {
+    return urlFor(image).width(128).height(128).url();
+  } catch {
+    return null;
+  }
 }
 
 export function CalendarPage({ matches }: CalendarPageProps) {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-
-  // Memoize grouped matches to avoid recalculating on every render
   const groupedMatches = useMemo(() => groupMatchesByMonth(matches), [matches]);
 
   return (
     <div className="min-h-screen bg-white">
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12 gap-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 uppercase tracking-tight mb-2">
-                Match Calendar
-              </h1>
-              <p className="text-gray-600">All upcoming matches and fixtures</p>
-            </div>
+      {/* Hero Header */}
+      <div className="relative bg-dark-charcoal overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+          }}
+        />
 
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-barca-gold hover:text-barca-gold"
-              onClick={() => setIsSyncModalOpen(true)}
+        <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              <Calendar className="w-4 h-4 mr-2" />
-              Sync Calendar
-              <RefreshCw className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
+              <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+                Fixtures & Results
+              </p>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
+                Match
+                <br />
+                <span className="text-barca-gold">Calendar</span>
+              </h1>
+            </motion.div>
 
-          {/* Matches by Month */}
-          {matches.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-gray-500 text-lg">No matches scheduled</p>
-            </div>
-          ) : (
-            <div className="space-y-12">
-              {Object.entries(groupedMatches).map(
-                ([month, monthMatches], monthIndex) => (
-                  <motion.div
-                    key={month}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: monthIndex * 0.1 }}
-                  >
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      {month}
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {monthMatches.map((match, index) => (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              onClick={() => setIsSyncModalOpen(true)}
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-5 py-2.5 text-xs font-bold text-white uppercase tracking-wider transition-colors cursor-pointer"
+            >
+              <Calendar className="w-4 h-4" />
+              Sync Calendar
+              <RefreshCw className="w-3.5 h-3.5" />
+            </motion.button>
+          </div>
+        </div>
+
+        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+      </div>
+
+      {/* Matches */}
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        {matches.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <Calendar className="w-8 h-8 text-gray-200 mb-3" />
+            <span className="text-sm text-gray-400 font-medium">
+              No matches scheduled
+            </span>
+          </div>
+        ) : (
+          <div className="space-y-10">
+            {Object.entries(groupedMatches).map(
+              ([month, monthMatches], monthIndex) => (
+                <motion.div
+                  key={month}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: monthIndex * 0.05 }}
+                >
+                  {/* Month header */}
+                  <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                    {month}
+                  </h2>
+
+                  {/* Match rows */}
+                  <div className="space-y-2">
+                    {monthMatches.map((match, index) => {
+                      const homeUrl = getImageUrl(match.homeCrest);
+                      const awayUrl = getImageUrl(match.awayCrest);
+                      const compUrl = getImageUrl(match.competitionLogo);
+
+                      return (
                         <motion.div
                           key={match._id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            delay: monthIndex * 0.1 + index * 0.05,
-                          }}
-                          className="bg-gradient-barca rounded-2xl p-6 text-white flex flex-col h-full"
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: index * 0.03 }}
                         >
-                          <div className="flex items-center justify-between mb-6">
-                            <div className="flex flex-col items-center gap-2 flex-1">
-                              {match.homeCrest ? (
-                                <div className="relative w-16 h-16">
-                                  <Image
-                                    src={urlFor(match.homeCrest)
-                                      .width(128)
-                                      .height(128)
-                                      .url()}
-                                    alt={match.homeTeam}
-                                    fill
-                                    className="object-contain"
+                          <Link
+                            href={`/matches/${match._id}`}
+                            className="group block cursor-pointer"
+                          >
+                            <div className="border border-gray-100 hover:border-gray-200 transition-colors duration-200">
+                              <div className="flex items-stretch">
+                                {/* Date block */}
+                                <div className="w-16 md:w-20 flex-shrink-0 bg-dark-charcoal flex flex-col items-center justify-center py-4">
+                                  <span className="text-[9px] font-bold text-white/40 uppercase tracking-wider">
+                                    {formatMatchDay(match.date)}
+                                  </span>
+                                  <span className="text-2xl md:text-3xl font-black text-white leading-none tabular-nums">
+                                    {formatMatchDayNum(match.date)}
+                                  </span>
+                                  <span className="text-[9px] font-bold text-barca-gold uppercase tracking-wider">
+                                    {formatMatchMonth(match.date)}
+                                  </span>
+                                </div>
+
+                                {/* Match content */}
+                                <div className="flex-1 flex items-center px-4 md:px-6 py-4 gap-4 md:gap-6 min-w-0">
+                                  {/* Teams */}
+                                  <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+                                    {/* Home */}
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                      {homeUrl ? (
+                                        <div className="relative w-7 h-7 md:w-8 md:h-8 flex-shrink-0">
+                                          <Image
+                                            src={homeUrl}
+                                            alt={match.homeTeam}
+                                            fill
+                                            className="object-contain"
+                                          />
+                                        </div>
+                                      ) : (
+                                        <div className="w-7 h-7 md:w-8 md:h-8 bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                          <span className="text-[10px] font-black text-gray-400">
+                                            {match.homeTeam.charAt(0)}
+                                          </span>
+                                        </div>
+                                      )}
+                                      <span className="text-xs md:text-sm font-bold text-dark-charcoal truncate">
+                                        {match.homeTeam}
+                                      </span>
+                                    </div>
+
+                                    {/* VS */}
+                                    <span className="text-[10px] font-black text-gray-300 flex-shrink-0">
+                                      VS
+                                    </span>
+
+                                    {/* Away */}
+                                    <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                                      <span className="text-xs md:text-sm font-bold text-dark-charcoal truncate text-right">
+                                        {match.awayTeam}
+                                      </span>
+                                      {awayUrl ? (
+                                        <div className="relative w-7 h-7 md:w-8 md:h-8 flex-shrink-0">
+                                          <Image
+                                            src={awayUrl}
+                                            alt={match.awayTeam}
+                                            fill
+                                            className="object-contain"
+                                          />
+                                        </div>
+                                      ) : (
+                                        <div className="w-7 h-7 md:w-8 md:h-8 bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                          <span className="text-[10px] font-black text-gray-400">
+                                            {match.awayTeam.charAt(0)}
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Divider */}
+                                  <div className="w-px h-8 bg-gray-100 hidden md:block flex-shrink-0" />
+
+                                  {/* Meta */}
+                                  <div className="hidden md:flex flex-col gap-1 flex-shrink-0 w-40">
+                                    <div className="flex items-center gap-1.5">
+                                      {compUrl ? (
+                                        <div className="relative w-3.5 h-3.5 flex-shrink-0">
+                                          <Image
+                                            src={compUrl}
+                                            alt={match.competition}
+                                            fill
+                                            className="object-contain"
+                                          />
+                                        </div>
+                                      ) : null}
+                                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">
+                                        {match.competition}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                      <Clock size={10} className="text-gray-300 flex-shrink-0" />
+                                      <span className="text-[10px] text-gray-400">
+                                        {formatMatchTime(match.date)}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                      <MapPin size={10} className="text-gray-300 flex-shrink-0" />
+                                      <span className="text-[10px] text-gray-400 truncate">
+                                        {match.venue}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Arrow */}
+                                  <ArrowRight
+                                    size={14}
+                                    className="text-gray-200 group-hover:text-dark-charcoal transition-colors flex-shrink-0"
                                   />
                                 </div>
-                              ) : (
-                                <div className="text-4xl">🏔️</div>
-                              )}
-                              <span className="text-sm font-semibold text-center">
-                                {match.homeTeam}
-                              </span>
+                              </div>
+
+                              {/* Mobile meta */}
+                              <div className="flex items-center gap-3 px-4 pb-3 md:hidden">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                  {match.competition}
+                                </span>
+                                <span className="text-gray-200">·</span>
+                                <span className="text-[10px] text-gray-400">
+                                  {formatMatchTime(match.date)}
+                                </span>
+                                <span className="text-gray-200">·</span>
+                                <span className="text-[10px] text-gray-400 truncate">
+                                  {match.venue}
+                                </span>
+                              </div>
                             </div>
-
-                            <div className="flex flex-col items-center gap-2 px-4">
-                              {match.competitionLogo ? (
-                                <div className="relative w-12 h-12">
-                                  <Image
-                                    src={urlFor(match.competitionLogo)
-                                      .width(96)
-                                      .height(96)
-                                      .url()}
-                                    alt={match.competition}
-                                    fill
-                                    className="object-contain"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="text-2xl font-bold">🏆</div>
-                              )}
-                              <span className="text-xs text-center text-white/80 uppercase">
-                                {match.competition}
-                              </span>
-                            </div>
-
-                            <div className="flex flex-col items-center gap-2 flex-1">
-                              {match.awayCrest ? (
-                                <div className="relative w-16 h-16">
-                                  <Image
-                                    src={urlFor(match.awayCrest)
-                                      .width(128)
-                                      .height(128)
-                                      .url()}
-                                    alt={match.awayTeam}
-                                    fill
-                                    className="object-contain"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="text-4xl">⚽</div>
-                              )}
-                              <span className="text-sm font-semibold text-center">
-                                {match.awayTeam}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2 mb-6 flex-1">
-                            <p className="font-bold text-sm">
-                              {formatMatchDate(match.date)}
-                            </p>
-                            <p className="text-xs text-white/80">
-                              {match.event}
-                            </p>
-                            <p className="text-xs text-white/80">
-                              {match.venue}
-                            </p>
-                          </div>
-
-                          <div className="mt-auto pt-4">
-                            <Link href={`/matches/${match._id}`}>
-                              <Button
-                                variant="outline"
-                                className="w-full border-white/30 bg-white/10 hover:bg-white/20 text-white hover:text-barca-gold hover:border-barca-gold transition-all"
-                              >
-                                <span className="mr-2">⚽</span>
-                                Match Centre
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                              </Button>
-                            </Link>
-                          </div>
+                          </Link>
                         </motion.div>
-                      ))}
-                    </div>
-                  </motion.div>
-                ),
-              )}
-            </div>
-          )}
-        </div>
-      </section>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              ),
+            )}
+          </div>
+        )}
+      </div>
 
-      {/* Calendar Sync Modal */}
       <CalendarSyncModal
         isOpen={isSyncModalOpen}
         onClose={() => setIsSyncModalOpen(false)}
         matches={matches}
       />
-
-      {/* Floating Close Button */}
-      <Link
-        href="/"
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
-      >
-        <X size={24} />
-      </Link>
     </div>
   );
 }

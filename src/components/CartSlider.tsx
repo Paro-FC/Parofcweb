@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react'
+import { X, Minus, Plus, ShoppingBag, Trash2, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/contexts/CartContext'
@@ -16,6 +16,8 @@ export function CartSlider() {
     return `${price.toLocaleString()} ${currency}`
   }
 
+  const itemCount = getItemCount()
+
   return (
     <AnimatePresence>
       {isCartOpen && (
@@ -25,8 +27,9 @@ export function CartSlider() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={() => setIsCartOpen(false)}
-            className="fixed inset-0 bg-black/50 z-[60]"
+            className="fixed inset-0 bg-black/40 z-[60]"
           />
 
           {/* Cart Slider */}
@@ -34,50 +37,58 @@ export function CartSlider() {
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[70] shadow-2xl flex flex-col"
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="fixed top-0 right-0 h-full w-full max-w-[420px] bg-white z-[70] shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <ShoppingBag size={24} className="text-barca-gold" />
-                <h2 className="text-lg font-bold text-gray-900">Your Cart</h2>
-                <span className="bg-barca-red text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                  {getItemCount()}
-                </span>
+                <h2 className="text-sm font-black text-dark-charcoal uppercase tracking-wider">
+                  Cart
+                </h2>
+                {itemCount > 0 && (
+                  <span className="bg-dark-charcoal text-white text-[9px] font-bold w-5 h-5 flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
               </div>
               <button
                 onClick={() => setIsCartOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-dark-charcoal transition-colors cursor-pointer"
+                aria-label="Close cart"
               >
-                <X size={24} className="text-gray-600" />
+                <X size={18} />
               </button>
             </div>
 
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto">
               {items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center">
-                  <ShoppingBag size={64} className="text-gray-300 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Your cart is empty</h3>
-                  <p className="text-gray-500 mb-6">Add some items to get started!</p>
+                <div className="flex flex-col items-center justify-center h-full text-center px-5">
+                  <ShoppingBag size={32} className="text-gray-200 mb-3" />
+                  <h3 className="text-sm font-bold text-dark-charcoal mb-1">
+                    Your cart is empty
+                  </h3>
+                  <p className="text-xs text-gray-400 mb-6">
+                    Add some items to get started.
+                  </p>
                   <Link
                     href="/shop"
                     onClick={() => setIsCartOpen(false)}
-                    className="bg-barca-gold text-dark-charcoal px-6 py-3 rounded-lg font-semibold hover:bg-barca-gold/90 transition-colors"
+                    className="bg-dark-charcoal text-white px-5 py-2.5 font-bold text-xs uppercase tracking-wider hover:bg-barca-red transition-colors cursor-pointer"
                   >
-                    Continue Shopping
+                    Browse Shop
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="divide-y divide-gray-50">
                   {items.map((item) => (
                     <div
                       key={`${item._id}-${item.size}`}
-                      className="flex gap-4 bg-gray-50 rounded-lg p-3"
+                      className="flex gap-4 px-5 py-4"
                     >
-                      {/* Product Image */}
-                      <div className="relative w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0">
+                      {/* Image */}
+                      <div className="relative w-16 h-20 bg-gray-50 flex-shrink-0 overflow-hidden">
                         <Image
                           src={item.image}
                           alt={item.name}
@@ -86,40 +97,45 @@ export function CartSlider() {
                         />
                       </div>
 
-                      {/* Product Details */}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-900 text-sm truncate">
+                      {/* Details */}
+                      <div className="flex-1 min-w-0 flex flex-col">
+                        <h4 className="text-xs font-bold text-dark-charcoal truncate leading-snug">
                           {item.name}
                         </h4>
-                        <p className="text-xs text-gray-500 mt-0.5">Size: {item.size}</p>
-                        <p className="text-sm font-bold text-barca-gold mt-1">
+                        <p className="text-[10px] text-gray-400 mt-0.5">
+                          Size: {item.size}
+                        </p>
+                        <p className="text-xs font-bold text-dark-charcoal mt-1">
                           {formatPrice(item.salePrice || item.price, item.currency)}
                         </p>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-2">
+                        {/* Quantity + Remove */}
+                        <div className="flex items-center justify-between mt-auto pt-2">
+                          <div className="flex items-center">
                             <button
                               onClick={() => updateQuantity(item._id, item.size, item.quantity - 1)}
-                              className="w-7 h-7 flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                              className="w-7 h-7 flex items-center justify-center border border-gray-200 text-gray-500 hover:border-dark-charcoal hover:text-dark-charcoal transition-colors cursor-pointer"
+                              aria-label="Decrease quantity"
                             >
-                              <Minus size={14} />
+                              <Minus size={12} />
                             </button>
-                            <span className="w-8 text-center font-semibold text-sm">
+                            <span className="w-8 text-center text-xs font-bold text-dark-charcoal tabular-nums">
                               {item.quantity}
                             </span>
                             <button
                               onClick={() => updateQuantity(item._id, item.size, item.quantity + 1)}
-                              className="w-7 h-7 flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                              className="w-7 h-7 flex items-center justify-center border border-gray-200 text-gray-500 hover:border-dark-charcoal hover:text-dark-charcoal transition-colors cursor-pointer"
+                              aria-label="Increase quantity"
                             >
-                              <Plus size={14} />
+                              <Plus size={12} />
                             </button>
                           </div>
                           <button
                             onClick={() => removeItem(item._id, item.size)}
-                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                            className="text-gray-300 hover:text-barca-red transition-colors cursor-pointer"
+                            aria-label="Remove item"
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </div>
@@ -131,31 +147,34 @@ export function CartSlider() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="border-t border-gray-200 p-4 space-y-4">
+              <div className="border-t border-gray-100 px-5 py-5 space-y-4">
                 {/* Subtotal */}
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="text-xl font-bold text-gray-900">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">
+                    Subtotal
+                  </span>
+                  <span className="text-lg font-black text-dark-charcoal tabular-nums">
                     {formatPrice(getSubtotal(), items[0]?.currency || 'BTN')}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Shipping and taxes calculated at checkout
+                <p className="text-[10px] text-gray-400">
+                  Shipping calculated at checkout.
                 </p>
 
-                {/* Checkout Button */}
+                {/* Checkout */}
                 <Link
                   href="/checkout"
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full bg-barca-gold text-dark-charcoal py-4 rounded-lg font-bold text-center block hover:bg-barca-gold/90 transition-colors"
+                  className="w-full h-12 bg-dark-charcoal text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-barca-red transition-colors cursor-pointer"
                 >
-                  PROCEED TO CHECKOUT
+                  Checkout
+                  <ArrowRight size={14} />
                 </Link>
 
                 {/* Continue Shopping */}
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full text-center text-sm text-gray-600 hover:text-barca-gold transition-colors"
+                  className="w-full text-center text-[10px] font-bold text-gray-400 hover:text-dark-charcoal transition-colors cursor-pointer uppercase tracking-wider"
                 >
                   Continue Shopping
                 </button>
@@ -167,4 +186,3 @@ export function CartSlider() {
     </AnimatePresence>
   )
 }
-

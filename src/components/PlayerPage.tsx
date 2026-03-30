@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, MapPin, Ruler, Weight, Trophy, ChevronRight, X, Share2 } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, Share2, Trophy } from "lucide-react"
 import { urlFor } from "@/sanity/lib/image"
 import { PortableText, PortableTextComponents } from "@portabletext/react"
 import { useState } from "react"
@@ -51,13 +51,21 @@ interface PlayerPageProps {
   }[]
 }
 
+const statLabels: Record<string, string> = {
+  appearances: "Appearances",
+  cleanSheets: "Clean Sheets",
+  saves: "Saves",
+  goals: "Goals",
+  assists: "Assists",
+}
+
 const portableTextComponents: PortableTextComponents = {
   types: {
     image: ({ value }) => {
       if (!value?.asset) return null
       return (
         <figure className="my-8">
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+          <div className="relative w-full aspect-video overflow-hidden">
             <Image
               src={urlFor(value).width(1200).height(675).url()}
               alt={value.alt || "Player image"}
@@ -66,7 +74,7 @@ const portableTextComponents: PortableTextComponents = {
             />
           </div>
           {value.caption && (
-            <figcaption className="mt-2 text-center text-sm text-gray-500 italic">
+            <figcaption className="mt-2 text-sm text-gray-400 italic">
               {value.caption}
             </figcaption>
           )}
@@ -76,16 +84,16 @@ const portableTextComponents: PortableTextComponents = {
   },
   block: {
     h2: ({ children }) => (
-      <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">{children}</h2>
+      <h2 className="text-2xl font-black text-dark-charcoal mt-10 mb-4 uppercase tracking-tight">{children}</h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-2xl font-bold text-gray-900 mt-10 mb-4">{children}</h3>
+      <h3 className="text-xl font-bold text-dark-charcoal mt-8 mb-3">{children}</h3>
     ),
     normal: ({ children }) => (
-      <p className="text-lg text-gray-700 leading-relaxed mb-5">{children}</p>
+      <p className="text-base text-gray-600 leading-relaxed mb-4">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-barca-red pl-6 my-10 italic text-xl text-gray-600">
+      <blockquote className="border-l-[3px] border-barca-gold pl-5 my-8 text-lg text-gray-500 italic">
         {children}
       </blockquote>
     ),
@@ -94,7 +102,7 @@ const portableTextComponents: PortableTextComponents = {
     link: ({ children, value }) => (
       <a
         href={value?.href}
-        className="text-barca-gold hover:text-bronze underline transition-colors"
+        className="text-barca-red hover:text-dark-charcoal underline transition-colors"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -106,26 +114,15 @@ const portableTextComponents: PortableTextComponents = {
   },
 }
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
-}
-
 export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
   const [currentHonourPage, setCurrentHonourPage] = useState(0)
   const [showFullBio, setShowFullBio] = useState(false)
   const honoursPerPage = 4
 
-  // Get bio preview (first paragraph)
   const getBioPreview = () => {
     if (!player.bio || !Array.isArray(player.bio)) return []
-    // Get first few blocks (first paragraph)
-    const blocks = player.bio.filter((block: any) => block._type === 'block')
-    return blocks.slice(0, 1) // Return first block only
+    const blocks = player.bio.filter((block: any) => block._type === "block")
+    return blocks.slice(0, 1)
   }
 
   const handleShare = async () => {
@@ -133,7 +130,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
     const shareData = {
       title: `${player.firstName} ${player.lastName} - Paro FC`,
       text: `Check out ${player.firstName} ${player.lastName} from Paro FC!`,
-      url: url,
+      url,
     }
 
     try {
@@ -148,8 +145,8 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
         try {
           await navigator.clipboard.writeText(url)
           alert("Link copied to clipboard!")
-        } catch (clipboardErr) {
-          console.error("Failed to copy link:", clipboardErr)
+        } catch {
+          // silently fail
         }
       }
     }
@@ -159,289 +156,330 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
     ? Math.ceil(player.honours.length / honoursPerPage)
     : 0
 
+  const hasBioData = player.placeOfBirth || player.dateOfBirth || player.height || player.weight
+
   return (
     <div className="min-h-screen bg-white">
-
-      {/* Main Hero Section - Two Column Layout */}
-      <section className="bg-white">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Player Image (2/3 width) */}
-            <div className="lg:col-span-2 relative">
-              <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden">
-                {/* Colored Borders */}
-                <div className="absolute inset-0 border-8 border-barca-blue border-r-0 border-t-0 z-10 pointer-events-none" />
-                <div className="absolute inset-0 border-8 border-barca-red border-l-0 border-b-0 z-10 pointer-events-none" />
-                
-                {/* Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-barca-blue to-barca-red" />
-                
-                {/* Player Image */}
-                {player.image ? (
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={urlFor(player.image).width(1200).height(1600).url()}
-                      alt={`${player.firstName} ${player.lastName}`}
-                      fill
-                      className="object-contain object-center"
-                      priority
-                    />
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-9xl text-white/20">{player.number}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Right Column - Bio Preview (1/3 width) */}
-            <div className="lg:col-span-1 flex flex-col justify-center">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 leading-tight">
-                {player.position.toUpperCase()} FROM PARO FC
-              </h1>
-              
-              {/* Bio Preview */}
-              {player.bio && player.bio.length > 0 && (
-                <div className="mb-6">
-                  <div className="prose prose-lg max-w-none">
-                    {showFullBio ? (
-                      <PortableText value={player.bio as any} components={portableTextComponents} />
-                    ) : (
-                      <PortableText 
-                        value={getBioPreview() as any} 
-                        components={portableTextComponents} 
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              {/* Read Full Bio Button */}
-              {player.bio && player.bio.length > 0 && (
-                <button
-                  onClick={() => setShowFullBio(!showFullBio)}
-                  className="text-lg font-bold text-gray-900 hover:text-barca-red transition-colors flex items-center gap-2 self-start"
-                >
-                  {showFullBio ? 'READ LESS' : 'READ FULL BIO'}
-                  <span className="text-2xl">+</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Biographical Data Strip */}
-      {(player.placeOfBirth || player.dateOfBirth || player.height || player.weight) && (
-        <section className="bg-white border-t border-b border-gray-200 py-6">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {player.placeOfBirth && (
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Place of birth</p>
-                  <p className="text-lg font-semibold text-gray-900">{player.placeOfBirth}</p>
-                </div>
-              )}
-              {player.dateOfBirth && (
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Date of birth</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {new Date(player.dateOfBirth).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                  </p>
-                </div>
-              )}
-              {player.weight && (
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Weight</p>
-                  <p className="text-lg font-semibold text-gray-900">{player.weight}kg</p>
-                </div>
-              )}
-              {player.height && (
-                <div>
-                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Height</p>
-                  <p className="text-lg font-semibold text-gray-900">{player.height}cm</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Player Content */}
-      <motion.article
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="relative mx-auto max-w-4xl px-4 md:px-8 lg:px-12 pt-10 pb-8"
-      >
-        <div>
-
-          {/* Statistics */}
-          {player.stats && (
-            <div className="mb-10 pb-6 border-b border-gray-200">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Statistics</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {Object.entries(player.stats).map(([key, stat]) => {
-                  if (!stat) return null
-                  return (
-                    <div key={key} className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="text-xs text-gray-500 uppercase font-semibold mb-2">
-                        {key === 'appearances' && 'APPEARANCES'}
-                        {key === 'cleanSheets' && 'CLEAN SHEETS'}
-                        {key === 'saves' && 'SAVES'}
-                        {key === 'goals' && 'GOALS'}
-                        {key === 'assists' && 'ASSISTS'}
-                      </div>
-                      <div className="text-4xl font-bold text-barca-red mb-1">
-                        {stat.value}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {stat.season}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Full Biography (shown when expanded) */}
-          {showFullBio && player.bio && player.bio.length > 0 && (
-            <div className="mb-10">
-              <div className="prose prose-lg max-w-none">
-                <PortableText value={player.bio as any} components={portableTextComponents} />
-              </div>
-            </div>
-          )}
-
-          {/* Honours */}
-          {player.honours && player.honours.length > 0 && (
-            <div className="mb-10 pb-6 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                  <Trophy className="text-barca-gold" size={28} />
-                  Honours
-                </h3>
-                {totalHonourPages > 1 && (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setCurrentHonourPage(Math.max(0, currentHonourPage - 1))}
-                      disabled={currentHonourPage === 0}
-                      className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronRight className="w-5 h-5 rotate-180" />
-                    </button>
-                    <span className="text-sm text-gray-600">
-                      {currentHonourPage + 1} / {totalHonourPages}
-                    </span>
-                    <button
-                      onClick={() => setCurrentHonourPage(Math.min(totalHonourPages - 1, currentHonourPage + 1))}
-                      disabled={currentHonourPage === totalHonourPages - 1}
-                      className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {player.honours
-                  .slice(currentHonourPage * honoursPerPage, (currentHonourPage + 1) * honoursPerPage)
-                  .map((honour, index) => (
-                    <div
-                      key={index}
-                      className="p-4 bg-gradient-to-br from-barca-blue to-barca-red rounded-lg text-white"
-                    >
-                      <div className="text-sm font-semibold uppercase mb-2">{honour.title}</div>
-                      {honour.competition && (
-                        <div className="text-xs text-white/80 mb-1">{honour.competition}</div>
-                      )}
-                      {honour.season && (
-                        <div className="text-xs text-white/80 mb-1">{honour.season}</div>
-                      )}
-                      {honour.country && (
-                        <div className="text-xs text-white/80">{honour.country}</div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            </div>
-          )}
-
-          {/* Share Button */}
-          <div className="flex justify-end mb-10">
-            <button 
-              onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
-            >
-              <Share2 size={20} />
-              <span className="font-medium">Share</span>
-            </button>
-          </div>
-        </div>
-      </motion.article>
-
-      {/* Related Players */}
-      {relatedPlayers.length > 0 && (
-        <section className="max-w-4xl mx-auto px-4 md:px-8 lg:px-12 py-12 md:py-16">
-          <div className="flex items-center justify-between mb-6 md:mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Squad</h2>
-            <Link
-              href="/players"
-              className="flex items-center gap-1 text-barca-gold hover:text-bronze transition-colors font-medium"
-            >
-              View all
-              <ChevronRight size={20} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedPlayers.map((relatedPlayer, index) => (
-              <motion.article
-                key={relatedPlayer._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white overflow-hidden border border-gray-200 cursor-pointer group"
-              >
-                <Link href={`/players/${relatedPlayer.slug}`} className="block">
-                  <div className="relative w-full h-48 overflow-hidden bg-gray-200">
-                    {relatedPlayer.image ? (
-                      <Image
-                        src={urlFor(relatedPlayer.image).width(400).height(300).url()}
-                        alt={`${relatedPlayer.firstName} ${relatedPlayer.lastName}`}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                        <span className="text-4xl">{relatedPlayer.number}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <div className="text-sm text-gray-500 mb-1">#{relatedPlayer.number}</div>
-                    <h3 className="font-bold text-gray-900 group-hover:text-barca-red transition-colors line-clamp-2">
-                      {relatedPlayer.firstName} {relatedPlayer.lastName}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">{relatedPlayer.position}</p>
-                  </div>
-                </Link>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Floating Close Button */}
       <Link
         href="/players"
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-dark-charcoal hover:bg-barca-red text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
       >
         <X size={24} />
       </Link>
+
+      {/* Hero — full-width image with player info overlay */}
+      <section className="relative bg-dark-charcoal overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[60vh] md:min-h-[70vh]">
+            {/* Left: Player info */}
+            <div className="flex flex-col justify-center py-12 md:py-16 lg:py-24 relative z-10 order-2 lg:order-1">
+              {/* Number */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="text-[120px] md:text-[180px] lg:text-[220px] font-black text-white/[0.04] leading-none absolute -left-4 -top-8 lg:top-0 select-none pointer-events-none">
+                  {player.number}
+                </span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+                className="relative"
+              >
+                <p className="text-[10px] font-bold text-barca-gold uppercase tracking-[0.3em] mb-2">
+                  #{player.number} / {player.position}
+                </p>
+
+                <h1 className="mb-6">
+                  <span className="block text-lg md:text-xl text-white/60 font-normal">
+                    {player.firstName}
+                  </span>
+                  <span className="block text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-[0.9]">
+                    {player.lastName || player.firstName}
+                  </span>
+                </h1>
+
+                {/* Bio data strip */}
+                {hasBioData && (
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
+                    {player.dateOfBirth && (
+                      <div>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">DOB</span>
+                        <span className="text-sm text-white/70 font-medium">
+                          {new Date(player.dateOfBirth).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                        </span>
+                      </div>
+                    )}
+                    {player.placeOfBirth && (
+                      <div>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">From</span>
+                        <span className="text-sm text-white/70 font-medium">{player.placeOfBirth}</span>
+                      </div>
+                    )}
+                    {player.height && (
+                      <div>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">Height</span>
+                        <span className="text-sm text-white/70 font-medium">{player.height}cm</span>
+                      </div>
+                    )}
+                    {player.weight && (
+                      <div>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">Weight</span>
+                        <span className="text-sm text-white/70 font-medium">{player.weight}kg</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Actions */}
+                <button
+                  onClick={handleShare}
+                  className="inline-flex items-center gap-2 text-xs font-bold text-white/30 hover:text-white/60 transition-colors cursor-pointer uppercase tracking-wider"
+                >
+                  <Share2 size={14} />
+                  Share
+                </button>
+              </motion.div>
+            </div>
+
+            {/* Right: Player image */}
+            <div className="relative order-1 lg:order-2 flex items-end justify-center">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="relative w-full h-[400px] md:h-[500px] lg:h-full"
+              >
+                {player.image ? (
+                  <Image
+                    src={urlFor(player.image).width(900).height(1200).url()}
+                    alt={`${player.firstName} ${player.lastName}`}
+                    fill
+                    className="object-contain object-bottom"
+                    priority
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[200px] font-black text-white/5">
+                      {player.number}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Diagonal pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+          }}
+        />
+
+        {/* Bottom accent */}
+        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+      </section>
+
+      {/* Stats Section */}
+      {player.stats && (
+        <section className="border-b border-gray-100">
+          <div className="container mx-auto px-4 py-10 md:py-14">
+            <div className="flex flex-wrap justify-center gap-8 md:gap-16">
+              {Object.entries(player.stats).map(([key, stat], index) => {
+                if (!stat) return null
+                return (
+                  <motion.div
+                    key={key}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.08, duration: 0.4 }}
+                    className="text-center"
+                  >
+                    <div className="text-5xl md:text-6xl font-black text-dark-charcoal leading-none tabular-nums">
+                      {stat.value}
+                    </div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">
+                      {statLabels[key] || key}
+                    </div>
+                    <div className="text-[10px] text-gray-300 mt-0.5">
+                      {stat.season}
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Bio Section */}
+      {player.bio && player.bio.length > 0 && (
+        <section className="border-b border-gray-100">
+          <div className="container mx-auto px-4 py-10 md:py-14 max-w-3xl">
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">
+              Biography
+            </h2>
+
+            <div className="prose prose-lg max-w-none">
+              {showFullBio ? (
+                <PortableText value={player.bio as any} components={portableTextComponents} />
+              ) : (
+                <PortableText value={getBioPreview() as any} components={portableTextComponents} />
+              )}
+            </div>
+
+            {player.bio.length > 1 && (
+              <button
+                onClick={() => setShowFullBio(!showFullBio)}
+                className="mt-4 text-xs font-bold text-dark-charcoal hover:text-barca-red transition-colors cursor-pointer uppercase tracking-widest inline-flex items-center gap-1"
+              >
+                {showFullBio ? "Show less" : "Read full bio"}
+                <ChevronRight
+                  size={12}
+                  className={`transition-transform duration-200 ${showFullBio ? "rotate-90" : ""}`}
+                />
+              </button>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Honours */}
+      {player.honours && player.honours.length > 0 && (
+        <section className="bg-dark-charcoal">
+          <div className="container mx-auto px-4 py-10 md:py-14">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xs font-bold text-white/30 uppercase tracking-widest">
+                Honours
+              </h2>
+              {totalHonourPages > 1 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentHonourPage(Math.max(0, currentHonourPage - 1))}
+                    disabled={currentHonourPage === 0}
+                    className="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white/30 disabled:opacity-20 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft size={14} className="text-white" />
+                  </button>
+                  <span className="text-xs text-white/30 tabular-nums">
+                    {currentHonourPage + 1}/{totalHonourPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentHonourPage(Math.min(totalHonourPages - 1, currentHonourPage + 1))}
+                    disabled={currentHonourPage === totalHonourPages - 1}
+                    className="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white/30 disabled:opacity-20 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight size={14} className="text-white" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {player.honours
+                .slice(currentHonourPage * honoursPerPage, (currentHonourPage + 1) * honoursPerPage)
+                .map((honour, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05 }}
+                    className="border border-white/10 p-5 group hover:border-barca-gold/30 transition-colors duration-200"
+                  >
+                    <Trophy size={16} className="text-barca-gold mb-3" />
+                    <p className="text-sm font-bold text-white leading-snug mb-2">
+                      {honour.title}
+                    </p>
+                    {honour.competition && (
+                      <p className="text-[10px] text-white/40 font-medium">{honour.competition}</p>
+                    )}
+                    {honour.season && (
+                      <p className="text-[10px] text-white/40 font-medium">{honour.season}</p>
+                    )}
+                    {honour.country && (
+                      <p className="text-[10px] text-white/40 font-medium">{honour.country}</p>
+                    )}
+                  </motion.div>
+                ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Related Players */}
+      {relatedPlayers.length > 0 && (
+        <section className="border-t border-gray-100">
+          <div className="container mx-auto px-4 py-10 md:py-14">
+            <div className="flex items-end justify-between mb-8">
+              <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal uppercase tracking-tight">
+                More {player.position}s
+              </h2>
+              <Link
+                href="/players"
+                className="inline-flex items-center gap-1 text-xs font-bold text-gray-400 hover:text-dark-charcoal transition-colors cursor-pointer uppercase tracking-wider"
+              >
+                All Players
+                <ChevronRight size={14} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+              {relatedPlayers.map((rp, index) => (
+                <motion.div
+                  key={rp._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.04, duration: 0.3 }}
+                >
+                  <Link href={`/players/${rp.slug}`} className="block group cursor-pointer">
+                    <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
+                      {rp.image ? (
+                        <Image
+                          src={urlFor(rp.image).width(400).height(533).url()}
+                          alt={`${rp.firstName} ${rp.lastName}`}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-barca-red flex items-center justify-center">
+                          <span className="text-5xl font-black text-white/10">{rp.number}</span>
+                        </div>
+                      )}
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+                      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+                        <p className="text-[9px] font-bold text-barca-gold uppercase tracking-widest mb-0.5">
+                          #{rp.number}
+                        </p>
+                        <p className="text-white leading-tight">
+                          <span className="text-xs font-normal">{rp.firstName} </span>
+                          <span className="text-sm md:text-base font-black uppercase">
+                            {rp.lastName || rp.firstName}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }
-

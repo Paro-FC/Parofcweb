@@ -1,26 +1,28 @@
-"use client"
+"use client";
 
-import { Facebook, Twitter, Youtube, Instagram, Music } from "lucide-react"
-import { Button } from "./ui/button"
-import Image from "next/image"
-import { PartnersSection } from "./PartnersSection"
+import { Facebook, Twitter, Youtube, Instagram, Music } from "lucide-react";
+import { Button } from "./ui/button";
+import Image from "next/image";
+import { PartnersSection } from "./PartnersSection";
 
 interface Partner {
-  _id: string
-  name: string
-  logo: string
-  url: string
-  category?: string
+  _id: string;
+  name: string;
+  logo: string;
+  url: string;
+  category?: string;
 }
 
 interface FooterProps {
-  partners?: Partner[]
+  partners?: Partner[];
 }
 
 export function Footer({ partners = [] }: FooterProps) {
   // Separate partners by category (excluding main partners as they're shown on homepage)
-  const officialPartners = partners.filter(p => p.category === 'official')
-  const otherPartners = partners.filter(p => !p.category || (p.category !== 'main' && p.category !== 'official'))
+  const officialPartners = partners.filter((p) => p.category === "official");
+  const otherPartners = partners.filter(
+    (p) => !p.category || (p.category !== "main" && p.category !== "official"),
+  );
 
   return (
     <footer className="bg-dark-charcoal text-light-gold py-16 px-4">
@@ -29,7 +31,10 @@ export function Footer({ partners = [] }: FooterProps) {
 
         {/* Official Partners Section */}
         {officialPartners.length > 0 && (
-          <PartnersSection partners={officialPartners} title="Official Partners" />
+          <PartnersSection
+            partners={officialPartners}
+            title="Official Partners"
+          />
         )}
 
         {/* Other Partners Section */}
@@ -49,8 +54,12 @@ export function Footer({ partners = [] }: FooterProps) {
             <Facebook className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" />
             <Youtube className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" />
             <Instagram className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" />
-            <svg className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            <svg
+              className="w-8 h-8 text-light-gold hover:text-barca-gold transition-colors cursor-pointer"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
             </svg>
           </div>
         </div>
@@ -154,15 +163,17 @@ export function Footer({ partners = [] }: FooterProps) {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             {/* Left - Logo and Copyright */}
             <div className="flex items-center gap-4">
-              <Image 
-                src="/assets/logo.webp" 
-                alt="Paro FC Logo" 
+              <Image
+                src="/assets/logo.webp"
+                alt="Paro FC Logo"
                 width={48}
                 height={48}
                 className="object-contain"
               />
               <div>
-                <div className="text-light-gold font-bold text-lg mb-1">Paro FC</div>
+                <div className="text-light-gold font-bold text-lg mb-1">
+                  Paro FC
+                </div>
                 <div className="text-light-gold/70 text-xs">
                   © Copyright Official website
                 </div>
@@ -171,17 +182,30 @@ export function Footer({ partners = [] }: FooterProps) {
 
             {/* Center - Legal Links */}
             <div className="flex flex-wrap items-center justify-center gap-2 text-light-gold/70 text-sm">
-              <a href="#" className="hover:text-barca-gold transition-colors">Legal Terms</a>
+              <a href="#" className="hover:text-barca-gold transition-colors">
+                Legal Terms
+              </a>
               <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-barca-gold transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-barca-gold transition-colors">
+                Privacy Policy
+              </a>
               <span className="text-light-gold/30">|</span>
-              <a href="/font-license" className="hover:text-barca-gold transition-colors">Font License</a>
+              <a
+                href="/font-license"
+                className="hover:text-barca-gold transition-colors"
+              >
+                Font License
+              </a>
               <span className="text-light-gold/30">|</span>
               {/* <a href="#" className="hover:text-barca-gold transition-colors">Accessibility</a>
               <span className="text-light-gold/30">|</span> */}
-              <a href="#" className="hover:text-barca-gold transition-colors">Contact Us</a>
+              <a href="#" className="hover:text-barca-gold transition-colors">
+                Contact Us
+              </a>
               <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-barca-gold transition-colors">Support/FAQs</a>
+              <a href="#" className="hover:text-barca-gold transition-colors">
+                Support/FAQs
+              </a>
               {/* <span className="text-light-gold/30">|</span> */}
               {/* <a href="#" className="hover:text-barca-gold transition-colors">Consent management</a> */}
               {/* <span className="text-light-gold/30">|</span> */}
@@ -191,6 +215,5 @@ export function Footer({ partners = [] }: FooterProps) {
         </div>
       </div>
     </footer>
-  )
+  );
 }
-
