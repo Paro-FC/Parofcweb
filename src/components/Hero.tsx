@@ -46,15 +46,6 @@ export function Hero({ news }: HeroProps) {
 
   const content = (
     <div className="container mx-auto relative z-10 flex flex-col items-center justify-end h-full pb-16 md:pb-24 px-4">
-      {/* Diagonal accent line */}
-      <motion.div
-        className="absolute top-0 right-0 w-1 h-32 md:h-48 bg-gradient-to-b from-barca-gold to-transparent origin-top"
-        style={{ transform: "rotate(-15deg)", right: "15%" }}
-        initial={{ scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-      />
-
       {/* Badge */}
       {newsItem.badge && (
         <motion.div

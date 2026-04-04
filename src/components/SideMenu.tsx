@@ -1,50 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, ChevronRight, ChevronDown } from "lucide-react";
+import { useEffect } from "react";
+import { X, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-
-interface MenuItem {
-  label: string;
-  href?: string;
-  icon?: string;
-  children?: MenuItem[];
-  external?: boolean;
-  showArrow?: boolean;
-}
 
 interface SideMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const menuItems = [
+  { label: "Home", href: "/" },
+  { label: "Standings", href: "/standings" },
+  { label: "Shop", href: "/shop" },
+  { label: "Photos", href: "/photos" },
+  { label: "Players", href: "/players" },
+  { label: "News", href: "/news" },
+  { label: "Calendar", href: "/calendar" },
+];
+
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-
-  const toggleItem = (label: string) => {
-    const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(label)) {
-      newExpanded.delete(label);
-    } else {
-      newExpanded.add(label);
-    }
-    setExpandedItems(newExpanded);
-  };
-
-  // Close menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
+      if (e.key === "Escape" && isOpen) onClose();
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -56,104 +41,6 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
     };
   }, [isOpen]);
 
-  const menuItems: MenuItem[] = [
-    { label: "Standings", href: "/standings", showArrow: true },
-    { label: "Shop", href: "/shop", showArrow: true },
-    { label: "Photos", href: "/photos", showArrow: true },
-    { label: "Players", href: "/players", showArrow: true },
-    { label: "News", href: "/news", showArrow: true },
-  ];
-
-  const renderMenuItem = (item: MenuItem, level: number = 0) => {
-    const hasChildren = item.children && item.children.length > 0;
-    const isExpanded = expandedItems.has(item.label);
-    const indentClass =
-      level === 0 ? "" : level === 1 ? "pl-4" : level === 2 ? "pl-8" : "pl-12";
-
-    if (hasChildren) {
-      return (
-        <div key={item.label} className="border-b border-light-grey">
-          <button
-            onClick={() => toggleItem(item.label)}
-            className={cn(
-              "w-full flex items-center justify-between py-4 px-6 text-left hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
-              indentClass,
-            )}
-          >
-            <span className="text-base font-semibold text-dark-charcoal">
-              {item.label}
-            </span>
-            {isExpanded ? (
-              <ChevronDown className="w-5 h-5 text-medium-grey group-hover:text-barca-gold" />
-            ) : (
-              <ChevronRight className="w-5 h-5 text-medium-grey group-hover:text-barca-gold" />
-            )}
-          </button>
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-              >
-                <div className="bg-light-gold/20">
-                  {item.children?.map((child) =>
-                    renderMenuItem(child, level + 1),
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      );
-    }
-
-    if (item.href) {
-      const content = (
-        <div
-          className={cn(
-            "flex items-center justify-between py-3 px-6 hover:bg-light-gold/10 hover:text-barca-gold transition-colors",
-            indentClass,
-          )}
-        >
-          <span className="text-sm text-dark-charcoal">{item.label}</span>
-          {(item.external || item.showArrow) && (
-            <span className="text-xs text-medium-grey">↗</span>
-          )}
-        </div>
-      );
-
-      if (item.external) {
-        return (
-          <a
-            key={item.label}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block border-b border-light-grey"
-          >
-            {content}
-          </a>
-        );
-      }
-
-      return (
-        <Link
-          key={item.label}
-          href={item.href}
-          onClick={onClose}
-          className="block border-b border-gray-200"
-        >
-          {content}
-        </Link>
-      );
-    }
-
-    return null;
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -164,36 +51,68 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 bg-black/40 z-[60]"
             onClick={onClose}
           />
 
-          {/* Side Menu */}
+          {/* Menu */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl z-50 overflow-y-auto"
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="fixed right-0 top-0 bottom-0 w-full max-w-sm bg-dark-charcoal shadow-2xl z-[70] flex flex-col"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-dark-charcoal border-b border-medium-grey z-10">
-              <div className="flex items-center justify-between px-6 py-4">
-                <h2 className="text-xl font-bold text-light-gold">Menu</h2>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-barca-gold/20 rounded-full transition-colors"
-                  aria-label="Close menu"
-                >
-                  <X className="w-6 h-6 text-light-gold hover:text-barca-gold transition-colors" />
-                </button>
-              </div>
+            <div className="flex items-center justify-between px-5 h-14 flex-shrink-0">
+              <Link href="/" onClick={onClose} className="flex-shrink-0">
+                <Image
+                  src="/assets/logo.webp"
+                  alt="Paro FC"
+                  width={36}
+                  height={36}
+                  className="w-9 h-9 object-contain"
+                />
+              </Link>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X size={18} />
+              </button>
             </div>
 
+            <div className="h-px bg-white/5" />
+
             {/* Menu Items */}
-            <div className="py-2">
-              {menuItems.map((item) => renderMenuItem(item))}
+            <div className="flex-1 overflow-y-auto py-4">
+              {menuItems.map((item, index) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.05 + index * 0.03 }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className="group flex items-center justify-between px-5 py-4 cursor-pointer"
+                  >
+                    <span className="text-sm font-bold text-white/60 uppercase tracking-widest group-hover:text-barca-gold transition-colors duration-200">
+                      {item.label}
+                    </span>
+                    <ArrowRight
+                      size={14}
+                      className="text-white/10 group-hover:text-barca-gold transition-colors duration-200"
+                    />
+                  </Link>
+                </motion.div>
+              ))}
             </div>
+
+            {/* Footer accent */}
+            <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
           </motion.div>
         </>
       )}

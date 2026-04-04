@@ -1,12 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "./ui/button";
 import { Search, Menu, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { SearchModal } from "./SearchModal";
 import { useSideMenu } from "@/contexts/SideMenuContext";
 import { useCart } from "@/contexts/CartContext";
+
+const leftLinks = [
+  { href: "/standings", label: "Standings" },
+  { href: "/shop", label: "Shop" },
+];
+
+const rightLinks = [
+  { href: "/photos", label: "Photos" },
+  { href: "/players", label: "Players" },
+  { href: "/news", label: "News" },
+];
 
 export function MainNav() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -18,7 +29,6 @@ export function MainNav() {
     setMounted(true);
   }, []);
 
-  // Keyboard shortcut: Cmd+K or Ctrl+K to open search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -26,180 +36,138 @@ export function MainNav() {
         setIsSearchOpen(true);
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const cartCount = mounted ? getItemCount() : 0;
+
   return (
     <>
-      {/* Mobile Header - Dark Charcoal */}
+      {/* Mobile Header */}
       <nav className="md:hidden sticky top-0 z-50 bg-dark-charcoal">
-        <div className="flex items-center justify-between px-4 py-3">
-          {/* Logo */}
-          <a href="/" className="flex-shrink-0">
+        <div className="flex items-center justify-between px-4 h-14">
+          <Link href="/" className="flex-shrink-0">
             <Image
               src="/assets/logo.webp"
-              alt="Paro FC Logo"
-              width={60}
-              height={60}
-              className="w-12 h-12 object-contain"
+              alt="Paro FC"
+              width={40}
+              height={40}
+              className="w-10 h-10 object-contain"
             />
-          </a>
+          </Link>
 
-          {/* Right side buttons */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10 relative"
-              onClick={() => setIsCartOpen(true)}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer"
+              aria-label="Search"
             >
-              <ShoppingBag className="w-5 h-5" />
-              {mounted && getItemCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-barca-gold text-dark-charcoal text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                  {getItemCount()}
+              <Search size={18} />
+            </button>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer relative"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={18} />
+              {cartCount > 0 && (
+                <span className="absolute top-1 right-1 bg-barca-red text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center">
+                  {cartCount}
                 </span>
               )}
-            </Button>
-            {/* <Button 
-              variant="default" 
-              size="sm"
-              className="bg-barca-red hover:bg-barca-red/90 text-white rounded-md px-4 py-2 h-auto"
-            >
-              <span className="text-sm font-semibold">Login</span>
-            </Button> */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20 rounded-full w-10 h-10"
+            </button>
+            <button
               onClick={openMenu}
+              className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer"
+              aria-label="Menu"
             >
-              <Menu className="w-6 h-6" />
-            </Button>
+              <Menu size={20} />
+            </button>
           </div>
         </div>
-      </nav>
 
-      {/* Mobile Secondary Navigation - White Background */}
-      <nav className="md:hidden bg-white border-b border-gray-200">
-        <div className="flex items-center justify-around px-2 py-3 overflow-x-auto scrollbar-hide">
-          <a
-            href="/shop"
-            className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2"
-          >
-            <span>👕</span>
-            <span>SHOP</span>
-            <span className="text-[10px]">↗</span>
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2"
-          >
-            <span>🎫</span>
-            <span>TICKETS</span>
-          </a>
-          <a
-            href="/news"
-            className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2"
-          >
-            <span>🏷️</span>
-            <span>NEWS</span>
-          </a>
-          {/* <a href="#" className="flex items-center gap-2 text-xs font-bold uppercase text-gray-900 whitespace-nowrap px-2">
-            <span>👥</span>
-            <span>CULERS</span>
-          </a> */}
+        {/* Mobile quick links */}
+        <div className="flex items-center border-t border-white/5 overflow-x-auto scrollbar-hide">
+          {[...leftLinks, ...rightLinks].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="flex-shrink-0 px-4 py-2.5 text-[10px] font-bold text-white/40 uppercase tracking-widest hover:text-white transition-colors cursor-pointer"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       </nav>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal backdrop-blur-sm">
-        {/* Two-color bottom border */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 flex">
-          <div className="flex-1 bg-barca-gold"></div>
-          <div className="flex-1 bg-barca-red"></div>
-        </div>
-        <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-          {/* Logo and left nav items grouped together */}
-          <div className="hidden md:flex items-center gap-3">
-            <a href="/" className="flex-shrink-0">
+      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal">
+        <div className="container mx-auto px-4 flex items-center justify-between h-16">
+          {/* Left: Logo + links */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex-shrink-0">
               <Image
                 src="/assets/logo.webp"
-                alt="Paro FC Logo"
-                width={80}
-                height={80}
-                className="w-20 h-20 object-contain"
+                alt="Paro FC"
+                width={48}
+                height={48}
+                className="w-12 h-12 object-contain"
               />
-            </a>
-            <div className="flex items-center gap-4">
-              <a
-                href="/standings"
-                className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors"
-              >
-                Standings <span className="text-xs">↗</span>
-              </a>
-              <a
-                href="/shop"
-                className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors"
-              >
-                Shop <span className="text-xs">↗</span>
-              </a>
-              {/* <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
-                Culers <span className="text-xs">↗</span>
-            </a> */}
+            </Link>
+            <div className="flex items-center gap-6">
+              {leftLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-6">
-            <a
-              href="/photos"
-              className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors"
-            >
-              Photos <span className="text-xs">↗</span>
-            </a>
-            <a
-              href="/players"
-              className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors"
-            >
-              Players <span className="text-xs">↗</span>
-            </a>
-            <a
-              href="/news"
-              className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors"
-            >
-              News <span className="text-xs">↗</span>
-            </a>
-            {/* <a href="#" className="text-sm font-semibold uppercase text-light-gold hover:text-barca-gold transition-colors">
-              Barça Teams <span className="text-xs">▼</span>
-          </a> */}
-            <Button
-              variant="ghost"
-              size="icon"
+          {/* Right: links + icons */}
+          <div className="flex items-center gap-6">
+            {rightLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            <div className="w-px h-4 bg-white/10" />
+
+            <button
               onClick={() => setIsSearchOpen(true)}
+              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer"
               aria-label="Search"
             >
-              <Search className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
+              <Search size={16} />
+            </button>
+            <button
               onClick={() => setIsCartOpen(true)}
+              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer relative"
               aria-label="Cart"
             >
-              <ShoppingBag className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
-              {mounted && getItemCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-barca-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                  {getItemCount()}
+              <ShoppingBag size={16} />
+              {cartCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-barca-red text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center">
+                  {cartCount}
                 </span>
               )}
-            </Button>
+            </button>
           </div>
         </div>
+
+        {/* Bottom accent */}
+        <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
       </nav>
 
-      {/* Search Modal */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
@@ -208,13 +176,8 @@ export function MainNav() {
       <style
         dangerouslySetInnerHTML={{
           __html: `
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
+          .scrollbar-hide::-webkit-scrollbar { display: none; }
+          .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         `,
         }}
       />
