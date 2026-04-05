@@ -1,3 +1,11 @@
+// YouTube homepage carousel
+export const YOUTUBE_VIDEOS_QUERY = `*[_type == "youtubeVideo"] | order(publishedAt desc, _createdAt desc) {
+  _id,
+  title,
+  youtubeUrl,
+  publishedAt
+}`;
+
 // News queries
 export const NEWS_QUERY = `*[_type == "news"] | order(publishedAt desc) {
   _id,

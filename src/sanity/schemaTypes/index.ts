@@ -11,6 +11,7 @@ import { category } from "./category";
 import { booking } from "./booking";
 import { paymentProof } from "./paymentProof";
 import { coachingStaff } from "./coachingStaff";
+import { youtubeVideo } from "./youtubeVideo";
 
 export const schemaTypes = [
   news,
@@ -26,4 +27,5 @@ export const schemaTypes = [
   booking,
   paymentProof,
   coachingStaff,
+  youtubeVideo,
 ];

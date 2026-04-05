@@ -179,8 +179,8 @@ export function ParoFcStoriesSection({ stories }: { stories?: Story[] }) {
     <>
       <section className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tight text-dark-charcoal">
+          <div className="flex items-end justify-between mb-10 gap-4">
+            <h3 className="text-4xl md:text-5xl font-black text-dark-charcoal uppercase tracking-tight leading-none">
               Stories
             </h3>
             <div className="flex items-center gap-2">

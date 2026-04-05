@@ -5,6 +5,7 @@ import { NewsSection } from "@/components/NewsSection";
 import { PlayersSection } from "@/components/PlayersSection";
 import { TrophiesSection } from "@/components/TrophiesSection";
 import { PartnersSection } from "@/components/PartnersSection";
+import { YouTubeCarouselSection } from "@/components/YouTubeCarouselSection";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   NEWS_QUERY,
@@ -13,6 +14,7 @@ import {
   STORIES_QUERY,
   MAIN_PARTNERS_QUERY,
   TROPHIES_QUERY,
+  YOUTUBE_VIDEOS_QUERY,
 } from "@/sanity/lib/queries";
 import dynamic from "next/dynamic";
 import Loader from "@/components/Loader";
@@ -35,6 +37,7 @@ export default async function Home() {
     storiesResult,
     mainPartnersResult,
     trophiesResult,
+    youtubeVideosResult,
   ] = await Promise.all([
     sanityFetch({ query: NEWS_QUERY }).catch(() => ({ data: [] })),
     sanityFetch({ query: PLAYERS_QUERY }).catch(() => ({ data: [] })),
@@ -42,6 +45,7 @@ export default async function Home() {
     sanityFetch({ query: STORIES_QUERY }).catch(() => ({ data: [] })),
     sanityFetch({ query: MAIN_PARTNERS_QUERY }).catch(() => ({ data: [] })),
     sanityFetch({ query: TROPHIES_QUERY }).catch(() => ({ data: [] })),
+    sanityFetch({ query: YOUTUBE_VIDEOS_QUERY }).catch(() => ({ data: [] })),
   ]);
 
   return (
@@ -61,6 +65,8 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <div className="h-px bg-gray-100" />
         </div>
+
+        <YouTubeCarouselSection videos={youtubeVideosResult.data as any} />
 
         <CalendarSection matches={matchesResult.data as any} />
 
