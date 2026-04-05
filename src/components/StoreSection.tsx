@@ -1,41 +1,53 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Button } from "./ui/button"
-import { ExternalLink, ArrowUpRight } from "lucide-react"
-import Image from "next/image"
+import { motion } from "framer-motion";
+import { Button } from "./ui/button";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  LinkSquare02Icon,
+  ArrowUpRight01Icon,
+} from "@hugeicons/core-free-icons";
+import Image from "next/image";
 
 interface StoreItem {
-  id: number
-  title: string
-  description: string
-  headerImage: string
-  productImage: string
+  id: number;
+  title: string;
+  description: string;
+  headerImage: string;
+  productImage: string;
 }
 
 const storeItems: StoreItem[] = [
   {
     id: 1,
     title: "KITS",
-    description: "Get your favourite kit for the 25/26 season here.",
-    headerImage: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop",
-    productImage: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop",
+    description: "Get your Paro FC home and away kits for the 25/26 season.",
+    headerImage:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop",
+    productImage:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop",
   },
   {
     id: 2,
     title: "TRAINING",
-    description: "Get the new training collection and dress like your favorite players.",
-    headerImage: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop",
-    productImage: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop",
+    description:
+      "Train in the official Paro FC training range—same look as the first team.",
+    headerImage:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop",
+    productImage:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop",
   },
   {
     id: 3,
     title: "MEMORABILIA",
-    description: "Buy unique and exclusive pieces that tell the stories of Paro FC.",
-    headerImage: "https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=800&h=400&fit=crop",
-    productImage: "https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400&h=500&fit=crop",
+    description:
+      "Buy unique and exclusive pieces that tell the stories of Paro FC.",
+    headerImage:
+      "https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=800&h=400&fit=crop",
+    productImage:
+      "https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400&h=500&fit=crop",
   },
-]
+];
 
 export function StoreSection() {
   return (
@@ -52,10 +64,10 @@ export function StoreSection() {
         <div className="flex justify-end mb-12">
           <Button
             variant="default"
-            className="bg-barca-gold hover:bg-barca-gold/90 text-dark-charcoal"
+            className="bg-parofc-gold hover:bg-parofc-gold/90 text-dark-charcoal"
           >
             Paro FC Official Worldwide Store
-            <ExternalLink className="w-4 h-4 ml-2" />
+            <HugeiconsIcon icon={LinkSquare02Icon} size={16} className="ml-2" />
           </Button>
         </div>
 
@@ -107,10 +119,14 @@ export function StoreSection() {
                   </div>
 
                   {/* Shop Now Button at Bottom */}
-                  <button className="flex items-center gap-2 text-barca-gold font-bold uppercase text-sm mt-4 hover:opacity-80 transition-opacity">
+                  <button className="flex items-center gap-2 text-parofc-gold font-bold uppercase text-sm mt-4 hover:opacity-80 transition-opacity">
                     SHOP NOW
-                    <div className="w-6 h-6 rounded-full bg-barca-gold flex items-center justify-center">
-                      <ArrowUpRight className="w-3 h-3 text-dark-charcoal" />
+                    <div className="w-6 h-6 rounded-full bg-parofc-gold flex items-center justify-center">
+                      <HugeiconsIcon
+                        icon={ArrowUpRight01Icon}
+                        size={12}
+                        className="text-dark-charcoal"
+                      />
                     </div>
                   </button>
                 </div>
@@ -120,6 +136,5 @@ export function StoreSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

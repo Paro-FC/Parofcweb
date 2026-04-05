@@ -32,20 +32,20 @@ module.exports = {
         "paro-red": "#ce0505", // Paro Red — Primary brand & accent
         "tiger-yellow": "#ffad3d", // Tiger Yellow — Secondary accent
         // Legacy aliases (mapped to new brand colors)
-        "barca-gold": "#ffad3d", // → Tiger Yellow
+        "parofc-gold": "#ffad3d", // → Tiger Yellow
         "light-gold": "#EFE28D", // Light Gold / Cream
-        "barca-red": "#ce0505", // → Paro Red
+        "parofc-red": "#ce0505", // → Paro Red
         bronze: "#A66337", // Brown / Bronze
         // Neutral / Supporting Colors
         "dark-charcoal": "#1A1A1A", // Dark Charcoal (instead of pure black)
         "medium-grey": "#5E5952", // Medium Grey
         "light-grey": "#9F9384", // Light Grey
         // Legacy support (mapping old colors to new scheme)
-        "barca-blue": "#1A1A1A", // Map to dark charcoal for navbar/header
+        "parofc-blue": "#1A1A1A", // Map to dark charcoal for navbar/header
         "dark-bg": "#4a4a4a",
       },
       backgroundImage: {
-        "gradient-barca":
+        "gradient-parofc":
           "linear-gradient(135deg, #1A1A1A 0%, #5E5952 50%, #A66337 100%)",
       },
       animation: {

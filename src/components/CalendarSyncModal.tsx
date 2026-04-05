@@ -1,29 +1,30 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import { X, ArrowLeft } from "lucide-react"
-import Image from "next/image"
-import { 
-  downloadICS, 
-  generateGoogleCalendarURL, 
+import { motion, AnimatePresence } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Cancel01Icon, ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import Image from "next/image";
+import {
+  downloadICS,
+  generateGoogleCalendarURL,
   generateOutlookCalendarURL,
-  generateMicrosoft365CalendarURL 
-} from "@/lib/calendar"
+  generateMicrosoft365CalendarURL,
+} from "@/lib/calendar";
 
 interface Match {
-  _id: string
-  homeTeam: string
-  awayTeam: string
-  competition: string
-  date: string
-  event: string
-  venue: string
+  _id: string;
+  homeTeam: string;
+  awayTeam: string;
+  competition: string;
+  date: string;
+  event: string;
+  venue: string;
 }
 
 interface CalendarSyncModalProps {
-  isOpen: boolean
-  onClose: () => void
-  matches: Match[]
+  isOpen: boolean;
+  onClose: () => void;
+  matches: Match[];
 }
 
 const calendarOptions = [
@@ -34,7 +35,16 @@ const calendarOptions = [
       <svg viewBox="0 0 24 24" className="w-12 h-12">
         <rect width="24" height="24" fill="#4285F4" rx="2" />
         <rect x="4" y="4" width="16" height="16" fill="white" />
-        <text x="12" y="16" textAnchor="middle" fontSize="10" fill="#4285F4" fontWeight="bold">31</text>
+        <text
+          x="12"
+          y="16"
+          textAnchor="middle"
+          fontSize="10"
+          fill="#4285F4"
+          fontWeight="bold"
+        >
+          31
+        </text>
         <circle cx="18" cy="6" r="2" fill="#34A853" />
         <circle cx="18" cy="10" r="2" fill="#FBBC04" />
         <circle cx="18" cy="14" r="2" fill="#EA4335" />
@@ -46,9 +56,34 @@ const calendarOptions = [
     name: "APPLE",
     icon: (
       <svg viewBox="0 0 24 24" className="w-12 h-12">
-        <rect width="24" height="24" fill="white" rx="2" stroke="#E5E5E5" strokeWidth="1" />
-        <text x="12" y="14" textAnchor="middle" fontSize="8" fill="#D32F2F" fontWeight="bold">JUL</text>
-        <text x="12" y="20" textAnchor="middle" fontSize="8" fill="#D32F2F" fontWeight="bold">17</text>
+        <rect
+          width="24"
+          height="24"
+          fill="white"
+          rx="2"
+          stroke="#E5E5E5"
+          strokeWidth="1"
+        />
+        <text
+          x="12"
+          y="14"
+          textAnchor="middle"
+          fontSize="8"
+          fill="#D32F2F"
+          fontWeight="bold"
+        >
+          JUL
+        </text>
+        <text
+          x="12"
+          y="20"
+          textAnchor="middle"
+          fontSize="8"
+          fill="#D32F2F"
+          fontWeight="bold"
+        >
+          17
+        </text>
       </svg>
     ),
   },
@@ -58,7 +93,16 @@ const calendarOptions = [
     icon: (
       <svg viewBox="0 0 24 24" className="w-12 h-12">
         <rect width="24" height="24" fill="#0078D4" rx="2" />
-        <text x="12" y="16" textAnchor="middle" fontSize="14" fill="white" fontWeight="bold">O</text>
+        <text
+          x="12"
+          y="16"
+          textAnchor="middle"
+          fontSize="14"
+          fill="white"
+          fontWeight="bold"
+        >
+          O
+        </text>
         <rect x="16" y="16" width="4" height="4" fill="#0078D4" />
       </svg>
     ),
@@ -69,7 +113,16 @@ const calendarOptions = [
     icon: (
       <svg viewBox="0 0 24 24" className="w-12 h-12">
         <rect width="24" height="24" fill="#0078D4" rx="2" />
-        <text x="12" y="16" textAnchor="middle" fontSize="14" fill="white" fontWeight="bold">O</text>
+        <text
+          x="12"
+          y="16"
+          textAnchor="middle"
+          fontSize="14"
+          fill="white"
+          fontWeight="bold"
+        >
+          O
+        </text>
         <rect x="16" y="16" width="4" height="4" fill="#0078D4" />
       </svg>
     ),
@@ -80,7 +133,16 @@ const calendarOptions = [
     icon: (
       <svg viewBox="0 0 24 24" className="w-12 h-12">
         <rect width="24" height="24" fill="#0078D4" rx="2" />
-        <text x="12" y="16" textAnchor="middle" fontSize="14" fill="white" fontWeight="bold">O</text>
+        <text
+          x="12"
+          y="16"
+          textAnchor="middle"
+          fontSize="14"
+          fill="white"
+          fontWeight="bold"
+        >
+          O
+        </text>
         <rect x="16" y="16" width="4" height="4" fill="#0078D4" />
       </svg>
     ),
@@ -103,82 +165,127 @@ const calendarOptions = [
     name: "OTHER",
     icon: (
       <svg viewBox="0 0 24 24" className="w-12 h-12">
-        <rect width="24" height="24" fill="white" rx="2" stroke="#E5E5E5" strokeWidth="1" />
-        <rect x="4" y="6" width="16" height="14" rx="1" fill="none" stroke="#D32F2F" strokeWidth="1.5" />
-        <line x1="7" y1="10" x2="17" y2="10" stroke="#D32F2F" strokeWidth="1.5" />
-        <line x1="7" y1="13" x2="17" y2="13" stroke="#D32F2F" strokeWidth="1.5" />
-        <line x1="7" y1="16" x2="17" y2="16" stroke="#D32F2F" strokeWidth="1.5" />
+        <rect
+          width="24"
+          height="24"
+          fill="white"
+          rx="2"
+          stroke="#E5E5E5"
+          strokeWidth="1"
+        />
+        <rect
+          x="4"
+          y="6"
+          width="16"
+          height="14"
+          rx="1"
+          fill="none"
+          stroke="#D32F2F"
+          strokeWidth="1.5"
+        />
+        <line
+          x1="7"
+          y1="10"
+          x2="17"
+          y2="10"
+          stroke="#D32F2F"
+          strokeWidth="1.5"
+        />
+        <line
+          x1="7"
+          y1="13"
+          x2="17"
+          y2="13"
+          stroke="#D32F2F"
+          strokeWidth="1.5"
+        />
+        <line
+          x1="7"
+          y1="16"
+          x2="17"
+          y2="16"
+          stroke="#D32F2F"
+          strokeWidth="1.5"
+        />
       </svg>
     ),
   },
-]
+];
 
-export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModalProps) {
+export function CalendarSyncModal({
+  isOpen,
+  onClose,
+  matches,
+}: CalendarSyncModalProps) {
   const handleCalendarSelect = (calendarId: string) => {
     if (matches.length === 0) {
-      alert("No matches available to sync")
-      return
+      alert("No matches available to sync");
+      return;
     }
 
     switch (calendarId) {
       case "google":
         // Open Google Calendar in new tab
-        const googleUrl = generateGoogleCalendarURL(matches)
+        const googleUrl = generateGoogleCalendarURL(matches);
         if (googleUrl) {
-          window.open(googleUrl, "_blank")
+          window.open(googleUrl, "_blank");
         }
-        break
+        break;
 
       case "apple":
         // Download ICS file for Apple Calendar
-        downloadICS(matches, "paro-fc-matches.ics")
-        break
+        downloadICS(matches, "paro-fc-matches.ics");
+        break;
 
       case "outlook-web":
         // Open Outlook.com in new tab
-        const outlookUrl = generateOutlookCalendarURL(matches)
+        const outlookUrl = generateOutlookCalendarURL(matches);
         if (outlookUrl) {
-          window.open(outlookUrl, "_blank")
+          window.open(outlookUrl, "_blank");
         }
-        break
+        break;
 
       case "outlook-classic":
       case "outlook-new":
         // Download ICS file for Outlook Desktop
-        downloadICS(matches, "paro-fc-matches.ics")
+        downloadICS(matches, "paro-fc-matches.ics");
         // Show instructions
         setTimeout(() => {
-          alert("ICS file downloaded. Please open it with Outlook Desktop to add the events to your calendar.")
-        }, 100)
-        break
+          alert(
+            "ICS file downloaded. Please open it with Outlook Desktop to add the events to your calendar.",
+          );
+        }, 100);
+        break;
 
       case "microsoft365":
         // Open Microsoft 365 Calendar in new tab
-        const ms365Url = generateMicrosoft365CalendarURL(matches)
+        const ms365Url = generateMicrosoft365CalendarURL(matches);
         if (ms365Url) {
-          window.open(ms365Url, "_blank")
+          window.open(ms365Url, "_blank");
         }
-        break
+        break;
 
       case "other":
         // Download ICS file for other calendar applications
-        downloadICS(matches, "paro-fc-matches.ics")
+        downloadICS(matches, "paro-fc-matches.ics");
         setTimeout(() => {
-          alert("ICS file downloaded. You can import this file into your calendar application.")
-        }, 100)
-        break
+          alert(
+            "ICS file downloaded. You can import this file into your calendar application.",
+          );
+        }, 100);
+        break;
 
       default:
-        console.warn("Unknown calendar type:", calendarId)
+        console.warn("Unknown calendar type:", calendarId);
     }
 
     // Close modal after a short delay to allow the action to complete
     setTimeout(() => {
-      onClose()
-    }, 500)
-  }
+      onClose();
+    }, 500);
+  };
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
@@ -198,15 +305,19 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
           onClick={(e) => e.stopPropagation()}
         >
           {/* Yellow Header Bar - always visible on mobile */}
-          <div className="bg-barca-gold h-14 sm:h-16 flex-shrink-0 flex items-center justify-between px-4 sm:px-6">
+          <div className="bg-parofc-gold h-14 sm:h-16 flex-shrink-0 flex items-center justify-between px-4 sm:px-6">
             <button
               onClick={onClose}
               className="p-2 -ml-1 hover:bg-black/10 rounded-full transition-colors touch-manipulation"
               aria-label="Back"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-900" />
+              <HugeiconsIcon
+                icon={ArrowLeft01Icon}
+                size={20}
+                className="text-gray-900"
+              />
             </button>
-            
+
             <div className="flex-shrink-0">
               <Image
                 src="/assets/logo.webp"
@@ -216,20 +327,24 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
                 className="object-contain w-8 h-8 sm:w-10 sm:h-10"
               />
             </div>
-            
+
             <button
               onClick={onClose}
               className="p-2 -mr-1 hover:bg-black/10 rounded-full transition-colors touch-manipulation"
               aria-label="Close"
             >
-              <X className="w-5 h-5 text-gray-900" />
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                size={20}
+                className="text-gray-900"
+              />
             </button>
           </div>
 
           {/* Content - scrollable so header stays in view on small screens */}
           <div className="p-4 sm:p-8 overflow-y-auto flex-1 min-h-0">
             {/* Title */}
-            <h2 className="text-xl sm:text-3xl font-bold text-barca-gold mb-3 sm:mb-4 text-center">
+            <h2 className="text-xl sm:text-3xl font-bold text-parofc-gold mb-3 sm:mb-4 text-center">
               CHOOSE YOUR CALENDAR
             </h2>
 
@@ -238,7 +353,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
               THIS EXPERIENCE IS POWERED BY ECAL, I AGREE TO{" "}
               <a
                 href="#"
-                className="text-barca-gold underline hover:text-barca-gold/80"
+                className="text-parofc-gold underline hover:text-parofc-gold/80"
                 onClick={(e) => e.stopPropagation()}
               >
                 TERMS OF USE
@@ -246,7 +361,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
               AND{" "}
               <a
                 href="#"
-                className="text-barca-gold underline hover:text-barca-gold/80"
+                className="text-parofc-gold underline hover:text-parofc-gold/80"
                 onClick={(e) => e.stopPropagation()}
               >
                 PRIVACY POLICY
@@ -265,7 +380,7 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
                   <div className="flex items-center justify-center">
                     {option.icon}
                   </div>
-                  <span className="text-xs font-semibold text-gray-900 text-center group-hover:text-barca-gold transition-colors">
+                  <span className="text-xs font-semibold text-gray-900 text-center group-hover:text-parofc-gold transition-colors">
                     {option.name}
                   </span>
                 </button>
@@ -274,10 +389,9 @@ export function CalendarSyncModal({ isOpen, onClose, matches }: CalendarSyncModa
           </div>
 
           {/* Red Bottom Bar */}
-          <div className="h-1 flex-shrink-0 bg-barca-red" />
+          <div className="h-1 flex-shrink-0 bg-parofc-red" />
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }
-

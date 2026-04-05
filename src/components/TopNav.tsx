@@ -16,10 +16,10 @@ interface TopNavProps {
 
 function formatMatchTitle(match: LatestMatch | null): string {
   if (!match) {
-    return "Welcome to the Paro Football Club!";
+    return "Welcome to Paro FC!";
   }
 
-  const venue = match.venue || "Paro Football Club";
+  const venue = match.venue || "Paro FC";
   return `${match.homeTeam} vs ${match.awayTeam} at ${venue}!`;
 }
 
@@ -33,15 +33,15 @@ export function TopNav({ latestMatch = null }: TopNavProps) {
       <nav className="bg-dark-charcoal rounded-lg mx-4 mt-2 mb-2 py-3 px-4 md:hidden">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-barca-gold"></div>
-            <div className="w-3 h-3 rounded-full bg-barca-red"></div>
+            <div className="w-3 h-3 rounded-full bg-parofc-gold"></div>
+            <div className="w-3 h-3 rounded-full bg-parofc-red"></div>
           </div>
           <Link
             href={matchLink}
-            className="flex-1 text-sm text-light-gold font-semibold hover:text-barca-gold transition-colors"
+            className="flex-1 text-sm text-light-gold font-semibold hover:text-parofc-gold transition-colors"
           >
             {matchTitle}{" "}
-            <span className="text-barca-gold font-bold text-base">
+            <span className="text-parofc-gold font-bold text-base">
               BUY TICKETS
             </span>
           </Link>
@@ -53,15 +53,15 @@ export function TopNav({ latestMatch = null }: TopNavProps) {
         <div className="container mx-auto px-4 flex justify-between items-center">
           <Link
             href={matchLink}
-            className="text-sm text-dark-charcoal hover:text-barca-gold transition-colors"
+            className="text-sm text-dark-charcoal hover:text-parofc-gold transition-colors"
           >
-            🔵🔴 {matchTitle}{" "}
-            <span className="text-barca-gold font-bold">BUY TICKETS</span>
+            {matchTitle}{" "}
+            <span className="text-parofc-gold font-bold">BUY TICKETS</span>
           </Link>
           <div className="flex items-center gap-4">
             {/* <Button variant="ghost" size="sm">Login</Button> */}
             {/* <Button variant="default" size="sm">View Plans</Button> */}
-            {/* <span className="text-sm text-dark-charcoal cursor-pointer hover:text-barca-gold transition-colors">EN</span> */}
+            {/* <span className="text-sm text-dark-charcoal cursor-pointer hover:text-parofc-gold transition-colors">EN</span> */}
             {/* <Button 
             variant="ghost" 
             size="icon"

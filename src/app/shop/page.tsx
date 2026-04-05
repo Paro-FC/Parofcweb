@@ -1,92 +1,103 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect, useMemo } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
-import { SlidersHorizontal, ChevronDown, ShoppingBag, ArrowRight } from 'lucide-react'
-import { client } from '@/sanity/lib/client'
-import { urlFor } from '@/sanity/lib/image'
-import { PRODUCTS_QUERY, CATEGORIES_QUERY } from '@/sanity/lib/queries'
-import Loader from '@/components/Loader'
-import type { SanityImageSource } from '@sanity/image-url'
+import React, { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  SlidersHorizontalIcon,
+  ArrowDown01Icon,
+  ShoppingBag01Icon,
+} from "@hugeicons/core-free-icons";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+import { PRODUCTS_QUERY, CATEGORIES_QUERY } from "@/sanity/lib/queries";
+import Loader from "@/components/Loader";
+import type { SanityImageSource } from "@sanity/image-url";
 
 interface Category {
-  _id: string
-  title: string
-  slug: string
-  image?: SanityImageSource | string
+  _id: string;
+  title: string;
+  slug: string;
+  image?: SanityImageSource | string;
 }
 
 interface Product {
-  _id: string
-  name: string
-  slug: string
-  image: SanityImageSource | string
-  hoverImage?: SanityImageSource | string
-  category: Category | null
-  price: number
-  currency: string
-  salePrice?: number
-  badge?: string
-  sizes?: string[]
-  inStock: boolean
-  _createdAt?: string
+  _id: string;
+  name: string;
+  slug: string;
+  image: SanityImageSource | string;
+  hoverImage?: SanityImageSource | string;
+  category: Category | null;
+  price: number;
+  currency: string;
+  salePrice?: number;
+  badge?: string;
+  sizes?: string[];
+  inStock: boolean;
+  _createdAt?: string;
 }
 
 const badgeStyles: Record<string, string> = {
-  'new': 'bg-emerald-500 text-white',
-  'exclusive': 'bg-dark-charcoal text-white',
-  'sale': 'bg-barca-red text-white',
-  'limited': 'bg-barca-gold text-dark-charcoal',
-  'bestseller': 'bg-barca-gold text-dark-charcoal',
-}
+  new: "bg-emerald-500 text-white",
+  exclusive: "bg-dark-charcoal text-white",
+  sale: "bg-parofc-red text-white",
+  limited: "bg-parofc-gold text-dark-charcoal",
+  bestseller: "bg-parofc-gold text-dark-charcoal",
+};
 
 const badgeLabels: Record<string, string> = {
-  'new': 'NEW',
-  'exclusive': 'EXCLUSIVE',
-  'sale': 'SALE',
-  'limited': 'LIMITED',
-  'bestseller': 'BEST SELLER',
-}
+  new: "NEW",
+  exclusive: "EXCLUSIVE",
+  sale: "SALE",
+  limited: "LIMITED",
+  bestseller: "BEST SELLER",
+};
 
-const ProductCard = React.memo(function ProductCard({ product, index }: { product: Product; index: number }) {
-  const [isHovered, setIsHovered] = useState(false)
+const ProductCard = React.memo(function ProductCard({
+  product,
+  index,
+}: {
+  product: Product;
+  index: number;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
 
   const formattedPrice = useMemo(() => {
-    const price = product.salePrice || product.price
-    if (product.currency === 'BTN') {
-      return `Nu. ${price.toLocaleString()}`
+    const price = product.salePrice || product.price;
+    if (product.currency === "BTN") {
+      return `Nu. ${price.toLocaleString()}`;
     }
-    return `$${price.toFixed(2)}`
-  }, [product.salePrice, product.price, product.currency])
+    return `$${price.toFixed(2)}`;
+  }, [product.salePrice, product.price, product.currency]);
 
   const originalPrice = useMemo(() => {
-    if (!product.salePrice) return null
-    if (product.currency === 'BTN') {
-      return `Nu. ${product.price.toLocaleString()}`
+    if (!product.salePrice) return null;
+    if (product.currency === "BTN") {
+      return `Nu. ${product.price.toLocaleString()}`;
     }
-    return `$${product.price.toFixed(2)}`
-  }, [product.salePrice, product.price, product.currency])
+    return `$${product.price.toFixed(2)}`;
+  }, [product.salePrice, product.price, product.currency]);
 
   const mainImageUrl = useMemo(() => {
-    if (typeof product.image === 'string') return product.image
+    if (typeof product.image === "string") return product.image;
     try {
-      return urlFor(product.image).width(600).height(750).url()
+      return urlFor(product.image).width(600).height(750).url();
     } catch {
-      return '/images/placeholder-product.png'
+      return "/images/placeholder-product.png";
     }
-  }, [product.image])
+  }, [product.image]);
 
   const hoverImageUrl = useMemo(() => {
-    if (!product.hoverImage) return null
-    if (typeof product.hoverImage === 'string') return product.hoverImage
+    if (!product.hoverImage) return null;
+    if (typeof product.hoverImage === "string") return product.hoverImage;
     try {
-      return urlFor(product.hoverImage).width(600).height(750).url()
+      return urlFor(product.hoverImage).width(600).height(750).url();
     } catch {
-      return null
+      return null;
     }
-  }, [product.hoverImage])
+  }, [product.hoverImage]);
 
   return (
     <motion.div
@@ -105,7 +116,9 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
             alt={product.name}
             fill
             className={`object-cover transition-all duration-700 ${
-              isHovered && hoverImageUrl ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+              isHovered && hoverImageUrl
+                ? "opacity-0 scale-105"
+                : "opacity-100 scale-100"
             }`}
           />
 
@@ -115,7 +128,7 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
               alt={`${product.name} - alternate view`}
               fill
               className={`object-cover transition-all duration-700 absolute inset-0 ${
-                isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+                isHovered ? "opacity-100 scale-100" : "opacity-0 scale-105"
               }`}
             />
           )}
@@ -123,7 +136,9 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
           {/* Badge */}
           {product.badge && (
             <div className="absolute top-3 left-3 z-10">
-              <span className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1 tracking-widest`}>
+              <span
+                className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1 tracking-widest`}
+              >
                 {badgeLabels[product.badge]}
               </span>
             </div>
@@ -132,14 +147,20 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
           {/* Sale percentage */}
           {product.salePrice && product.price > 0 && (
             <div className="absolute top-3 right-3 z-10">
-              <span className="bg-barca-red text-white text-[10px] font-bold px-2 py-1">
-                -{Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+              <span className="bg-parofc-red text-white text-[10px] font-bold px-2 py-1">
+                -
+                {Math.round(
+                  ((product.price - product.salePrice) / product.price) * 100,
+                )}
+                %
               </span>
             </div>
           )}
 
           {/* Quick view overlay */}
-          <div className={`absolute inset-0 bg-dark-charcoal/0 group-hover:bg-dark-charcoal/5 transition-colors duration-300`} />
+          <div
+            className={`absolute inset-0 bg-dark-charcoal/0 group-hover:bg-dark-charcoal/5 transition-colors duration-300`}
+          />
 
           {/* Out of stock overlay */}
           {!product.inStock && (
@@ -159,12 +180,14 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
             </p>
           )}
 
-          <h3 className="text-sm font-semibold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-barca-red transition-colors duration-200">
+          <h3 className="text-sm font-semibold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
             {product.name}
           </h3>
 
           <div className="flex items-baseline gap-2 pt-0.5">
-            <span className={`text-sm font-bold ${product.salePrice ? 'text-barca-red' : 'text-dark-charcoal'}`}>
+            <span
+              className={`text-sm font-bold ${product.salePrice ? "text-parofc-red" : "text-dark-charcoal"}`}
+            >
               {formattedPrice}
             </span>
             {originalPrice && (
@@ -176,76 +199,80 @@ const ProductCard = React.memo(function ProductCard({ product, index }: { produc
         </div>
       </Link>
     </motion.div>
-  )
-})
+  );
+});
 
 export default function ShopPage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const [sortBy, setSortBy] = useState<string>('newest')
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("newest");
 
   useEffect(() => {
     async function fetchData() {
       try {
         const [productsData, categoriesData] = await Promise.all([
           client.fetch(PRODUCTS_QUERY),
-          client.fetch(CATEGORIES_QUERY)
-        ])
+          client.fetch(CATEGORIES_QUERY),
+        ]);
 
         if (productsData && Array.isArray(productsData)) {
-          setProducts(productsData)
+          setProducts(productsData);
         } else {
-          setProducts([])
+          setProducts([]);
         }
 
         if (categoriesData && Array.isArray(categoriesData)) {
-          setCategories(categoriesData)
+          setCategories(categoriesData);
         } else {
-          setCategories([])
+          setCategories([]);
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
-        setProducts([])
-        setCategories([])
+        console.error("Error fetching data:", error);
+        setProducts([]);
+        setCategories([]);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
-  const filteredProducts = products.filter(product => {
-    if (!product) return false
-    if (selectedCategory === 'all') return true
-    return product.category?._id === selectedCategory
-  })
+  const filteredProducts = products.filter((product) => {
+    if (!product) return false;
+    if (selectedCategory === "all") return true;
+    return product.category?._id === selectedCategory;
+  });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
-      case 'newest':
+      case "newest":
         if (a._createdAt && b._createdAt) {
-          return new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime()
+          return (
+            new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime()
+          );
         }
-        if (a._createdAt && !b._createdAt) return -1
-        if (!a._createdAt && b._createdAt) return 1
-        return 0
-      case 'price-low':
-        return (a.salePrice ?? a.price ?? 0) - (b.salePrice ?? b.price ?? 0)
-      case 'price-high':
-        return (b.salePrice ?? b.price ?? 0) - (a.salePrice ?? a.price ?? 0)
-      case 'name':
-        return (a.name || '').localeCompare(b.name || '')
+        if (a._createdAt && !b._createdAt) return -1;
+        if (!a._createdAt && b._createdAt) return 1;
+        return 0;
+      case "price-low":
+        return (a.salePrice ?? a.price ?? 0) - (b.salePrice ?? b.price ?? 0);
+      case "price-high":
+        return (b.salePrice ?? b.price ?? 0) - (a.salePrice ?? a.price ?? 0);
+      case "name":
+        return (a.name || "").localeCompare(b.name || "");
       default:
-        return 0
+        return 0;
     }
-  })
+  });
 
-  const selectedCategoryName = selectedCategory === 'all'
-    ? 'All Products'
-    : categories.find(c => c._id === selectedCategory)?.title || 'All Products'
+  const selectedCategoryName =
+    selectedCategory === "all"
+      ? "All Products"
+      : categories.find((c) => c._id === selectedCategory)?.title ||
+        "All Products";
 
   return (
     <div className="min-h-screen bg-white">
@@ -265,18 +292,18 @@ export default function ShopPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+            <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
               Official Merchandise
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
               Paro FC
               <br />
-              <span className="text-barca-gold">Shop</span>
+              <span className="text-parofc-gold">Shop</span>
             </h1>
           </motion.div>
         </div>
 
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       {/* Sticky Filter Bar */}
@@ -286,28 +313,30 @@ export default function ShopPage() {
             {/* Filter Toggle */}
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center gap-2 text-xs font-bold text-dark-charcoal uppercase tracking-wider hover:text-barca-red transition-colors duration-200 cursor-pointer"
+              className="flex items-center gap-2 text-xs font-bold text-dark-charcoal uppercase tracking-wider hover:text-parofc-red transition-colors duration-200 cursor-pointer"
             >
-              <SlidersHorizontal size={14} />
+              <HugeiconsIcon icon={SlidersHorizontalIcon} size={14} />
               <span>Filter & Sort</span>
-              <ChevronDown
+              <HugeiconsIcon
+                icon={ArrowDown01Icon}
                 size={12}
-                className={`transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`}
+                className={`transition-transform duration-200 ${isFilterOpen ? "rotate-180" : ""}`}
               />
             </button>
 
             {/* Active filter + count */}
             <div className="flex items-center gap-3">
-              {selectedCategory !== 'all' && (
+              {selectedCategory !== "all" && (
                 <button
-                  onClick={() => setSelectedCategory('all')}
-                  className="text-[10px] font-bold text-barca-red uppercase tracking-wider cursor-pointer hover:underline"
+                  onClick={() => setSelectedCategory("all")}
+                  className="text-[10px] font-bold text-parofc-red uppercase tracking-wider cursor-pointer hover:underline"
                 >
                   Clear filter
                 </button>
               )}
               <span className="text-xs text-gray-400 tabular-nums">
-                {sortedProducts.length} {sortedProducts.length === 1 ? 'product' : 'products'}
+                {sortedProducts.length}{" "}
+                {sortedProducts.length === 1 ? "product" : "products"}
               </span>
             </div>
           </div>
@@ -317,7 +346,7 @@ export default function ShopPage() {
             {isFilterOpen && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
+                animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
@@ -330,11 +359,11 @@ export default function ShopPage() {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       <button
-                        onClick={() => setSelectedCategory('all')}
+                        onClick={() => setSelectedCategory("all")}
                         className={`px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
-                          selectedCategory === 'all'
-                            ? 'bg-dark-charcoal text-white'
-                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                          selectedCategory === "all"
+                            ? "bg-dark-charcoal text-white"
+                            : "bg-gray-50 text-gray-600 hover:bg-gray-100"
                         }`}
                       >
                         All
@@ -345,8 +374,8 @@ export default function ShopPage() {
                           onClick={() => setSelectedCategory(category._id)}
                           className={`px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                             selectedCategory === category._id
-                              ? 'bg-dark-charcoal text-white'
-                              : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                              ? "bg-dark-charcoal text-white"
+                              : "bg-gray-50 text-gray-600 hover:bg-gray-100"
                           }`}
                         >
                           {category.title}
@@ -362,18 +391,18 @@ export default function ShopPage() {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        { value: 'newest', label: 'Newest' },
-                        { value: 'price-low', label: 'Price: Low' },
-                        { value: 'price-high', label: 'Price: High' },
-                        { value: 'name', label: 'A - Z' },
+                        { value: "newest", label: "Newest" },
+                        { value: "price-low", label: "Price: Low" },
+                        { value: "price-high", label: "Price: High" },
+                        { value: "name", label: "A - Z" },
                       ].map((option) => (
                         <button
                           key={option.value}
                           onClick={() => setSortBy(option.value)}
                           className={`px-3 py-1.5 text-xs font-bold transition-all duration-200 cursor-pointer ${
                             sortBy === option.value
-                              ? 'bg-dark-charcoal text-white'
-                              : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                              ? "bg-dark-charcoal text-white"
+                              : "bg-gray-50 text-gray-600 hover:bg-gray-100"
                           }`}
                         >
                           {option.label}
@@ -400,16 +429,20 @@ export default function ShopPage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <ShoppingBag size={40} className="mx-auto text-gray-200 mb-4" />
+            <HugeiconsIcon
+              icon={ShoppingBag01Icon}
+              size={40}
+              className="mx-auto text-gray-200 mb-4"
+            />
             <p className="text-sm font-semibold text-gray-400 mb-1">
               {products.length === 0
-                ? 'No products available yet'
+                ? "No products available yet"
                 : `No products in "${selectedCategoryName}"`}
             </p>
-            {selectedCategory !== 'all' && (
+            {selectedCategory !== "all" && (
               <button
-                onClick={() => setSelectedCategory('all')}
-                className="text-xs font-bold text-barca-red hover:underline cursor-pointer mt-2"
+                onClick={() => setSelectedCategory("all")}
+                className="text-xs font-bold text-parofc-red hover:underline cursor-pointer mt-2"
               >
                 View all products
               </button>
@@ -418,5 +451,5 @@ export default function ShopPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

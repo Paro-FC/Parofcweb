@@ -1,157 +1,176 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { X, Search, Clock, TrendingUp, User, Newspaper, Image as ImageIcon } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { sanityFetch } from "@/sanity/lib/live"
-import { SEARCH_NEWS_QUERY, SEARCH_PLAYERS_QUERY, SEARCH_PHOTOS_QUERY } from "@/sanity/lib/queries"
-import { urlFor } from "@/sanity/lib/image"
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  Search01Icon,
+  Clock01Icon,
+  AnalyticsUpIcon,
+  UserCircleIcon,
+  NewsIcon,
+  Image01Icon,
+} from "@hugeicons/core-free-icons";
+import Image from "next/image";
+import Link from "next/link";
+import { sanityFetch } from "@/sanity/lib/live";
+import {
+  SEARCH_NEWS_QUERY,
+  SEARCH_PLAYERS_QUERY,
+  SEARCH_PHOTOS_QUERY,
+} from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
 
 interface SearchModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 interface NewsResult {
-  _id: string
-  title: string
-  slug: string
-  image: unknown
-  badge?: string
-  publishedAt: string
-  description?: string
+  _id: string;
+  title: string;
+  slug: string;
+  image: unknown;
+  badge?: string;
+  publishedAt: string;
+  description?: string;
 }
 
 interface PlayerResult {
-  _id: string
-  firstName: string
-  lastName: string
-  number: number
-  position: string
-  image: unknown
-  slug?: string
+  _id: string;
+  firstName: string;
+  lastName: string;
+  number: number;
+  position: string;
+  image: unknown;
+  slug?: string;
 }
 
 interface PhotoResult {
-  _id: string
-  title: string
-  coverImage: string
-  category: string
-  date: string
-  slug: string
+  _id: string;
+  title: string;
+  coverImage: string;
+  category: string;
+  date: string;
+  slug: string;
 }
 
-const recentSearches = ["Paro FC vs Thimphu", "Latest news", "Match schedule"]
-const trendingSearches = ["BOB Premier League", "Goals", "Transfer news", "Match highlights"]
+const recentSearches = ["Paro FC vs Thimphu", "Latest news", "Match schedule"];
+const trendingSearches = [
+  "BOB Premier League",
+  "Goals",
+  "Transfer news",
+  "Match highlights",
+];
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
-  const [query, setQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
-  const [newsResults, setNewsResults] = useState<NewsResult[]>([])
-  const [playerResults, setPlayerResults] = useState<PlayerResult[]>([])
-  const [photoResults, setPhotoResults] = useState<PhotoResult[]>([])
-  const [hasSearched, setHasSearched] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [newsResults, setNewsResults] = useState<NewsResult[]>([]);
+  const [playerResults, setPlayerResults] = useState<PlayerResult[]>([]);
+  const [photoResults, setPhotoResults] = useState<PhotoResult[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Focus input when modal opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100)
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   // Handle escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose()
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown)
-      document.body.style.overflow = "hidden"
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown)
-      document.body.style.overflow = ""
-    }
-  }, [isOpen, onClose])
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, onClose]);
 
   const performSearch = useCallback(async (searchTerm: string) => {
     if (!searchTerm.trim()) {
-      setNewsResults([])
-      setPlayerResults([])
-      setPhotoResults([])
-      setHasSearched(false)
-      return
+      setNewsResults([]);
+      setPlayerResults([]);
+      setPhotoResults([]);
+      setHasSearched(false);
+      return;
     }
 
-    setIsSearching(true)
-    setHasSearched(true)
+    setIsSearching(true);
+    setHasSearched(true);
 
     try {
-      const searchPattern = `*${searchTerm}*`
+      const searchPattern = `*${searchTerm}*`;
 
       const [newsResult, playersResult, photosResult] = await Promise.all([
         sanityFetch({
           query: SEARCH_NEWS_QUERY,
-          params: { searchTerm: searchPattern }
+          params: { searchTerm: searchPattern },
         }).catch(() => ({ data: [] })),
         sanityFetch({
           query: SEARCH_PLAYERS_QUERY,
-          params: { searchTerm: searchPattern }
+          params: { searchTerm: searchPattern },
         }).catch(() => ({ data: [] })),
         sanityFetch({
           query: SEARCH_PHOTOS_QUERY,
-          params: { searchTerm: searchPattern }
+          params: { searchTerm: searchPattern },
         }).catch(() => ({ data: [] })),
-      ])
+      ]);
 
-      setNewsResults((newsResult.data as NewsResult[]) || [])
-      setPlayerResults((playersResult.data as PlayerResult[]) || [])
-      setPhotoResults((photosResult.data as PhotoResult[]) || [])
+      setNewsResults((newsResult.data as NewsResult[]) || []);
+      setPlayerResults((playersResult.data as PlayerResult[]) || []);
+      setPhotoResults((photosResult.data as PhotoResult[]) || []);
     } catch (error) {
-      console.error("Search error:", error)
+      console.error("Search error:", error);
     } finally {
-      setIsSearching(false)
+      setIsSearching(false);
     }
-  }, [])
+  }, []);
 
   // Debounced search
   useEffect(() => {
     if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
+      clearTimeout(debounceRef.current);
     }
 
     debounceRef.current = setTimeout(() => {
-      performSearch(query)
-    }, 300)
+      performSearch(query);
+    }, 300);
 
     return () => {
       if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
+        clearTimeout(debounceRef.current);
       }
-    }
-  }, [query, performSearch])
+    };
+  }, [query, performSearch]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    performSearch(query)
-  }
+    e.preventDefault();
+    performSearch(query);
+  };
 
   const handleQuickSearch = (term: string) => {
-    setQuery(term)
-    performSearch(term)
-  }
+    setQuery(term);
+    performSearch(term);
+  };
 
-  const totalResults = newsResults.length + playerResults.length + photoResults.length
+  const totalResults =
+    newsResults.length + playerResults.length + photoResults.length;
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
@@ -171,9 +190,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Header */}
-          <form onSubmit={handleSearchSubmit} className="border-b border-white/5">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="border-b border-white/5"
+          >
             <div className="flex items-center px-6 py-4">
-              <Search className="w-5 h-5 text-white/30 mr-4" />
+              <HugeiconsIcon
+                icon={Search01Icon}
+                size={20}
+                className="text-white/30 mr-4"
+              />
               <input
                 ref={inputRef}
                 type="text"
@@ -186,15 +212,19 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <button
                   type="button"
                   onClick={() => {
-                    setQuery("")
-                    setNewsResults([])
-                    setPlayerResults([])
-                    setPhotoResults([])
-                    setHasSearched(false)
+                    setQuery("");
+                    setNewsResults([]);
+                    setPlayerResults([]);
+                    setPhotoResults([]);
+                    setHasSearched(false);
                   }}
                   className="p-2 hover:bg-white/5 rounded-full transition-colors"
                 >
-                  <X className="w-5 h-5 text-white/40" />
+                  <HugeiconsIcon
+                    icon={Cancel01Icon}
+                    size={20}
+                    className="text-white/40"
+                  />
                 </button>
               )}
               <button
@@ -212,7 +242,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Loading State */}
             {isSearching && (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-barca-gold"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-parofc-gold"></div>
               </div>
             )}
 
@@ -222,7 +252,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 {/* Recent Searches */}
                 <div className="mb-6">
                   <div className="flex items-center gap-2 text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
-                    <Clock className="w-3.5 h-3.5" />
+                    <HugeiconsIcon icon={Clock01Icon} size={14} />
                     Recent Searches
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -241,7 +271,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 {/* Trending Searches */}
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
-                    <TrendingUp className="w-3.5 h-3.5" />
+                    <HugeiconsIcon icon={AnalyticsUpIcon} size={14} />
                     Trending
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -249,7 +279,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <button
                         key={term}
                         onClick={() => handleQuickSearch(term)}
-                        className="px-4 py-2 bg-barca-gold/10 hover:bg-barca-gold/20 rounded-full text-sm text-barca-gold font-medium transition-colors"
+                        className="px-4 py-2 bg-parofc-gold/10 hover:bg-parofc-gold/20 rounded-full text-sm text-parofc-gold font-medium transition-colors"
                       >
                         {term}
                       </button>
@@ -268,32 +298,56 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       onClick={onClose}
                       className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
-                      <Newspaper className="w-5 h-5 text-barca-red" />
-                      <span className="text-sm font-medium text-white/60">News</span>
+                      <HugeiconsIcon
+                        icon={NewsIcon}
+                        size={20}
+                        className="text-parofc-red"
+                      />
+                      <span className="text-sm font-medium text-white/60">
+                        News
+                      </span>
                     </Link>
                     <Link
                       href="/players"
                       onClick={onClose}
                       className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
-                      <User className="w-5 h-5 text-barca-gold" />
-                      <span className="text-sm font-medium text-white/60">Players</span>
+                      <HugeiconsIcon
+                        icon={UserCircleIcon}
+                        size={20}
+                        className="text-parofc-gold"
+                      />
+                      <span className="text-sm font-medium text-white/60">
+                        Players
+                      </span>
                     </Link>
                     <Link
                       href="/photos"
                       onClick={onClose}
                       className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
-                      <ImageIcon className="w-5 h-5 text-barca-gold" />
-                      <span className="text-sm font-medium text-white/60">Photos</span>
+                      <HugeiconsIcon
+                        icon={Image01Icon}
+                        size={20}
+                        className="text-parofc-gold"
+                      />
+                      <span className="text-sm font-medium text-white/60">
+                        Photos
+                      </span>
                     </Link>
                     <Link
                       href="/standings"
                       onClick={onClose}
                       className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
-                      <TrendingUp className="w-5 h-5 text-barca-gold" />
-                      <span className="text-sm font-medium text-white/60">Standings</span>
+                      <HugeiconsIcon
+                        icon={AnalyticsUpIcon}
+                        size={20}
+                        className="text-parofc-gold"
+                      />
+                      <span className="text-sm font-medium text-white/60">
+                        Standings
+                      </span>
                     </Link>
                   </div>
                 </div>
@@ -305,9 +359,17 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <div className="p-6">
                 {totalResults === 0 ? (
                   <div className="text-center py-12">
-                    <Search className="w-12 h-12 text-white/10 mx-auto mb-4" />
-                    <p className="text-white/50 text-lg">No results found for &ldquo;{query}&rdquo;</p>
-                    <p className="text-white/30 text-sm mt-2">Try different keywords or check spelling</p>
+                    <HugeiconsIcon
+                      icon={Search01Icon}
+                      size={48}
+                      className="text-white/10 mx-auto mb-4"
+                    />
+                    <p className="text-white/50 text-lg">
+                      No results found for &ldquo;{query}&rdquo;
+                    </p>
+                    <p className="text-white/30 text-sm mt-2">
+                      Try different keywords or check spelling
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -316,13 +378,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <div>
                         <div className="flex items-center justify-between mb-3">
                           <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest flex items-center gap-2">
-                            <Newspaper className="w-3.5 h-3.5" />
+                            <HugeiconsIcon icon={NewsIcon} size={14} />
                             News ({newsResults.length})
                           </h3>
                           <Link
                             href="/news"
                             onClick={onClose}
-                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
+                            className="text-sm text-parofc-gold hover:text-parofc-gold/80 font-medium"
                           >
                             View all →
                           </Link>
@@ -338,7 +400,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                               <div className="w-16 h-16 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
                                 {news.image ? (
                                   <Image
-                                    src={urlFor(news.image).width(128).height(128).url()}
+                                    src={urlFor(news.image)
+                                      .width(128)
+                                      .height(128)
+                                      .url()}
                                     alt={news.title}
                                     width={64}
                                     height={64}
@@ -346,21 +411,27 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <Newspaper className="w-6 h-6 text-white/20" />
+                                    <HugeiconsIcon
+                                      icon={NewsIcon}
+                                      size={24}
+                                      className="text-white/20"
+                                    />
                                   </div>
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
                                 {news.badge && (
-                                  <span className="inline-block bg-barca-red text-white text-xs font-semibold px-2 py-0.5 rounded mb-1">
+                                  <span className="inline-block bg-parofc-red text-white text-xs font-semibold px-2 py-0.5 rounded mb-1">
                                     {news.badge}
                                   </span>
                                 )}
-                                <h4 className="font-semibold text-white/80 line-clamp-1 group-hover:text-barca-gold transition-colors">
+                                <h4 className="font-semibold text-white/80 line-clamp-1 group-hover:text-parofc-gold transition-colors">
                                   {news.title}
                                 </h4>
                                 {news.description && (
-                                  <p className="text-sm text-white/30 line-clamp-1">{news.description}</p>
+                                  <p className="text-sm text-white/30 line-clamp-1">
+                                    {news.description}
+                                  </p>
                                 )}
                               </div>
                             </Link>
@@ -374,13 +445,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <div>
                         <div className="flex items-center justify-between mb-3">
                           <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest flex items-center gap-2">
-                            <User className="w-3.5 h-3.5" />
+                            <HugeiconsIcon icon={UserCircleIcon} size={14} />
                             Players ({playerResults.length})
                           </h3>
                           <Link
                             href="/players"
                             onClick={onClose}
-                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
+                            className="text-sm text-parofc-gold hover:text-parofc-gold/80 font-medium"
                           >
                             View all →
                           </Link>
@@ -393,10 +464,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                               onClick={onClose}
                               className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors group"
                             >
-                              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-barca-red to-barca-gold flex-shrink-0">
+                              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-parofc-red to-parofc-gold flex-shrink-0">
                                 {player.image ? (
                                   <Image
-                                    src={urlFor(player.image).width(96).height(96).url()}
+                                    src={urlFor(player.image)
+                                      .width(96)
+                                      .height(96)
+                                      .url()}
                                     alt={`${player.firstName} ${player.lastName}`}
                                     width={48}
                                     height={48}
@@ -404,12 +478,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <User className="w-6 h-6 text-white" />
+                                    <HugeiconsIcon
+                                      icon={UserCircleIcon}
+                                      size={24}
+                                      className="text-white"
+                                    />
                                   </div>
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-white/80 line-clamp-1 group-hover:text-barca-gold transition-colors">
+                                <h4 className="font-semibold text-white/80 line-clamp-1 group-hover:text-parofc-gold transition-colors">
                                   {player.firstName} {player.lastName}
                                 </h4>
                                 <p className="text-sm text-white/30">
@@ -427,13 +505,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <div>
                         <div className="flex items-center justify-between mb-3">
                           <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest flex items-center gap-2">
-                            <ImageIcon className="w-3.5 h-3.5" />
+                            <HugeiconsIcon icon={Image01Icon} size={14} />
                             Photos ({photoResults.length})
                           </h3>
                           <Link
                             href="/photos"
                             onClick={onClose}
-                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
+                            className="text-sm text-parofc-gold hover:text-parofc-gold/80 font-medium"
                           >
                             View all →
                           </Link>
@@ -455,7 +533,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                  <ImageIcon className="w-8 h-8 text-white/20" />
+                                  <HugeiconsIcon
+                                    icon={Image01Icon}
+                                    size={32}
+                                    className="text-white/20"
+                                  />
                                 </div>
                               )}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -476,9 +558,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </div>
 
           {/* Bottom accent */}
-          <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+          <div className="h-px bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

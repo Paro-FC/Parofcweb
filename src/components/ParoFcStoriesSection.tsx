@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { useState, useRef, useEffect } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import dynamic from "next/dynamic";
@@ -110,7 +111,7 @@ const fallbackStories: Story[] = [
   },
 ];
 
-export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
+export function ParoFcStoriesSection({ stories }: { stories?: Story[] }) {
   const storyList = stories && stories.length > 0 ? stories : fallbackStories;
   const [scrollPosition, setScrollPosition] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -188,24 +189,32 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
                 disabled={!canScrollLeft}
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 border cursor-pointer ${
                   canScrollLeft
-                    ? "border-dark-charcoal/20 hover:border-barca-gold hover:bg-barca-gold/5 opacity-100"
+                    ? "border-dark-charcoal/20 hover:border-parofc-gold hover:bg-parofc-gold/5 opacity-100"
                     : "border-gray-200 opacity-0 pointer-events-none"
                 }`}
                 aria-label="Scroll left"
               >
-                <ChevronLeft className="w-5 h-5 text-dark-charcoal" />
+                <HugeiconsIcon
+                  icon={ArrowLeft01Icon}
+                  size={20}
+                  className="text-dark-charcoal"
+                />
               </button>
               <button
                 onClick={scrollRightFn}
                 disabled={!canScrollRight}
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 border cursor-pointer ${
                   canScrollRight
-                    ? "border-dark-charcoal/20 hover:border-barca-gold hover:bg-barca-gold/5 opacity-100"
+                    ? "border-dark-charcoal/20 hover:border-parofc-gold hover:bg-parofc-gold/5 opacity-100"
                     : "border-gray-200 opacity-40 pointer-events-none"
                 }`}
                 aria-label="Scroll right"
               >
-                <ChevronRight className="w-5 h-5 text-dark-charcoal" />
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  size={20}
+                  className="text-dark-charcoal"
+                />
               </button>
             </div>
           </div>
@@ -266,7 +275,7 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
                     <div
                       className={`w-[140px] h-[140px] md:w-[160px] md:h-[160px] rounded-full p-[3px] ${
                         story.isNew
-                          ? "bg-gradient-to-br from-barca-gold via-barca-red to-barca-gold"
+                          ? "bg-gradient-to-br from-parofc-gold via-parofc-red to-parofc-gold"
                           : "bg-gray-300"
                       }`}
                     >
@@ -284,7 +293,7 @@ export function BarcaStoriesSection({ stories }: { stories?: Story[] }) {
 
                     {/* NEW indicator dot */}
                     {story.isNew && (
-                      <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-barca-gold rounded-full border-2 border-white" />
+                      <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-parofc-gold rounded-full border-2 border-white" />
                     )}
                   </button>
 

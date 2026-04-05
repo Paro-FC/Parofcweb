@@ -1,105 +1,114 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
-import { useEffect, useRef, useState, type CSSProperties } from "react"
+import { motion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 interface Ticket {
-  id: number
-  title: string
-  image: string
+  id: number;
+  title: string;
+  image: string;
 }
 
 const tickets: Ticket[] = [
   {
     id: 1,
     title: "MEN'S FOOTBALL",
-    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
   },
   {
     id: 2,
-    title: "BARÇA MUSEUM",
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
+    title: "PARO FC MUSEUM",
+    image:
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
   },
   {
     id: 3,
-    title: "BARÇA BUSINESS",
-    image: "https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400&h=300&fit=crop",
+    title: "PARO FC BUSINESS",
+    image:
+      "https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400&h=300&fit=crop",
   },
   {
     id: 4,
-    title: "BARÇA TOURS",
-    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+    title: "PARO FC TOURS",
+    image:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
   },
   {
     id: 5,
     title: "BASKETBALL",
-    image: "https://images.unsplash.com/photo-1519869325932-5ae42e1f8eaf?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1519869325932-5ae42e1f8eaf?w=400&h=300&fit=crop",
   },
   {
     id: 6,
     title: "WOMEN'S FOOTBALL",
-    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
   },
   {
     id: 7,
     title: "FUTSAL",
-    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=300&fit=crop",
   },
-]
+];
 
 export function TicketsSection() {
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const cardWidth = 180
-  const gap = 20
-  const scrollAmount = cardWidth + gap
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const cardWidth = 180;
+  const gap = 20;
+  const scrollAmount = cardWidth + gap;
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   const getMaxScroll = () => {
-    if (!scrollContainerRef.current) return 0
-    const { scrollWidth, clientWidth } = scrollContainerRef.current
-    return Math.max(0, scrollWidth - clientWidth)
-  }
+    if (!scrollContainerRef.current) return 0;
+    const { scrollWidth, clientWidth } = scrollContainerRef.current;
+    return Math.max(0, scrollWidth - clientWidth);
+  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      const newPosition = Math.max(0, scrollPosition - scrollAmount)
-      setScrollPosition(newPosition)
+      const newPosition = Math.max(0, scrollPosition - scrollAmount);
+      setScrollPosition(newPosition);
       scrollContainerRef.current.scrollTo({
         left: newPosition,
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      const maxScroll = getMaxScroll()
-      const newPosition = Math.min(maxScroll, scrollPosition + scrollAmount)
-      setScrollPosition(newPosition)
+      const maxScroll = getMaxScroll();
+      const newPosition = Math.min(maxScroll, scrollPosition + scrollAmount);
+      setScrollPosition(newPosition);
       scrollContainerRef.current.scrollTo({
         left: newPosition,
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
   useEffect(() => {
     const checkScroll = () => {
       if (scrollContainerRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
-        setCanScrollLeft(scrollLeft > 0)
-        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
+        const { scrollLeft, scrollWidth, clientWidth } =
+          scrollContainerRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
       }
-    }
+    };
 
-    checkScroll()
-    const interval = setInterval(checkScroll, 100)
+    checkScroll();
+    const interval = setInterval(checkScroll, 100);
 
-    return () => clearInterval(interval)
-  }, [scrollPosition])
+    return () => clearInterval(interval);
+  }, [scrollPosition]);
 
   return (
     <section className="py-16 px-4">
@@ -112,16 +121,24 @@ export function TicketsSection() {
             <button
               onClick={scrollLeft}
               disabled={!canScrollLeft}
-              className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center border border-gray-300 hover:border-barca-gold"
+              className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center border border-gray-300 hover:border-parofc-gold"
             >
-              <ChevronLeft className="w-6 h-6 text-gray-900" />
+              <HugeiconsIcon
+                icon={ArrowLeft01Icon}
+                size={24}
+                className="text-gray-900"
+              />
             </button>
             <button
               onClick={scrollRight}
               disabled={!canScrollRight}
-              className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center border border-gray-300 hover:border-barca-gold"
+              className="w-12 h-12 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center border border-gray-300 hover:border-parofc-gold"
             >
-              <ChevronRight className="w-6 h-6 text-gray-900" />
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={24}
+                className="text-gray-900"
+              />
             </button>
           </div>
         </div>
@@ -152,14 +169,16 @@ export function TicketsSection() {
           <div
             ref={scrollContainerRef}
             className="flex gap-5 overflow-x-auto overflow-y-hidden scrollbar-hide scroll-smooth relative z-0"
-            style={{
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              touchAction: "pan-x",
-            } as CSSProperties}
+            style={
+              {
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                touchAction: "pan-x",
+              } as CSSProperties
+            }
             onScroll={(e) => {
-              const target = e.target as HTMLDivElement
-              setScrollPosition(target.scrollLeft)
+              const target = e.target as HTMLDivElement;
+              setScrollPosition(target.scrollLeft);
             }}
           >
             {tickets.map((ticket, index) => (
@@ -191,7 +210,11 @@ export function TicketsSection() {
                       <span className="text-white font-semibold text-lg uppercase tracking-wide">
                         {ticket.title}
                       </span>
-                      <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                      <HugeiconsIcon
+                        icon={ArrowRight01Icon}
+                        size={20}
+                        className="text-white group-hover:translate-x-1 transition-transform"
+                      />
                     </div>
                   </div>
                 </a>
@@ -201,6 +224,5 @@ export function TicketsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

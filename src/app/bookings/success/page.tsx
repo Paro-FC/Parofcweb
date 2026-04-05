@@ -3,7 +3,14 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { CheckCircle2, Ticket, ArrowLeft, Copy, Check } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  CheckmarkCircle02Icon,
+  Ticket01Icon,
+  ArrowLeft01Icon,
+  Copy01Icon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import Loader from "@/components/Loader";
@@ -40,7 +47,7 @@ function BookingSuccessContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-charcoal via-dark-charcoal to-barca-gold/20 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-dark-charcoal via-dark-charcoal to-parofc-gold/20 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -57,7 +64,11 @@ function BookingSuccessContent() {
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                 className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center"
               >
-                <CheckCircle2 className="w-12 h-12 text-white" />
+                <HugeiconsIcon
+                  icon={CheckmarkCircle02Icon}
+                  size={48}
+                  className="text-white"
+                />
               </motion.div>
             </div>
 
@@ -72,7 +83,7 @@ function BookingSuccessContent() {
             </div>
 
             {/* Booking ID */}
-            <div className="bg-barca-gold/10 border-2 border-barca-gold rounded-lg p-6 mb-6">
+            <div className="bg-parofc-gold/10 border-2 border-parofc-gold rounded-lg p-6 mb-6">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-medium-grey mb-2">
@@ -84,13 +95,13 @@ function BookingSuccessContent() {
                 </div>
                 <button
                   onClick={handleCopyBookingId}
-                  className="flex-shrink-0 w-12 h-12 rounded-lg bg-barca-gold hover:bg-barca-gold/90 text-dark-charcoal flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-barca-gold focus:ring-offset-2"
+                  className="flex-shrink-0 w-12 h-12 rounded-lg bg-parofc-gold hover:bg-parofc-gold/90 text-dark-charcoal flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-parofc-gold focus:ring-offset-2"
                   aria-label="Copy booking ID"
                 >
                   {copied ? (
-                    <Check className="w-5 h-5" />
+                    <HugeiconsIcon icon={Tick02Icon} size={20} />
                   ) : (
-                    <Copy className="w-5 h-5" />
+                    <HugeiconsIcon icon={Copy01Icon} size={20} />
                   )}
                 </button>
               </div>
@@ -105,7 +116,11 @@ function BookingSuccessContent() {
             <div className="space-y-4 mb-8">
               {matchTitle && (
                 <div className="flex items-start gap-3 p-4 bg-light-grey/10 rounded-lg">
-                  <Ticket className="w-5 h-5 text-barca-gold mt-0.5 flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={Ticket01Icon}
+                    size={20}
+                    className="text-parofc-gold mt-0.5 flex-shrink-0"
+                  />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-medium-grey mb-1">
                       Match
@@ -119,7 +134,11 @@ function BookingSuccessContent() {
 
               {quantity && (
                 <div className="flex items-start gap-3 p-4 bg-light-grey/10 rounded-lg">
-                  <Ticket className="w-5 h-5 text-barca-gold mt-0.5 flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={Ticket01Icon}
+                    size={20}
+                    className="text-parofc-gold mt-0.5 flex-shrink-0"
+                  />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-medium-grey mb-1">
                       Quantity
@@ -145,14 +164,18 @@ function BookingSuccessContent() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/calendar"
-                className="flex-1 h-12 bg-barca-gold text-dark-charcoal hover:bg-barca-gold/90 font-semibold rounded-md inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-barca-gold focus:ring-offset-2"
+                className="flex-1 h-12 bg-parofc-gold text-dark-charcoal hover:bg-parofc-gold/90 font-semibold rounded-md inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-parofc-gold focus:ring-offset-2"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <HugeiconsIcon
+                  icon={ArrowLeft01Icon}
+                  size={16}
+                  className="mr-2"
+                />
                 Back to Matches
               </Link>
               <Link
                 href="/"
-                className="flex-1 h-12 border border-medium-grey text-dark-charcoal hover:bg-light-gold/10 rounded-md inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-barca-gold focus:ring-offset-2"
+                className="flex-1 h-12 border border-medium-grey text-dark-charcoal hover:bg-light-gold/10 rounded-md inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-parofc-gold focus:ring-offset-2"
               >
                 Go to Home
               </Link>
@@ -166,9 +189,7 @@ function BookingSuccessContent() {
 
 export default function BookingSuccessPage() {
   return (
-    <Suspense
-      fallback={<Loader fullScreen />}
-    >
+    <Suspense fallback={<Loader fullScreen />}>
       <BookingSuccessContent />
     </Suspense>
   );

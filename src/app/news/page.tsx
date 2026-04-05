@@ -1,23 +1,24 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Newspaper } from "lucide-react"
-import { sanityFetch } from "@/sanity/lib/live"
-import { NEWS_QUERY } from "@/sanity/lib/queries"
-import { urlFor } from "@/sanity/lib/image"
-import Loader from "@/components/Loader"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { NewsIcon } from "@hugeicons/core-free-icons";
+import { sanityFetch } from "@/sanity/lib/live";
+import { NEWS_QUERY } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
+import Loader from "@/components/Loader";
 
 interface NewsItem {
-  _id: string
-  image: unknown
-  title: string
-  badge?: string
-  publishedAt: string
-  description?: string
-  slug: string
+  _id: string;
+  image: unknown;
+  title: string;
+  badge?: string;
+  publishedAt: string;
+  description?: string;
+  slug: string;
 }
 
 const fallbackNews: NewsItem[] = [
@@ -32,62 +33,62 @@ const fallbackNews: NewsItem[] = [
   {
     _id: "2",
     image: null,
-    title: "Agreement for the transfer of player to partner club",
+    title: "Agreement for the transfer of a Paro FC player to a partner club",
     badge: "TRANSFERS",
     publishedAt: new Date().toISOString(),
-    description: "The Club retains a percentage of any future sale...",
+    description: "Paro FC retains a percentage of any future sale...",
     slug: "transfer-agreement",
   },
-]
+];
 
 function formatDate(dateString: string) {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-  if (diffHours < 1) return "Just now"
-  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffHours < 1) return "Just now";
+  if (diffHours < 24) return `${diffHours}h ago`;
 
   return date.toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
-  })
+  });
 }
 
 export default function NewsPage() {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(fallbackNews)
-  const [loading, setLoading] = useState(true)
+  const [newsItems, setNewsItems] = useState<NewsItem[]>(fallbackNews);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNews = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const newsResult = await sanityFetch({ query: NEWS_QUERY }).catch(
           () => ({ data: [] }),
-        )
+        );
         if (
           newsResult.data &&
           Array.isArray(newsResult.data) &&
           newsResult.data.length > 0
         ) {
-          setNewsItems(newsResult.data as NewsItem[])
+          setNewsItems(newsResult.data as NewsItem[]);
         } else {
-          setNewsItems(fallbackNews)
+          setNewsItems(fallbackNews);
         }
       } catch (error) {
-        console.error("Error fetching news:", error)
-        setNewsItems(fallbackNews)
+        console.error("Error fetching news:", error);
+        setNewsItems(fallbackNews);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchNews()
-  }, [])
+    fetchNews();
+  }, []);
 
-  const featured = newsItems[0]
-  const rest = newsItems.slice(1)
+  const featured = newsItems[0];
+  const rest = newsItems.slice(1);
 
   return (
     <div className="min-h-screen bg-white">
@@ -107,18 +108,18 @@ export default function NewsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+            <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
               Latest Updates
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
               Paro FC
               <br />
-              <span className="text-barca-gold">News</span>
+              <span className="text-parofc-gold">News</span>
             </h1>
           </motion.div>
         </div>
 
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       {/* Content */}
@@ -127,7 +128,11 @@ export default function NewsPage() {
           <Loader />
         ) : newsItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
-            <Newspaper className="w-8 h-8 text-gray-200 mb-3" />
+            <HugeiconsIcon
+              icon={NewsIcon}
+              size={32}
+              className="text-gray-200 mb-3"
+            />
             <span className="text-sm text-gray-400 font-medium">
               No news available yet
             </span>
@@ -149,14 +154,17 @@ export default function NewsPage() {
                   <div className="lg:col-span-3 relative aspect-[16/10] overflow-hidden bg-gray-50">
                     {featured.image ? (
                       <Image
-                        src={urlFor(featured.image).width(900).height(563).url()}
+                        src={urlFor(featured.image)
+                          .width(900)
+                          .height(563)
+                          .url()}
                         alt={featured.title}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         priority
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-barca-red" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red" />
                     )}
                   </div>
 
@@ -164,7 +172,7 @@ export default function NewsPage() {
                   <div className="lg:col-span-2 flex flex-col justify-center py-2">
                     <div className="flex items-center gap-2 mb-3">
                       {featured.badge && (
-                        <span className="text-[10px] font-bold text-barca-red uppercase tracking-widest">
+                        <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
                           {featured.badge}
                         </span>
                       )}
@@ -176,7 +184,7 @@ export default function NewsPage() {
                       </span>
                     </div>
 
-                    <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal leading-tight group-hover:text-barca-red transition-colors duration-200 mb-3">
+                    <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal leading-tight group-hover:text-parofc-red transition-colors duration-200 mb-3">
                       {featured.title}
                     </h2>
 
@@ -186,7 +194,7 @@ export default function NewsPage() {
                       </p>
                     )}
 
-                    <span className="inline-flex items-center text-xs font-bold text-dark-charcoal group-hover:text-barca-red transition-colors duration-200 uppercase tracking-wider mt-4">
+                    <span className="inline-flex items-center text-xs font-bold text-dark-charcoal group-hover:text-parofc-red transition-colors duration-200 uppercase tracking-wider mt-4">
                       Read Article
                     </span>
                   </div>
@@ -216,7 +224,10 @@ export default function NewsPage() {
                       <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 mb-3">
                         {item.image ? (
                           <Image
-                            src={urlFor(item.image).width(500).height(313).url()}
+                            src={urlFor(item.image)
+                              .width(500)
+                              .height(313)
+                              .url()}
                             alt={item.title}
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -229,20 +240,18 @@ export default function NewsPage() {
                       {/* Meta */}
                       <div className="flex items-center gap-2 mb-2">
                         {item.badge && (
-                          <span className="text-[10px] font-bold text-barca-red uppercase tracking-widest">
+                          <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
                             {item.badge}
                           </span>
                         )}
-                        {item.badge && (
-                          <span className="text-gray-300">·</span>
-                        )}
+                        {item.badge && <span className="text-gray-300">·</span>}
                         <span className="text-[10px] text-gray-400 font-medium">
                           {formatDate(item.publishedAt)}
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-barca-red transition-colors duration-200">
+                      <h3 className="text-base font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
                         {item.title}
                       </h3>
 
@@ -261,5 +270,5 @@ export default function NewsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

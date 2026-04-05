@@ -34,6 +34,7 @@ export const photo = defineType({
           { title: 'Press', value: 'Press' },
           { title: 'Team', value: 'Team' },
           { title: 'First Team', value: 'FIRST TEAM' },
+          { title: 'Paro FC', value: 'PARO FC' },
         ],
         layout: 'radio',
       },

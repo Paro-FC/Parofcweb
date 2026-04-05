@@ -1,88 +1,109 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { ArrowLeft, X } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { urlFor } from "@/sanity/lib/image"
-import { Countdown } from "./ui/countdown"
-import { TicketBookingForm } from "./TicketBookingForm"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import Image from "next/image";
+import Link from "next/link";
+import { urlFor } from "@/sanity/lib/image";
+import { Countdown } from "./ui/countdown";
+import { TicketBookingForm } from "./TicketBookingForm";
 
 interface Match {
-  _id: string
-  homeTeam: string
-  awayTeam: string
-  homeCrest?: unknown
-  awayCrest?: unknown
-  competition: string
-  competitionLogo?: unknown
-  date: string
-  event: string
-  venue: string
-  hasTickets: boolean
-  ticketAvailability?: number
-  ticketPrice?: number
+  _id: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeCrest?: unknown;
+  awayCrest?: unknown;
+  competition: string;
+  competitionLogo?: unknown;
+  date: string;
+  event: string;
+  venue: string;
+  hasTickets: boolean;
+  ticketAvailability?: number;
+  ticketPrice?: number;
 }
 
 interface MatchDetailPageProps {
-  match: Match
+  match: Match;
 }
 
 function formatMatchDate(dateString: string) {
-  const date = new Date(dateString)
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-  
+  const date = new Date(dateString);
+  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const months = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
+
   return {
     day: days[date.getDay()],
     date: date.getDate(),
     month: months[date.getMonth()],
-    time: date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: false 
+    time: date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
     }),
-  }
+  };
 }
 
 export function MatchDetailPage({ match }: MatchDetailPageProps) {
-  const [timeRemaining, setTimeRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-  const matchDateString = match.date
-  const formatted = formatMatchDate(match.date)
+  const [timeRemaining, setTimeRemaining] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+  const matchDateString = match.date;
+  const formatted = formatMatchDate(match.date);
 
   useEffect(() => {
-    const matchDate = new Date(matchDateString)
-    
+    const matchDate = new Date(matchDateString);
+
     const updateCountdown = () => {
-      const now = new Date()
-      const diff = matchDate.getTime() - now.getTime()
+      const now = new Date();
+      const diff = matchDate.getTime() - now.getTime();
 
       if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        setTimeRemaining({ days, hours, minutes, seconds })
+        setTimeRemaining({ days, hours, minutes, seconds });
       } else {
-        setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+        setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
-    }
+    };
 
-    updateCountdown()
-    const interval = setInterval(updateCountdown, 1000)
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
 
-    return () => clearInterval(interval)
-  }, [matchDateString])
+    return () => clearInterval(interval);
+  }, [matchDateString]);
 
   // Determine competition color
   const getCompetitionColor = (competition: string) => {
-    if (competition?.toLowerCase().includes('liga')) {
-      return 'text-[#FF006E]' // Pinkish-red for La Liga
+    if (competition?.toLowerCase().includes("liga")) {
+      return "text-[#FF006E]"; // Accent for domestic league competitions
     }
-    return 'text-barca-gold'
-  }
+    return "text-parofc-gold";
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -104,9 +125,9 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
         <div className="flex items-center gap-4 p-6">
           <Link
             href="/"
-            className="flex items-center gap-3 text-white hover:text-barca-gold transition-colors"
+            className="flex items-center gap-3 text-white hover:text-parofc-gold transition-colors"
           >
-            <ArrowLeft className="w-6 h-6" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={24} />
             <div className="relative w-10 h-10">
               <Image
                 src="/assets/logo.webp"
@@ -129,12 +150,14 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
               className="text-center"
             >
               {/* League Name */}
-              <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${getCompetitionColor(match.competition)}`}>
-                {match.competition?.toUpperCase() || 'MATCH'}
+              <h1
+                className={`text-4xl md:text-5xl font-bold mb-2 ${getCompetitionColor(match.competition)}`}
+              >
+                {match.competition?.toUpperCase() || "MATCH"}
               </h1>
 
               {/* Date */}
-              <p className="text-3xl md:text-4xl font-bold text-barca-gold mb-8">
+              <p className="text-3xl md:text-4xl font-bold text-parofc-gold mb-8">
                 {formatted.day} {formatted.date} {formatted.month}
               </p>
 
@@ -144,28 +167,34 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
                 <div className="flex items-center justify-center gap-4 md:gap-8">
                   <div className="flex flex-col items-center">
                     <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.days).padStart(2, '0')}
+                      {String(timeRemaining.days).padStart(2, "0")}
                     </span>
                     <span className="text-white text-sm mt-2">DAYS</span>
                   </div>
-                  <span className="text-5xl md:text-7xl font-bold text-white">:</span>
+                  <span className="text-5xl md:text-7xl font-bold text-white">
+                    :
+                  </span>
                   <div className="flex flex-col items-center">
                     <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.hours).padStart(2, '0')}
+                      {String(timeRemaining.hours).padStart(2, "0")}
                     </span>
                     <span className="text-white text-sm mt-2">HOURS</span>
                   </div>
-                  <span className="text-5xl md:text-7xl font-bold text-white">:</span>
+                  <span className="text-5xl md:text-7xl font-bold text-white">
+                    :
+                  </span>
                   <div className="flex flex-col items-center">
                     <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.minutes).padStart(2, '0')}
+                      {String(timeRemaining.minutes).padStart(2, "0")}
                     </span>
                     <span className="text-white text-sm mt-2">MINS</span>
                   </div>
-                  <span className="text-5xl md:text-7xl font-bold text-white">:</span>
+                  <span className="text-5xl md:text-7xl font-bold text-white">
+                    :
+                  </span>
                   <div className="flex flex-col items-center">
                     <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.seconds).padStart(2, '0')}
+                      {String(timeRemaining.seconds).padStart(2, "0")}
                     </span>
                     <span className="text-white text-sm mt-2">SECS</span>
                   </div>
@@ -187,7 +216,10 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
                   <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
                     {match.homeCrest ? (
                       <Image
-                        src={urlFor(match.homeCrest).width(128).height(128).url()}
+                        src={urlFor(match.homeCrest)
+                          .width(128)
+                          .height(128)
+                          .url()}
                         alt={match.homeTeam}
                         fill
                         className="object-contain"
@@ -216,7 +248,10 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
                   <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
                     {match.awayCrest ? (
                       <Image
-                        src={urlFor(match.awayCrest).width(128).height(128).url()}
+                        src={urlFor(match.awayCrest)
+                          .width(128)
+                          .height(128)
+                          .url()}
                         alt={match.awayTeam}
                         fill
                         className="object-contain"
@@ -260,9 +295,8 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
         href="/"
         className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
       >
-        <X size={24} />
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
       </Link>
     </div>
-  )
+  );
 }
-

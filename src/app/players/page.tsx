@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Users } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { UserGroupIcon } from "@hugeicons/core-free-icons";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   PLAYERS_BY_TEAM_QUERY,
@@ -107,18 +108,18 @@ export default function PlayersPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+            <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
               First Team
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
               The
               <br />
-              <span className="text-barca-gold">Squad</span>
+              <span className="text-parofc-gold">Squad</span>
             </h1>
           </motion.div>
         </div>
 
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       {/* Team Tabs + Position Filter — sticky */}
@@ -144,7 +145,7 @@ export default function PlayersPage() {
                   {activeTeam === team && (
                     <motion.div
                       layoutId="activeTeamTab"
-                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-barca-gold"
+                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-gold"
                       transition={{
                         type: "spring",
                         stiffness: 400,
@@ -212,7 +213,11 @@ export default function PlayersPage() {
             >
               {coachingStaff.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24">
-                  <Users className="w-8 h-8 text-gray-200 mb-3" />
+                  <HugeiconsIcon
+                    icon={UserGroupIcon}
+                    size={32}
+                    className="text-gray-200 mb-3"
+                  />
                   <span className="text-sm text-gray-400 font-medium">
                     No coaching staff listed yet
                   </span>
@@ -236,7 +241,7 @@ export default function PlayersPage() {
                             className="object-cover"
                           />
                         ) : (
-                          <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-barca-red flex items-center justify-center">
+                          <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red flex items-center justify-center">
                             <span className="text-5xl font-black text-white/20">
                               {staff.name
                                 .split(/\s+/)
@@ -253,7 +258,7 @@ export default function PlayersPage() {
 
                         {/* Info */}
                         <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <p className="text-[10px] font-bold text-barca-gold uppercase tracking-widest mb-1">
+                          <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-widest mb-1">
                             {staff.role}
                           </p>
                           <p className="text-base md:text-lg font-black text-white uppercase leading-tight">
@@ -279,7 +284,11 @@ export default function PlayersPage() {
             >
               {players.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24">
-                  <Users className="w-8 h-8 text-gray-200 mb-3" />
+                  <HugeiconsIcon
+                    icon={UserGroupIcon}
+                    size={32}
+                    className="text-gray-200 mb-3"
+                  />
                   <span className="text-sm text-gray-400 font-medium">
                     No players found for the{" "}
                     {activeTeam === "mens" ? "Men's" : "Women's"} Team
@@ -287,7 +296,11 @@ export default function PlayersPage() {
                 </div>
               ) : currentPlayers.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24">
-                  <Users className="w-8 h-8 text-gray-200 mb-3" />
+                  <HugeiconsIcon
+                    icon={UserGroupIcon}
+                    size={32}
+                    className="text-gray-200 mb-3"
+                  />
                   <span className="text-sm text-gray-400 font-medium">
                     No{" "}
                     {positionCategories.find((c) => c.id === activeCategory)

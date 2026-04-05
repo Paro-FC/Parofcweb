@@ -17,10 +17,10 @@ import {
 import dynamic from "next/dynamic";
 import Loader from "@/components/Loader";
 
-const BarcaStoriesSection = dynamic(
+const ParoFcStoriesSection = dynamic(
   () =>
-    import("@/components/BarcaStoriesSection").then((mod) => ({
-      default: mod.BarcaStoriesSection,
+    import("@/components/ParoFcStoriesSection").then((mod) => ({
+      default: mod.ParoFcStoriesSection,
     })),
   {
     loading: () => <Loader />,
@@ -55,7 +55,7 @@ export default async function Home() {
 
       {/* Content sections with clean white background */}
       <div className="bg-white">
-        <BarcaStoriesSection stories={storiesResult.data as any} />
+        <ParoFcStoriesSection stories={storiesResult.data as any} />
 
         {/* Subtle divider */}
         <div className="container mx-auto px-4">

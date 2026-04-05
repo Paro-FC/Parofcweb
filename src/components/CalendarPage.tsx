@@ -6,7 +6,14 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import { CalendarSyncModal } from "./CalendarSyncModal";
 import { useState, useMemo } from "react";
-import { Calendar, RefreshCw, ArrowRight, MapPin, Clock } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Calendar03Icon,
+  RefreshIcon,
+  ArrowRight01Icon,
+  MapPinIcon,
+  Clock01Icon,
+} from "@hugeicons/core-free-icons";
 
 interface Match {
   _id: string;
@@ -97,13 +104,13 @@ export function CalendarPage({ matches }: CalendarPageProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
-                Fixtures & Results
+              <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
+                Paro FC · Fixtures & results
               </p>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
                 Match
                 <br />
-                <span className="text-barca-gold">Calendar</span>
+                <span className="text-parofc-gold">Calendar</span>
               </h1>
             </motion.div>
 
@@ -114,21 +121,25 @@ export function CalendarPage({ matches }: CalendarPageProps) {
               onClick={() => setIsSyncModalOpen(true)}
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 px-5 py-2.5 text-xs font-bold text-white uppercase tracking-wider transition-colors cursor-pointer"
             >
-              <Calendar className="w-4 h-4" />
+              <HugeiconsIcon icon={Calendar03Icon} size={16} />
               Sync Calendar
-              <RefreshCw className="w-3.5 h-3.5" />
+              <HugeiconsIcon icon={RefreshIcon} size={14} />
             </motion.button>
           </div>
         </div>
 
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       {/* Matches */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         {matches.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
-            <Calendar className="w-8 h-8 text-gray-200 mb-3" />
+            <HugeiconsIcon
+              icon={Calendar03Icon}
+              size={32}
+              className="text-gray-200 mb-3"
+            />
             <span className="text-sm text-gray-400 font-medium">
               No matches scheduled
             </span>
@@ -178,7 +189,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                   <span className="text-2xl md:text-3xl font-black text-white leading-none tabular-nums">
                                     {formatMatchDayNum(match.date)}
                                   </span>
-                                  <span className="text-[9px] font-bold text-barca-gold uppercase tracking-wider">
+                                  <span className="text-[9px] font-bold text-parofc-gold uppercase tracking-wider">
                                     {formatMatchMonth(match.date)}
                                   </span>
                                 </div>
@@ -260,13 +271,21 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                       </span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                      <Clock size={10} className="text-gray-300 flex-shrink-0" />
+                                      <HugeiconsIcon
+                                        icon={Clock01Icon}
+                                        size={10}
+                                        className="text-gray-300 flex-shrink-0"
+                                      />
                                       <span className="text-[10px] text-gray-400">
                                         {formatMatchTime(match.date)}
                                       </span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                      <MapPin size={10} className="text-gray-300 flex-shrink-0" />
+                                      <HugeiconsIcon
+                                        icon={MapPinIcon}
+                                        size={10}
+                                        className="text-gray-300 flex-shrink-0"
+                                      />
                                       <span className="text-[10px] text-gray-400 truncate">
                                         {match.venue}
                                       </span>
@@ -274,7 +293,8 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                   </div>
 
                                   {/* Arrow */}
-                                  <ArrowRight
+                                  <HugeiconsIcon
+                                    icon={ArrowRight01Icon}
                                     size={14}
                                     className="text-gray-200 group-hover:text-dark-charcoal transition-colors flex-shrink-0"
                                   />

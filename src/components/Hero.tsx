@@ -22,8 +22,8 @@ interface HeroProps {
 const fallbackNews: NewsItem = {
   _id: "1",
   image: null,
-  title: "WHEN AND WHERE TO WATCH BARÇA V FC COPENHAGEN",
-  badge: "FIRST TEAM",
+  title: "WHEN AND WHERE TO WATCH PARO FC V THIMPHU CITY",
+  badge: "PARO FC",
   publishedAt: new Date().toISOString(),
   slug: "",
 };
@@ -54,7 +54,7 @@ export function Hero({ news }: HeroProps) {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="mb-4"
         >
-          <span className="inline-block bg-barca-gold text-dark-charcoal text-xs font-bold px-4 py-1.5 uppercase tracking-widest">
+          <span className="inline-block bg-parofc-gold text-dark-charcoal text-xs font-bold px-4 py-1.5 uppercase tracking-widest">
             {newsItem.badge}
           </span>
         </motion.div>
@@ -77,11 +77,11 @@ export function Hero({ news }: HeroProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <div className="w-8 h-[2px] bg-barca-gold" />
+        <div className="w-8 h-[2px] bg-parofc-gold" />
         <span className="text-white/70 text-sm font-medium tracking-wider uppercase">
           {formattedDate}
         </span>
-        <div className="w-8 h-[2px] bg-barca-gold" />
+        <div className="w-8 h-[2px] bg-parofc-gold" />
       </motion.div>
     </div>
   );

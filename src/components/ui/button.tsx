@@ -2,12 +2,12 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = {
-  default: "bg-barca-gold text-dark-charcoal hover:bg-barca-gold/90",
+  default: "bg-parofc-gold text-dark-charcoal hover:bg-parofc-gold/90",
   secondary: "bg-bronze text-white hover:bg-bronze/90",
   outline:
-    "border border-medium-grey bg-transparent hover:bg-light-gold/10 hover:border-barca-gold hover:text-barca-gold",
-  ghost: "hover:bg-light-gold/10 hover:text-barca-gold",
-  gold: "bg-barca-gold text-dark-charcoal hover:bg-barca-gold/90",
+    "border border-medium-grey bg-transparent hover:bg-light-gold/10 hover:border-parofc-gold hover:text-parofc-gold",
+  ghost: "hover:bg-light-gold/10 hover:text-parofc-gold",
+  gold: "bg-parofc-gold text-dark-charcoal hover:bg-parofc-gold/90",
 } as const;
 
 const buttonSizes = {
@@ -30,7 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-barca-gold focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-parofc-gold focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
           buttonVariants[variant],
           buttonSizes[size],
           className,

@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Search, Menu, ShoppingBag, Trophy, Store, Camera, Users, Newspaper } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Search01Icon,
+  Menu01Icon,
+  ShoppingBag01Icon,
+  ArrowUpRight01Icon,
+} from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { SearchModal } from "./SearchModal";
@@ -10,14 +16,14 @@ import { useSideMenu } from "@/contexts/SideMenuContext";
 import { useCart } from "@/contexts/CartContext";
 
 const leftLinks = [
-  { href: "/standings", label: "Standings", icon: Trophy },
-  { href: "/shop", label: "Shop", icon: Store },
+  { href: "/standings", label: "Standings", icon: ArrowUpRight01Icon },
+  { href: "/shop", label: "Shop", icon: ArrowUpRight01Icon },
 ];
 
 const rightLinks = [
-  { href: "/photos", label: "Photos", icon: Camera },
-  { href: "/players", label: "Players", icon: Users },
-  { href: "/news", label: "News", icon: Newspaper },
+  { href: "/photos", label: "Photos", icon: ArrowUpRight01Icon },
+  { href: "/players", label: "Players", icon: ArrowUpRight01Icon },
+  { href: "/news", label: "News", icon: ArrowUpRight01Icon },
 ];
 
 export function MainNav() {
@@ -67,16 +73,16 @@ export function MainNav() {
               className="text-white hover:bg-white/20 rounded-full w-10 h-10"
               aria-label="Search"
             >
-              <Search className="w-5 h-5" />
+              <HugeiconsIcon icon={Search01Icon} size={20} />
             </Button>
             <button
               onClick={() => setIsCartOpen(true)}
               className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer relative"
               aria-label="Cart"
             >
-              <ShoppingBag size={18} />
+              <HugeiconsIcon icon={ShoppingBag01Icon} size={18} />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 bg-barca-red text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center">
+                <span className="absolute top-1 right-1 bg-parofc-red text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
@@ -86,11 +92,11 @@ export function MainNav() {
               className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer"
               aria-label="Menu"
             >
-              <Menu size={20} />
+              <HugeiconsIcon icon={Menu01Icon} size={20} />
             </button>
           </div>
         </div>
-        <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-px bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </nav>
 
       {/* Desktop Navigation */}
@@ -113,10 +119,10 @@ export function MainNav() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
+                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-parofc-gold transition-colors duration-200 cursor-pointer"
                 >
                   {link.label}
-                  <link.icon size={12} />
+                  <HugeiconsIcon icon={link.icon} size={12} />
                 </Link>
               ))}
             </div>
@@ -128,10 +134,10 @@ export function MainNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
+                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-parofc-gold transition-colors duration-200 cursor-pointer"
               >
                 {link.label}
-                <link.icon size={12} />
+                <HugeiconsIcon icon={link.icon} size={12} />
               </Link>
             ))}
 
@@ -139,19 +145,19 @@ export function MainNav() {
 
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-parofc-gold transition-colors cursor-pointer"
               aria-label="Search"
             >
-              <Search size={16} />
+              <HugeiconsIcon icon={Search01Icon} size={16} />
             </button>
             <button
               onClick={() => setIsCartOpen(true)}
-              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer relative"
+              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-parofc-gold transition-colors cursor-pointer relative"
               aria-label="Cart"
             >
-              <ShoppingBag size={16} />
+              <HugeiconsIcon icon={ShoppingBag01Icon} size={16} />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-barca-red text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 bg-parofc-red text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
@@ -160,7 +166,7 @@ export function MainNav() {
         </div>
 
         {/* Bottom accent */}
-        <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-px bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </nav>
 
       <SearchModal

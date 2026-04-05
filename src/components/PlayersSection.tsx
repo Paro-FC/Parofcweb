@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
-import { useState, useRef, useEffect } from "react"
-import { PlayerCard, type PlayerCardPlayer } from "./PlayerCard"
-import Link from "next/link"
+import { motion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { useState, useRef, useEffect } from "react";
+import { PlayerCard, type PlayerCardPlayer } from "./PlayerCard";
+import Link from "next/link";
 
 const fallbackPlayers: PlayerCardPlayer[] = [
   {
@@ -46,86 +47,89 @@ const fallbackPlayers: PlayerCardPlayer[] = [
       assists: { value: 8, season: "2025/2026 Season" },
     },
   },
-]
+];
 
 export function PlayersSection({ players }: { players?: PlayerCardPlayer[] }) {
-  const playerList = players && players.length > 0 ? players : fallbackPlayers
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [cardWidth, setCardWidth] = useState(0)
-  const gap = 20
+  const playerList = players && players.length > 0 ? players : fallbackPlayers;
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [cardWidth, setCardWidth] = useState(0);
+  const gap = 20;
 
   useEffect(() => {
     const updateCardWidth = () => {
       if (containerRef.current && scrollContainerRef.current) {
-        const containerWidth = scrollContainerRef.current.clientWidth
-        const isMobile = window.innerWidth < 768
-        const cardsPerView = isMobile ? 1 : 4
+        const containerWidth = scrollContainerRef.current.clientWidth;
+        const isMobile = window.innerWidth < 768;
+        const cardsPerView = isMobile ? 1 : 4;
         const calculatedWidth =
-          (containerWidth - gap * (cardsPerView - 1)) / cardsPerView
-        setCardWidth(calculatedWidth)
+          (containerWidth - gap * (cardsPerView - 1)) / cardsPerView;
+        setCardWidth(calculatedWidth);
       }
-    }
+    };
 
-    updateCardWidth()
-    window.addEventListener("resize", updateCardWidth)
-    return () => window.removeEventListener("resize", updateCardWidth)
-  }, [])
+    updateCardWidth();
+    window.addEventListener("resize", updateCardWidth);
+    return () => window.removeEventListener("resize", updateCardWidth);
+  }, []);
 
-  const scrollAmount = cardWidth + gap
+  const scrollAmount = cardWidth + gap;
 
   const scrollLeft = () => {
     if (scrollContainerRef.current && cardWidth > 0) {
-      const isMobile = window.innerWidth < 768
-      const cardsToScroll = isMobile ? 1 : 4
-      const scrollBy = scrollAmount * cardsToScroll
-      const newPosition = Math.max(0, scrollPosition - scrollBy)
-      setScrollPosition(newPosition)
+      const isMobile = window.innerWidth < 768;
+      const cardsToScroll = isMobile ? 1 : 4;
+      const scrollBy = scrollAmount * cardsToScroll;
+      const newPosition = Math.max(0, scrollPosition - scrollBy);
+      setScrollPosition(newPosition);
       scrollContainerRef.current.scrollTo({
         left: newPosition,
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
   const scrollRight = () => {
     if (scrollContainerRef.current && cardWidth > 0) {
-      const isMobile = window.innerWidth < 768
-      const cardsToScroll = isMobile ? 1 : 4
-      const scrollBy = scrollAmount * cardsToScroll
+      const isMobile = window.innerWidth < 768;
+      const cardsToScroll = isMobile ? 1 : 4;
+      const scrollBy = scrollAmount * cardsToScroll;
       const maxScroll =
         scrollContainerRef.current.scrollWidth -
-        scrollContainerRef.current.clientWidth
-      const newPosition = Math.min(maxScroll, scrollPosition + scrollBy)
-      setScrollPosition(newPosition)
+        scrollContainerRef.current.clientWidth;
+      const newPosition = Math.min(maxScroll, scrollPosition + scrollBy);
+      setScrollPosition(newPosition);
       scrollContainerRef.current.scrollTo({
         left: newPosition,
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     const checkScroll = () => {
       if (scrollContainerRef.current) {
-        const { scrollLeft: sl, scrollWidth, clientWidth } =
-          scrollContainerRef.current
-        setCanScrollLeft(sl > 0)
-        setCanScrollRight(sl < scrollWidth - clientWidth - 10)
+        const {
+          scrollLeft: sl,
+          scrollWidth,
+          clientWidth,
+        } = scrollContainerRef.current;
+        setCanScrollLeft(sl > 0);
+        setCanScrollRight(sl < scrollWidth - clientWidth - 10);
       }
-    }
+    };
 
-    checkScroll()
-    const interval = setInterval(checkScroll, 100)
-    return () => clearInterval(interval)
-  }, [scrollPosition])
+    checkScroll();
+    const interval = setInterval(checkScroll, 100);
+    return () => clearInterval(interval);
+  }, [scrollPosition]);
 
   return (
-    <section className="py-16 md:py-24 px-4 bg-gradient-barca relative overflow-hidden">
+    <section className="py-16 md:py-24 px-4 bg-gradient-parofc relative overflow-hidden">
       {/* Subtle diagonal pattern */}
       <div
         className="absolute inset-0 opacity-[0.02]"
@@ -150,10 +154,10 @@ export function PlayersSection({ players }: { players?: PlayerCardPlayer[] }) {
           <div className="flex items-center gap-3">
             <Link
               href="/players"
-              className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-white/60 hover:text-barca-gold transition-colors duration-200 uppercase tracking-wider cursor-pointer mr-4"
+              className="hidden md:inline-flex items-center gap-2 text-sm font-bold text-white/60 hover:text-parofc-gold transition-colors duration-200 uppercase tracking-wider cursor-pointer mr-4"
             >
               All Players
-              <ArrowRight className="w-4 h-4" />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
             </Link>
 
             <button
@@ -161,24 +165,32 @@ export function PlayersSection({ players }: { players?: PlayerCardPlayer[] }) {
               disabled={!canScrollLeft}
               className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 border cursor-pointer ${
                 canScrollLeft
-                  ? "border-white/20 hover:border-barca-gold hover:bg-white/5 opacity-100"
+                  ? "border-white/20 hover:border-parofc-gold hover:bg-white/5 opacity-100"
                   : "border-white/10 opacity-30 pointer-events-none"
               }`}
               aria-label="Scroll left"
             >
-              <ChevronLeft className="w-5 h-5 text-white" />
+              <HugeiconsIcon
+                icon={ArrowLeft01Icon}
+                size={20}
+                className="text-white"
+              />
             </button>
             <button
               onClick={scrollRight}
               disabled={!canScrollRight}
               className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 border cursor-pointer ${
                 canScrollRight
-                  ? "border-white/20 hover:border-barca-gold hover:bg-white/5 opacity-100"
+                  ? "border-white/20 hover:border-parofc-gold hover:bg-white/5 opacity-100"
                   : "border-white/10 opacity-30 pointer-events-none"
               }`}
               aria-label="Scroll right"
             >
-              <ChevronRight className="w-5 h-5 text-white" />
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={20}
+                className="text-white"
+              />
             </button>
           </div>
         </div>
@@ -194,8 +206,8 @@ export function PlayersSection({ players }: { players?: PlayerCardPlayer[] }) {
             } as React.CSSProperties
           }
           onScroll={(e) => {
-            const target = e.target as HTMLDivElement
-            setScrollPosition(target.scrollLeft)
+            const target = e.target as HTMLDivElement;
+            setScrollPosition(target.scrollLeft);
           }}
         >
           {playerList.map((player, index) => (
@@ -222,9 +234,7 @@ export function PlayersSection({ players }: { players?: PlayerCardPlayer[] }) {
               <div
                 key={index}
                 className={`h-1 rounded-full transition-all duration-300 ${
-                  index === 0
-                    ? "bg-barca-gold w-6"
-                    : "bg-white/20 w-3"
+                  index === 0 ? "bg-parofc-gold w-6" : "bg-white/20 w-3"
                 }`}
               />
             ))}
@@ -241,5 +251,5 @@ export function PlayersSection({ players }: { players?: PlayerCardPlayer[] }) {
         }}
       />
     </section>
-  )
+  );
 }

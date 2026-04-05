@@ -1,78 +1,92 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, ShoppingBag, Share2, Check, Truck, RotateCcw, Shield, ArrowLeft } from 'lucide-react'
-import { client } from '@/sanity/lib/client'
-import { urlFor } from '@/sanity/lib/image'
-import { PRODUCT_QUERY, PRODUCTS_QUERY } from '@/sanity/lib/queries'
-import { useParams } from 'next/navigation'
-import type { SanityImageSource } from '@sanity/image-url'
-import { useCart } from '@/contexts/CartContext'
-import Loader from '@/components/Loader'
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  ShoppingBag01Icon,
+  Share01Icon,
+  Tick02Icon,
+  TruckIcon,
+  RotateLeft01Icon,
+  Shield01Icon,
+} from "@hugeicons/core-free-icons";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+import { PRODUCT_QUERY, PRODUCTS_QUERY } from "@/sanity/lib/queries";
+import { useParams } from "next/navigation";
+import type { SanityImageSource } from "@sanity/image-url";
+import { useCart } from "@/contexts/CartContext";
+import Loader from "@/components/Loader";
 
 interface Category {
-  _id: string
-  title: string
-  slug: string
-  image?: SanityImageSource | string
+  _id: string;
+  title: string;
+  slug: string;
+  image?: SanityImageSource | string;
 }
 
 interface Product {
-  _id: string
-  name: string
-  slug: string
-  image: SanityImageSource | string
-  hoverImage?: SanityImageSource | string
-  category: Category | null
-  price: number
-  currency: string
-  salePrice?: number
-  badge?: string
-  sizes?: string[]
-  inStock: boolean
-  description?: string
-  assemblyRequired?: boolean
-  color?: string
-  dimensions?: string
-  featured?: boolean
-  images?: Array<{ _key: string; _type: string; asset: { _ref: string; _type: string } }>
-  material?: string
-  stock?: number
+  _id: string;
+  name: string;
+  slug: string;
+  image: SanityImageSource | string;
+  hoverImage?: SanityImageSource | string;
+  category: Category | null;
+  price: number;
+  currency: string;
+  salePrice?: number;
+  badge?: string;
+  sizes?: string[];
+  inStock: boolean;
+  description?: string;
+  assemblyRequired?: boolean;
+  color?: string;
+  dimensions?: string;
+  featured?: boolean;
+  images?: Array<{
+    _key: string;
+    _type: string;
+    asset: { _ref: string; _type: string };
+  }>;
+  material?: string;
+  stock?: number;
 }
 
 const badgeStyles: Record<string, string> = {
-  'new': 'bg-emerald-500 text-white',
-  'exclusive': 'bg-dark-charcoal text-white',
-  'sale': 'bg-barca-red text-white',
-  'limited': 'bg-barca-gold text-dark-charcoal',
-  'bestseller': 'bg-barca-gold text-dark-charcoal',
-}
+  new: "bg-emerald-500 text-white",
+  exclusive: "bg-dark-charcoal text-white",
+  sale: "bg-parofc-red text-white",
+  limited: "bg-parofc-gold text-dark-charcoal",
+  bestseller: "bg-parofc-gold text-dark-charcoal",
+};
 
 const badgeLabels: Record<string, string> = {
-  'new': 'NEW',
-  'exclusive': 'EXCLUSIVE',
-  'sale': 'SALE',
-  'limited': 'LIMITED',
-  'bestseller': 'BEST SELLER',
-}
+  new: "NEW",
+  exclusive: "EXCLUSIVE",
+  sale: "SALE",
+  limited: "LIMITED",
+  bestseller: "BEST SELLER",
+};
 
 function RelatedProductCard({ product }: { product: Product }) {
   const formatPrice = (price: number, currency: string) => {
-    if (currency === 'BTN') return `Nu. ${price.toLocaleString()}`
-    return `$${price.toFixed(2)}`
-  }
+    if (currency === "BTN") return `Nu. ${price.toLocaleString()}`;
+    return `$${price.toFixed(2)}`;
+  };
 
   const getImageUrl = (image: SanityImageSource | string) => {
-    if (typeof image === 'string') return image
+    if (typeof image === "string") return image;
     try {
-      return urlFor(image).width(400).height(500).url()
+      return urlFor(image).width(400).height(500).url();
     } catch {
-      return '/images/placeholder-product.png'
+      return "/images/placeholder-product.png";
     }
-  }
+  };
 
   return (
     <Link href={`/shop/${product.slug}`} className="group block cursor-pointer">
@@ -85,7 +99,9 @@ function RelatedProductCard({ product }: { product: Product }) {
         />
         {product.badge && (
           <div className="absolute top-2 left-2">
-            <span className={`${badgeStyles[product.badge]} text-[9px] font-bold px-2 py-0.5 tracking-widest`}>
+            <span
+              className={`${badgeStyles[product.badge]} text-[9px] font-bold px-2 py-0.5 tracking-widest`}
+            >
               {badgeLabels[product.badge]}
             </span>
           </div>
@@ -104,11 +120,13 @@ function RelatedProductCard({ product }: { product: Product }) {
             {product.category.title}
           </p>
         )}
-        <h3 className="text-sm font-semibold text-dark-charcoal line-clamp-1 group-hover:text-barca-red transition-colors duration-200">
+        <h3 className="text-sm font-semibold text-dark-charcoal line-clamp-1 group-hover:text-parofc-red transition-colors duration-200">
           {product.name}
         </h3>
         <div className="flex items-baseline gap-2">
-          <span className={`text-sm font-bold ${product.salePrice ? 'text-barca-red' : 'text-dark-charcoal'}`}>
+          <span
+            className={`text-sm font-bold ${product.salePrice ? "text-parofc-red" : "text-dark-charcoal"}`}
+          >
             {formatPrice(product.salePrice || product.price, product.currency)}
           </span>
           {product.salePrice && (
@@ -119,81 +137,85 @@ function RelatedProductCard({ product }: { product: Product }) {
         </div>
       </div>
     </Link>
-  )
+  );
 }
 
 export default function ProductDetailPage() {
-  const params = useParams()
-  const slug = params.slug as string
-  const { addItem, setIsCartOpen } = useCart()
+  const params = useParams();
+  const slug = params.slug as string;
+  const { addItem, setIsCartOpen } = useCart();
 
-  const [product, setProduct] = useState<Product | null>(null)
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedSize, setSelectedSize] = useState<string | null>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [showSizeError, setShowSizeError] = useState(false)
-  const [addedToCart, setAddedToCart] = useState(false)
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showSizeError, setShowSizeError] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
       try {
         const [productData, allProducts] = await Promise.all([
           client.fetch(PRODUCT_QUERY, { slug }),
-          client.fetch(PRODUCTS_QUERY)
-        ])
+          client.fetch(PRODUCTS_QUERY),
+        ]);
 
         if (productData) {
-          setProduct(productData)
+          setProduct(productData);
           const related = allProducts
-            .filter((p: Product) => p._id !== productData._id && p.category?._id === productData.category?._id)
-            .slice(0, 4)
+            .filter(
+              (p: Product) =>
+                p._id !== productData._id &&
+                p.category?._id === productData.category?._id,
+            )
+            .slice(0, 4);
           if (related.length === 0) {
             const otherProducts = allProducts
               .filter((p: Product) => p._id !== productData._id)
-              .slice(0, 4)
-            setRelatedProducts(otherProducts)
+              .slice(0, 4);
+            setRelatedProducts(otherProducts);
           } else {
-            setRelatedProducts(related)
+            setRelatedProducts(related);
           }
         } else {
-          setProduct(null)
-          setRelatedProducts([])
+          setProduct(null);
+          setRelatedProducts([]);
         }
       } catch (error) {
-        console.error('Error fetching product:', error)
-        setProduct(null)
-        setRelatedProducts([])
+        console.error("Error fetching product:", error);
+        setProduct(null);
+        setRelatedProducts([]);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
-    fetchProduct()
-  }, [slug])
+    fetchProduct();
+  }, [slug]);
 
   const formatPrice = (price: number, currency: string) => {
-    if (currency === 'BTN') return `Nu. ${price.toLocaleString()}`
-    return `$${price.toFixed(2)}`
-  }
+    if (currency === "BTN") return `Nu. ${price.toLocaleString()}`;
+    return `$${price.toFixed(2)}`;
+  };
 
   const getImageUrl = (image: SanityImageSource | string) => {
-    if (typeof image === 'string') return image
+    if (typeof image === "string") return image;
     try {
-      return urlFor(image).width(800).height(1000).url()
+      return urlFor(image).width(800).height(1000).url();
     } catch {
-      return '/images/placeholder-product.png'
+      return "/images/placeholder-product.png";
     }
-  }
+  };
 
   const handleAddToCart = () => {
-    if (!product) return
+    if (!product) return;
 
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      setShowSizeError(true)
-      return
+      setShowSizeError(true);
+      return;
     }
 
-    const imageUrl = getImageUrl(product.image)
+    const imageUrl = getImageUrl(product.image);
 
     addItem({
       _id: product._id,
@@ -203,18 +225,20 @@ export default function ProductDetailPage() {
       price: product.price,
       currency: product.currency,
       salePrice: product.salePrice,
-      size: selectedSize || 'One Size',
+      size: selectedSize || "One Size",
       quantity: 1,
-    })
+    });
 
-    setAddedToCart(true)
+    setAddedToCart(true);
     setTimeout(() => {
-      setAddedToCart(false)
-      setIsCartOpen(true)
-    }, 500)
-  }
+      setAddedToCart(false);
+      setIsCartOpen(true);
+    }, 500);
+  };
 
-  const images = product ? [product.image, product.hoverImage].filter(Boolean) : []
+  const images = product
+    ? [product.image, product.hoverImage].filter(Boolean)
+    : [];
 
   // Loading state
   if (isLoading) {
@@ -222,7 +246,7 @@ export default function ProductDetailPage() {
       <div className="min-h-screen bg-white">
         <Loader />
       </div>
-    )
+    );
   }
 
   // Not found
@@ -238,19 +262,20 @@ export default function ProductDetailPage() {
           </p>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-barca-red transition-colors duration-200 cursor-pointer"
+            className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors duration-200 cursor-pointer"
           >
-            <ArrowLeft size={16} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
             Back to Shop
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
-  const salePercent = product.salePrice && product.price > 0
-    ? Math.round(((product.price - product.salePrice) / product.price) * 100)
-    : null
+  const salePercent =
+    product.salePrice && product.price > 0
+      ? Math.round(((product.price - product.salePrice) / product.price) * 100)
+      : null;
 
   return (
     <div className="min-h-screen bg-white">
@@ -258,7 +283,10 @@ export default function ProductDetailPage() {
       <div className="border-b border-gray-100">
         <div className="container mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-xs text-gray-400">
-            <Link href="/shop" className="hover:text-dark-charcoal transition-colors cursor-pointer font-medium">
+            <Link
+              href="/shop"
+              className="hover:text-dark-charcoal transition-colors cursor-pointer font-medium"
+            >
               Shop
             </Link>
             <span>/</span>
@@ -290,8 +318,8 @@ export default function ProductDetailPage() {
                     onClick={() => setCurrentImageIndex(idx)}
                     className={`relative w-16 h-20 md:w-20 md:h-24 flex-shrink-0 overflow-hidden transition-all duration-200 cursor-pointer ${
                       currentImageIndex === idx
-                        ? 'opacity-100'
-                        : 'opacity-40 hover:opacity-70'
+                        ? "opacity-100"
+                        : "opacity-40 hover:opacity-70"
                     }`}
                   >
                     <Image
@@ -318,7 +346,9 @@ export default function ProductDetailPage() {
               {/* Badge */}
               {product.badge && (
                 <div className="absolute top-4 left-4 z-10">
-                  <span className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1.5 tracking-widest`}>
+                  <span
+                    className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1.5 tracking-widest`}
+                  >
                     {badgeLabels[product.badge]}
                   </span>
                 </div>
@@ -327,7 +357,7 @@ export default function ProductDetailPage() {
               {/* Sale tag */}
               {salePercent && (
                 <div className="absolute top-4 right-4 z-10">
-                  <span className="bg-barca-red text-white text-xs font-bold px-2.5 py-1">
+                  <span className="bg-parofc-red text-white text-xs font-bold px-2.5 py-1">
                     -{salePercent}%
                   </span>
                 </div>
@@ -337,18 +367,34 @@ export default function ProductDetailPage() {
               {images.length > 1 && (
                 <>
                   <button
-                    onClick={() => setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))}
+                    onClick={() =>
+                      setCurrentImageIndex((prev) =>
+                        prev > 0 ? prev - 1 : images.length - 1,
+                      )
+                    }
                     className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white flex items-center justify-center transition-all duration-200 cursor-pointer"
                     aria-label="Previous image"
                   >
-                    <ChevronLeft size={18} className="text-dark-charcoal" />
+                    <HugeiconsIcon
+                      icon={ArrowLeft01Icon}
+                      size={18}
+                      className="text-dark-charcoal"
+                    />
                   </button>
                   <button
-                    onClick={() => setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))}
+                    onClick={() =>
+                      setCurrentImageIndex((prev) =>
+                        prev < images.length - 1 ? prev + 1 : 0,
+                      )
+                    }
                     className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white flex items-center justify-center transition-all duration-200 cursor-pointer"
                     aria-label="Next image"
                   >
-                    <ChevronRight size={18} className="text-dark-charcoal" />
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      size={18}
+                      className="text-dark-charcoal"
+                    />
                   </button>
                 </>
               )}
@@ -379,14 +425,14 @@ export default function ProductDetailPage() {
               <div className="flex items-baseline gap-3">
                 {product.salePrice ? (
                   <>
-                    <span className="text-2xl md:text-3xl font-black text-barca-red">
+                    <span className="text-2xl md:text-3xl font-black text-parofc-red">
                       {formatPrice(product.salePrice, product.currency)}
                     </span>
                     <span className="text-lg text-gray-400 line-through">
                       {formatPrice(product.price, product.currency)}
                     </span>
                     {salePercent && (
-                      <span className="text-xs font-bold text-barca-red bg-barca-red/10 px-2 py-0.5">
+                      <span className="text-xs font-bold text-parofc-red bg-parofc-red/10 px-2 py-0.5">
                         Save {salePercent}%
                       </span>
                     )}
@@ -401,9 +447,9 @@ export default function ProductDetailPage() {
               {/* Description */}
               {product.description && (
                 <p className="text-sm text-gray-500 leading-relaxed">
-                  {typeof product.description === 'string'
+                  {typeof product.description === "string"
                     ? product.description
-                    : 'Product description coming soon...'}
+                    : "Product description coming soon..."}
                 </p>
               )}
 
@@ -418,7 +464,7 @@ export default function ProductDetailPage() {
                       Size
                     </label>
                     {showSizeError && (
-                      <span className="text-xs font-semibold text-barca-red">
+                      <span className="text-xs font-semibold text-parofc-red">
                         Please select a size
                       </span>
                     )}
@@ -428,13 +474,13 @@ export default function ProductDetailPage() {
                       <button
                         key={size}
                         onClick={() => {
-                          setSelectedSize(size)
-                          setShowSizeError(false)
+                          setSelectedSize(size);
+                          setShowSizeError(false);
                         }}
                         className={`min-w-[48px] h-12 px-4 font-bold text-sm transition-all duration-200 cursor-pointer ${
                           selectedSize === size
-                            ? 'bg-dark-charcoal text-white'
-                            : 'bg-gray-50 text-dark-charcoal hover:bg-gray-100 border border-gray-200'
+                            ? "bg-dark-charcoal text-white"
+                            : "bg-gray-50 text-dark-charcoal hover:bg-gray-100 border border-gray-200"
                         }`}
                       >
                         {size}
@@ -449,20 +495,32 @@ export default function ProductDetailPage() {
                 <div className="space-y-2">
                   {product.color && (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest w-20">Color</span>
-                      <span className="text-sm text-dark-charcoal">{product.color}</span>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest w-20">
+                        Color
+                      </span>
+                      <span className="text-sm text-dark-charcoal">
+                        {product.color}
+                      </span>
                     </div>
                   )}
                   {product.material && (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest w-20">Material</span>
-                      <span className="text-sm text-dark-charcoal">{product.material}</span>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest w-20">
+                        Material
+                      </span>
+                      <span className="text-sm text-dark-charcoal">
+                        {product.material}
+                      </span>
                     </div>
                   )}
                   {product.dimensions && (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest w-20">Size</span>
-                      <span className="text-sm text-dark-charcoal">{product.dimensions}</span>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest w-20">
+                        Size
+                      </span>
+                      <span className="text-sm text-dark-charcoal">
+                        {product.dimensions}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -471,8 +529,12 @@ export default function ProductDetailPage() {
               {/* Out of stock */}
               {!product.inStock && (
                 <div className="bg-gray-50 border border-gray-200 p-4">
-                  <p className="text-sm font-bold text-dark-charcoal">Out of Stock</p>
-                  <p className="text-xs text-gray-500 mt-0.5">This item is currently unavailable.</p>
+                  <p className="text-sm font-bold text-dark-charcoal">
+                    Out of Stock
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    This item is currently unavailable.
+                  </p>
                 </div>
               )}
 
@@ -483,20 +545,20 @@ export default function ProductDetailPage() {
                 className={`w-full h-14 font-bold text-sm uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
                   product.inStock
                     ? addedToCart
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-dark-charcoal text-white hover:bg-barca-red'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      ? "bg-emerald-500 text-white"
+                      : "bg-dark-charcoal text-white hover:bg-parofc-red"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}
               >
                 {addedToCart ? (
                   <>
-                    <Check size={18} />
+                    <HugeiconsIcon icon={Tick02Icon} size={18} />
                     Added to Cart
                   </>
                 ) : (
                   <>
-                    <ShoppingBag size={18} />
-                    {product.inStock ? 'Add to Cart' : 'Sold Out'}
+                    <HugeiconsIcon icon={ShoppingBag01Icon} size={18} />
+                    {product.inStock ? "Add to Cart" : "Sold Out"}
                   </>
                 )}
               </button>
@@ -509,39 +571,63 @@ export default function ProductDetailPage() {
                       title: product.name,
                       text: `Check out ${product.name} on Paro FC Shop!`,
                       url: window.location.href,
-                    })
+                    });
                   } else {
-                    navigator.clipboard.writeText(window.location.href)
-                    alert('Link copied to clipboard!')
+                    navigator.clipboard.writeText(window.location.href);
+                    alert("Link copied to clipboard!");
                   }
                 }}
                 className="w-full h-11 font-bold text-xs uppercase tracking-wider bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-dark-charcoal transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Share2 size={14} />
+                <HugeiconsIcon icon={Share01Icon} size={14} />
                 Share
               </button>
 
               {/* Trust signals */}
               <div className="pt-2 space-y-3">
                 <div className="flex items-center gap-3">
-                  <Truck size={16} className="text-barca-gold flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={TruckIcon}
+                    size={16}
+                    className="text-parofc-gold flex-shrink-0"
+                  />
                   <div>
-                    <span className="text-xs font-bold text-dark-charcoal">Free Shipping</span>
-                    <span className="text-xs text-gray-400 ml-1">on orders over Nu. 5,000</span>
+                    <span className="text-xs font-bold text-dark-charcoal">
+                      Free Shipping
+                    </span>
+                    <span className="text-xs text-gray-400 ml-1">
+                      on orders over Nu. 5,000
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <RotateCcw size={16} className="text-barca-gold flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={RotateLeft01Icon}
+                    size={16}
+                    className="text-parofc-gold flex-shrink-0"
+                  />
                   <div>
-                    <span className="text-xs font-bold text-dark-charcoal">Easy Returns</span>
-                    <span className="text-xs text-gray-400 ml-1">30-day return policy</span>
+                    <span className="text-xs font-bold text-dark-charcoal">
+                      Easy Returns
+                    </span>
+                    <span className="text-xs text-gray-400 ml-1">
+                      30-day return policy
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Shield size={16} className="text-barca-gold flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={Shield01Icon}
+                    size={16}
+                    className="text-parofc-gold flex-shrink-0"
+                  />
                   <div>
-                    <span className="text-xs font-bold text-dark-charcoal">Authentic</span>
-                    <span className="text-xs text-gray-400 ml-1">100% official Paro FC</span>
+                    <span className="text-xs font-bold text-dark-charcoal">
+                      Authentic
+                    </span>
+                    <span className="text-xs text-gray-400 ml-1">
+                      100% official Paro FC
+                    </span>
                   </div>
                 </div>
               </div>
@@ -559,7 +645,10 @@ export default function ProductDetailPage() {
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {relatedProducts.map((relatedProduct) => (
-                <RelatedProductCard key={relatedProduct._id} product={relatedProduct} />
+                <RelatedProductCard
+                  key={relatedProduct._id}
+                  product={relatedProduct}
+                />
               ))}
             </div>
           </div>
@@ -570,9 +659,14 @@ export default function ProductDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 p-3 lg:hidden z-40">
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            <p className="text-xs text-gray-400 font-medium truncate">{product.name}</p>
+            <p className="text-xs text-gray-400 font-medium truncate">
+              {product.name}
+            </p>
             <p className="text-sm font-black text-dark-charcoal">
-              {formatPrice(product.salePrice || product.price, product.currency)}
+              {formatPrice(
+                product.salePrice || product.price,
+                product.currency,
+              )}
             </p>
           </div>
           <button
@@ -581,25 +675,25 @@ export default function ProductDetailPage() {
             className={`h-12 px-8 font-bold text-xs uppercase tracking-wider transition-all duration-200 flex items-center gap-2 cursor-pointer ${
               product.inStock
                 ? addedToCart
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-dark-charcoal text-white'
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  ? "bg-emerald-500 text-white"
+                  : "bg-dark-charcoal text-white"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
             {addedToCart ? (
               <>
-                <Check size={16} />
+                <HugeiconsIcon icon={Tick02Icon} size={16} />
                 Added
               </>
             ) : (
               <>
-                <ShoppingBag size={16} />
-                {product.inStock ? 'Add to Cart' : 'Sold Out'}
+                <HugeiconsIcon icon={ShoppingBag01Icon} size={16} />
+                {product.inStock ? "Add to Cart" : "Sold Out"}
               </>
             )}
           </button>
         </div>
       </div>
     </div>
-  )
+  );
 }

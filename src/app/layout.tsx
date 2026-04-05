@@ -11,7 +11,8 @@ import {
 
 export const metadata: Metadata = {
   title: "Paro FC - Official Website",
-  description: "Paro FC Official Website",
+  description:
+    "Official home of Paro FC: news, fixtures, squad, tickets, and the club shop.",
   icons: {
     icon: "/assets/logo.webp",
     apple: "/assets/logo.webp",

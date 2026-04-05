@@ -1,28 +1,34 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import Image from "next/image"
-import { useState, useEffect, useCallback } from "react"
-import { X, Camera, ChevronLeft, ChevronRight } from "lucide-react"
-import { sanityFetch } from "@/sanity/lib/live"
-import { PHOTOS_QUERY } from "@/sanity/lib/queries"
-import Loader from "@/components/Loader"
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  Camera01Icon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+} from "@hugeicons/core-free-icons";
+import { sanityFetch } from "@/sanity/lib/live";
+import { PHOTOS_QUERY } from "@/sanity/lib/queries";
+import Loader from "@/components/Loader";
 
 interface PhotoImage {
-  url: string
-  alt?: string
-  caption?: string
+  url: string;
+  alt?: string;
+  caption?: string;
 }
 
 interface Photo {
-  _id: string
-  coverImage: string
-  title: string
-  category: string
-  date: string
-  photoCount: number
-  slug: string
-  images?: PhotoImage[]
+  _id: string;
+  coverImage: string;
+  title: string;
+  category: string;
+  date: string;
+  photoCount: number;
+  slug: string;
+  images?: PhotoImage[];
 }
 
 const fallbackPhotos: Photo[] = [
@@ -31,43 +37,43 @@ const fallbackPhotos: Photo[] = [
     coverImage:
       "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop",
     title: "Last session before Paro FC v Thimphu City",
-    category: "FIRST TEAM",
+    category: "PARO FC",
     date: new Date().toISOString(),
     photoCount: 27,
     slug: "last-session",
   },
-]
+];
 
 function getTimeAgo(dateString: string) {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  const diffDays = Math.floor(diffHours / 24)
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
 
-  if (diffHours < 1) return "Just now"
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays === 1) return "1d ago"
-  if (diffDays < 30) return `${diffDays}d ago`
+  if (diffHours < 1) return "Just now";
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays === 1) return "1d ago";
+  if (diffDays < 30) return `${diffDays}d ago`;
   return date.toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "short",
-  })
+  });
 }
 
 export default function PhotosPage() {
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [photos, setPhotos] = useState<Photo[]>([])
-  const [loading, setLoading] = useState(true)
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPhotos = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const photosResult = await sanityFetch({
           query: PHOTOS_QUERY,
-        }).catch(() => ({ data: [] }))
+        }).catch(() => ({ data: [] }));
 
         if (
           photosResult.data &&
@@ -83,66 +89,63 @@ export default function PhotosPage() {
             photoCount: photo.photoCount || 0,
             slug: photo.slug,
             images: photo.images || [],
-          }))
-          setPhotos(photosData)
+          }));
+          setPhotos(photosData);
         } else {
-          setPhotos(fallbackPhotos)
+          setPhotos(fallbackPhotos);
         }
       } catch (error) {
-        console.error("Error fetching photos:", error)
-        setPhotos(fallbackPhotos)
+        console.error("Error fetching photos:", error);
+        setPhotos(fallbackPhotos);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPhotos()
-  }, [])
+    fetchPhotos();
+  }, []);
 
   // Lightbox helpers
-  const getAllImages = useCallback(
-    (photo: Photo) => {
-      return photo.images && photo.images.length > 0
-        ? [photo.coverImage, ...photo.images.map((img) => img.url)]
-        : [photo.coverImage]
-    },
-    [],
-  )
+  const getAllImages = useCallback((photo: Photo) => {
+    return photo.images && photo.images.length > 0
+      ? [photo.coverImage, ...photo.images.map((img) => img.url)]
+      : [photo.coverImage];
+  }, []);
 
   const openLightbox = (photo: Photo) => {
-    setSelectedPhoto(photo)
-    setCurrentImageIndex(0)
-    document.body.style.overflow = "hidden"
-  }
+    setSelectedPhoto(photo);
+    setCurrentImageIndex(0);
+    document.body.style.overflow = "hidden";
+  };
 
   const closeLightbox = () => {
-    setSelectedPhoto(null)
-    setCurrentImageIndex(0)
-    document.body.style.overflow = ""
-  }
+    setSelectedPhoto(null);
+    setCurrentImageIndex(0);
+    document.body.style.overflow = "";
+  };
 
   // Keyboard navigation
   useEffect(() => {
-    if (!selectedPhoto) return
+    if (!selectedPhoto) return;
 
-    const allImages = getAllImages(selectedPhoto)
+    const allImages = getAllImages(selectedPhoto);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft" && currentImageIndex > 0) {
-        setCurrentImageIndex(currentImageIndex - 1)
+        setCurrentImageIndex(currentImageIndex - 1);
       } else if (
         e.key === "ArrowRight" &&
         currentImageIndex < allImages.length - 1
       ) {
-        setCurrentImageIndex(currentImageIndex + 1)
+        setCurrentImageIndex(currentImageIndex + 1);
       } else if (e.key === "Escape") {
-        closeLightbox()
+        closeLightbox();
       }
-    }
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [selectedPhoto, currentImageIndex, getAllImages])
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedPhoto, currentImageIndex, getAllImages]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -162,18 +165,18 @@ export default function PhotosPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+            <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
               Gallery
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
               Match Day
               <br />
-              <span className="text-barca-gold">Photos</span>
+              <span className="text-parofc-gold">Photos</span>
             </h1>
           </motion.div>
         </div>
 
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       {/* Gallery Grid */}
@@ -182,7 +185,11 @@ export default function PhotosPage() {
           <Loader />
         ) : photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
-            <Camera className="w-8 h-8 text-gray-200 mb-3" />
+            <HugeiconsIcon
+              icon={Camera01Icon}
+              size={32}
+              className="text-gray-200 mb-3"
+            />
             <span className="text-sm text-gray-400 font-medium">
               No photos available yet
             </span>
@@ -213,7 +220,11 @@ export default function PhotosPage() {
 
                   {/* Photo count badge */}
                   <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-dark-charcoal/70 backdrop-blur-sm px-2 py-1">
-                    <Camera size={12} className="text-white" />
+                    <HugeiconsIcon
+                      icon={Camera01Icon}
+                      size={12}
+                      className="text-white"
+                    />
                     <span className="text-white text-[11px] font-bold tabular-nums">
                       {photo.photoCount}
                     </span>
@@ -229,12 +240,12 @@ export default function PhotosPage() {
 
                 {/* Info */}
                 <div className="mt-3 mb-1">
-                  <h3 className="text-sm font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-barca-red transition-colors duration-200">
+                  <h3 className="text-sm font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
                     {photo.title}
                   </h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-barca-red uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
                     {photo.category}
                   </span>
                   <span className="text-gray-300">·</span>
@@ -252,15 +263,15 @@ export default function PhotosPage() {
       <AnimatePresence>
         {selectedPhoto &&
           (() => {
-            const allImages = getAllImages(selectedPhoto)
-            const currentImage = allImages[currentImageIndex]
-            const hasPrevious = currentImageIndex > 0
-            const hasNext = currentImageIndex < allImages.length - 1
+            const allImages = getAllImages(selectedPhoto);
+            const currentImage = allImages[currentImageIndex];
+            const hasPrevious = currentImageIndex > 0;
+            const hasNext = currentImageIndex < allImages.length - 1;
             const currentCaption =
               currentImageIndex === 0
                 ? selectedPhoto.title
                 : selectedPhoto.images?.[currentImageIndex - 1]?.caption ||
-                  selectedPhoto.title
+                  selectedPhoto.title;
 
             return (
               <motion.div
@@ -291,7 +302,7 @@ export default function PhotosPage() {
                     className="w-10 h-10 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"
                     aria-label="Close lightbox"
                   >
-                    <X size={20} />
+                    <HugeiconsIcon icon={Cancel01Icon} size={20} />
                   </button>
                 </div>
 
@@ -304,13 +315,13 @@ export default function PhotosPage() {
                   {hasPrevious && (
                     <button
                       onClick={(e) => {
-                        e.stopPropagation()
-                        setCurrentImageIndex(currentImageIndex - 1)
+                        e.stopPropagation();
+                        setCurrentImageIndex(currentImageIndex - 1);
                       }}
                       className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white/30 hover:text-white transition-colors cursor-pointer"
                       aria-label="Previous image"
                     >
-                      <ChevronLeft size={24} />
+                      <HugeiconsIcon icon={ArrowLeft01Icon} size={24} />
                     </button>
                   )}
 
@@ -318,13 +329,13 @@ export default function PhotosPage() {
                   {hasNext && (
                     <button
                       onClick={(e) => {
-                        e.stopPropagation()
-                        setCurrentImageIndex(currentImageIndex + 1)
+                        e.stopPropagation();
+                        setCurrentImageIndex(currentImageIndex + 1);
                       }}
                       className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-white/30 hover:text-white transition-colors cursor-pointer"
                       aria-label="Next image"
                     >
-                      <ChevronRight size={24} />
+                      <HugeiconsIcon icon={ArrowRight01Icon} size={24} />
                     </button>
                   )}
 
@@ -368,9 +379,9 @@ export default function PhotosPage() {
                   )}
                 </div>
               </motion.div>
-            )
+            );
           })()}
       </AnimatePresence>
     </div>
-  )
+  );
 }

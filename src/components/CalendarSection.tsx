@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, RefreshCw, ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Calendar03Icon,
+  RefreshIcon,
+  ArrowRight01Icon,
+  Calendar01Icon,
+} from "@hugeicons/core-free-icons";
 import { Countdown } from "./ui/countdown";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -61,11 +67,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
             <div>
               <h3 className="text-4xl md:text-5xl font-black text-dark-charcoal uppercase tracking-tight leading-none">
-                Matches
+                Paro FC matches
               </h3>
               {targetDate && (
                 <div className="flex items-center gap-3 mt-3">
-                  <span className="text-xs font-bold text-barca-red uppercase tracking-widest">
+                  <span className="text-xs font-bold text-parofc-red uppercase tracking-widest">
                     Next match in
                   </span>
                   <Countdown targetDate={targetDate} />
@@ -78,9 +84,9 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
               className="border-dark-charcoal/20 text-dark-charcoal hover:bg-dark-charcoal hover:text-white transition-all duration-200 cursor-pointer"
               onClick={() => setIsSyncModalOpen(true)}
             >
-              <Calendar className="w-4 h-4 mr-2" />
+              <HugeiconsIcon icon={Calendar03Icon} size={16} className="mr-2" />
               Sync Calendar
-              <RefreshCw className="w-3.5 h-3.5 ml-2" />
+              <HugeiconsIcon icon={RefreshIcon} size={14} className="ml-2" />
             </Button>
           </div>
 
@@ -96,7 +102,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                 className="group relative bg-dark-charcoal rounded-2xl overflow-hidden"
               >
                 {/* Top accent bar */}
-                <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+                <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
 
                 <div className="p-6">
                   {/* Competition */}
@@ -120,8 +126,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                   {/* Teams */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex flex-col items-center gap-3 flex-1">
-                      {match.homeCrest &&
-                      match.homeCrest.startsWith("http") ? (
+                      {match.homeCrest && match.homeCrest.startsWith("http") ? (
                         <div className="relative w-16 h-16">
                           <Image
                             src={match.homeCrest}
@@ -149,8 +154,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                     </div>
 
                     <div className="flex flex-col items-center gap-3 flex-1">
-                      {match.awayCrest &&
-                      match.awayCrest.startsWith("http") ? (
+                      {match.awayCrest && match.awayCrest.startsWith("http") ? (
                         <div className="relative w-16 h-16">
                           <Image
                             src={match.awayCrest}
@@ -184,10 +188,14 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                   <Link href={`/matches/${match._id}`}>
                     <Button
                       variant="outline"
-                      className="w-full border-barca-gold/30 bg-barca-gold/5 hover:bg-barca-gold hover:text-dark-charcoal text-barca-gold transition-all duration-200 cursor-pointer font-bold text-xs uppercase tracking-wider"
+                      className="w-full border-parofc-gold/30 bg-parofc-gold/5 hover:bg-parofc-gold hover:text-dark-charcoal text-parofc-gold transition-all duration-200 cursor-pointer font-bold text-xs uppercase tracking-wider"
                     >
                       Get Tickets
-                      <ArrowRight className="w-3.5 h-3.5 ml-2" />
+                      <HugeiconsIcon
+                        icon={ArrowRight01Icon}
+                        size={14}
+                        className="ml-2"
+                      />
                     </Button>
                   </Link>
                 </div>
@@ -206,7 +214,11 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
               >
                 <div className="p-6 flex flex-col items-center justify-center min-h-[320px]">
                   <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                    <Calendar className="w-6 h-6 text-white/20" />
+                    <HugeiconsIcon
+                      icon={Calendar01Icon}
+                      size={24}
+                      className="text-white/20"
+                    />
                   </div>
                   <p className="font-bold text-sm text-white/30 uppercase tracking-wider">
                     Coming Soon
@@ -223,10 +235,10 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
           <div className="flex justify-center mt-8">
             <Link
               href="/calendar"
-              className="inline-flex items-center gap-2 text-sm font-bold text-dark-charcoal hover:text-barca-red transition-colors duration-200 uppercase tracking-wider cursor-pointer"
+              className="inline-flex items-center gap-2 text-sm font-bold text-dark-charcoal hover:text-parofc-red transition-colors duration-200 uppercase tracking-wider cursor-pointer"
             >
               See Full Calendar
-              <ArrowRight className="w-4 h-4" />
+              <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
             </Link>
           </div>
         </motion.div>

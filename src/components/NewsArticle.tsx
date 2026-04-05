@@ -1,41 +1,50 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { Share2, Bookmark, Clock, Calendar, ChevronRight, Heart, X } from "lucide-react"
-import { urlFor } from "@/sanity/lib/image"
-import { PortableText, PortableTextComponents } from "@portabletext/react"
-import { useState, useEffect } from "react"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Share01Icon,
+  Bookmark01Icon,
+  Clock01Icon,
+  Calendar03Icon,
+  ArrowRight01Icon,
+  FavouriteIcon,
+  Cancel01Icon,
+} from "@hugeicons/core-free-icons";
+import { urlFor } from "@/sanity/lib/image";
+import { PortableText, PortableTextComponents } from "@portabletext/react";
+import { useState, useEffect } from "react";
 
 interface NewsArticleProps {
   article: {
-    _id: string
-    title: string
-    slug: string
-    image: unknown
-    badge: string
-    publishedAt: string
-    description: string
-    body?: unknown[]
-    author?: string
-    readTime?: number
-  }
+    _id: string;
+    title: string;
+    slug: string;
+    image: unknown;
+    badge: string;
+    publishedAt: string;
+    description: string;
+    body?: unknown[];
+    author?: string;
+    readTime?: number;
+  };
   relatedNews: {
-    _id: string
-    title: string
-    slug: string
-    image: unknown
-    badge: string
-    publishedAt: string
-    description?: string
-  }[]
+    _id: string;
+    title: string;
+    slug: string;
+    image: unknown;
+    badge: string;
+    publishedAt: string;
+    description?: string;
+  }[];
 }
 
 const portableTextComponents: PortableTextComponents = {
   types: {
     image: ({ value }) => {
-      if (!value?.asset) return null
+      if (!value?.asset) return null;
       return (
         <figure className="my-8">
           <div className="relative w-full aspect-video rounded-lg overflow-hidden">
@@ -52,18 +61,24 @@ const portableTextComponents: PortableTextComponents = {
             </figcaption>
           )}
         </figure>
-      )
+      );
     },
   },
   block: {
     h2: ({ children }) => (
-      <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">{children}</h2>
+      <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-6">
+        {children}
+      </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-2xl font-bold text-gray-900 mt-10 mb-4">{children}</h3>
+      <h3 className="text-2xl font-bold text-gray-900 mt-10 mb-4">
+        {children}
+      </h3>
     ),
     h4: ({ children }) => (
-      <h4 className="text-xl font-semibold text-gray-900 mt-8 mb-3">{children}</h4>
+      <h4 className="text-xl font-semibold text-gray-900 mt-8 mb-3">
+        {children}
+      </h4>
     ),
     normal: ({ children }) => (
       <p className="text-lg text-gray-700 leading-relaxed mb-5">{children}</p>
@@ -78,7 +93,7 @@ const portableTextComponents: PortableTextComponents = {
     link: ({ children, value }) => (
       <a
         href={value?.href}
-        className="text-barca-gold hover:text-bronze underline transition-colors"
+        className="text-parofc-gold hover:text-bronze underline transition-colors"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -88,177 +103,180 @@ const portableTextComponents: PortableTextComponents = {
     strong: ({ children }) => <strong className="font-bold">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
   },
-}
+};
 
 function formatDate(dateString: string) {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
-  })
+  });
 }
 
 function formatTime(dateString: string) {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
   return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
-  })
+  });
 }
 
 function formatRelativeDate(dateString: string) {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  
-  if (diffHours < 1) return 'Just now'
-  if (diffHours < 24) return `${diffHours} hr${diffHours > 1 ? 's' : ''} ago`
-  
-  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: '2-digit' })
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  if (diffHours < 1) return "Just now";
+  if (diffHours < 24) return `${diffHours} hr${diffHours > 1 ? "s" : ""} ago`;
+
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "2-digit",
+  });
 }
 
 export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
-  const articleId = article._id
-  const likesKey = `article_likes_${articleId}`
-  const likedKey = `article_liked_${articleId}`
-  const bookmarkedKey = `article_bookmarked_${articleId}`
+  const articleId = article._id;
+  const likesKey = `article_likes_${articleId}`;
+  const likedKey = `article_liked_${articleId}`;
+  const bookmarkedKey = `article_bookmarked_${articleId}`;
 
   // Initialize with default values to avoid hydration mismatch
-  const [likes, setLikes] = useState(1831)
-  const [isLiked, setIsLiked] = useState(false)
-  const [isBookmarked, setIsBookmarked] = useState(false)
-  const [isHydrated, setIsHydrated] = useState(false)
+  const [likes, setLikes] = useState(1831);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Load from localStorage after hydration (client-side only)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
-        const storedLikes = localStorage.getItem(likesKey)
+        const storedLikes = localStorage.getItem(likesKey);
         if (storedLikes) {
-          const parsedLikes = parseInt(storedLikes, 10)
+          const parsedLikes = parseInt(storedLikes, 10);
           if (!isNaN(parsedLikes)) {
-            setLikes(parsedLikes)
+            setLikes(parsedLikes);
           }
         }
-        
-        const storedLiked = localStorage.getItem(likedKey)
-        if (storedLiked === 'true') {
-          setIsLiked(true)
+
+        const storedLiked = localStorage.getItem(likedKey);
+        if (storedLiked === "true") {
+          setIsLiked(true);
         }
-        
-        const storedBookmarked = localStorage.getItem(bookmarkedKey)
-        if (storedBookmarked === 'true') {
-          setIsBookmarked(true)
+
+        const storedBookmarked = localStorage.getItem(bookmarkedKey);
+        if (storedBookmarked === "true") {
+          setIsBookmarked(true);
         }
       } catch (e) {
         if (e instanceof DOMException) {
-          console.warn('localStorage not available:', e.message)
+          console.warn("localStorage not available:", e.message);
         } else {
-          console.error('Error loading article state:', e)
+          console.error("Error loading article state:", e);
         }
       } finally {
-        setIsHydrated(true)
+        setIsHydrated(true);
       }
     }
-  }, [likesKey, likedKey, bookmarkedKey])
+  }, [likesKey, likedKey, bookmarkedKey]);
 
   // Sync likes to localStorage (only after hydration)
   useEffect(() => {
-    if (isHydrated && typeof window !== 'undefined') {
+    if (isHydrated && typeof window !== "undefined") {
       try {
-        localStorage.setItem(likesKey, likes.toString())
+        localStorage.setItem(likesKey, likes.toString());
       } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          console.error('localStorage quota exceeded for likes')
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          console.error("localStorage quota exceeded for likes");
         } else if (e instanceof DOMException) {
-          console.warn('localStorage not available:', e.message)
+          console.warn("localStorage not available:", e.message);
         } else {
-          console.error('Error saving likes:', e)
+          console.error("Error saving likes:", e);
         }
       }
     }
-  }, [likes, likesKey, isHydrated])
+  }, [likes, likesKey, isHydrated]);
 
   // Sync liked state to localStorage (only after hydration)
   useEffect(() => {
-    if (isHydrated && typeof window !== 'undefined') {
+    if (isHydrated && typeof window !== "undefined") {
       try {
-        localStorage.setItem(likedKey, isLiked.toString())
+        localStorage.setItem(likedKey, isLiked.toString());
       } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          console.error('localStorage quota exceeded for liked state')
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          console.error("localStorage quota exceeded for liked state");
         } else if (e instanceof DOMException) {
-          console.warn('localStorage not available:', e.message)
+          console.warn("localStorage not available:", e.message);
         } else {
-          console.error('Error saving liked state:', e)
+          console.error("Error saving liked state:", e);
         }
       }
     }
-  }, [isLiked, likedKey, isHydrated])
+  }, [isLiked, likedKey, isHydrated]);
 
   // Sync bookmarked state to localStorage (only after hydration)
   useEffect(() => {
-    if (isHydrated && typeof window !== 'undefined') {
+    if (isHydrated && typeof window !== "undefined") {
       try {
-        localStorage.setItem(bookmarkedKey, isBookmarked.toString())
+        localStorage.setItem(bookmarkedKey, isBookmarked.toString());
       } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          console.error('localStorage quota exceeded for bookmarked state')
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          console.error("localStorage quota exceeded for bookmarked state");
         } else if (e instanceof DOMException) {
-          console.warn('localStorage not available:', e.message)
+          console.warn("localStorage not available:", e.message);
         } else {
-          console.error('Error saving bookmarked state:', e)
+          console.error("Error saving bookmarked state:", e);
         }
       }
     }
-  }, [isBookmarked, bookmarkedKey, isHydrated])
+  }, [isBookmarked, bookmarkedKey, isHydrated]);
 
   const handleLike = () => {
     if (isLiked) {
-      setLikes(prev => prev - 1)
+      setLikes((prev) => prev - 1);
     } else {
-      setLikes(prev => prev + 1)
+      setLikes((prev) => prev + 1);
     }
-    setIsLiked(!isLiked)
-  }
+    setIsLiked(!isLiked);
+  };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/news/${article.slug}`
+    const url = `${window.location.origin}/news/${article.slug}`;
     const shareData = {
       title: article.title,
       text: article.description || article.title,
       url: url,
-    }
+    };
 
     try {
       // Use Web Share API if available (mobile devices)
       if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share(shareData)
+        await navigator.share(shareData);
       } else {
         // Fallback: Copy link to clipboard
-        await navigator.clipboard.writeText(url)
-        alert("Link copied to clipboard!")
+        await navigator.clipboard.writeText(url);
+        alert("Link copied to clipboard!");
       }
     } catch (err) {
       // User cancelled or error occurred
       if ((err as Error).name !== "AbortError") {
         // Fallback: Copy link to clipboard
         try {
-          await navigator.clipboard.writeText(url)
-          alert("Link copied to clipboard!")
+          await navigator.clipboard.writeText(url);
+          alert("Link copied to clipboard!");
         } catch (clipboardErr) {
-          console.error("Failed to copy link:", clipboardErr)
+          console.error("Failed to copy link:", clipboardErr);
         }
       }
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-white">
-
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -274,14 +292,14 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
             priority
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-barca-blue to-barca-red" />
+          <div className="absolute inset-0 bg-gradient-to-br from-parofc-blue to-parofc-red" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        
+
         {/* Badge */}
         {article.badge && (
           <div className="absolute top-4 right-4 z-10">
-            <span className="bg-barca-red text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wide">
+            <span className="bg-parofc-red text-white text-sm font-bold px-4 py-2 rounded-full uppercase tracking-wide">
               {article.badge}
             </span>
           </div>
@@ -297,13 +315,13 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
       >
         <div>
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-barca-red leading-tight mb-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-parofc-red leading-tight mb-4">
             {article.title}
           </h1>
 
           {/* Description/Summary */}
           {article.description && (
-            <p className="text-xl text-gray-600 leading-relaxed mb-6 border-l-4 border-barca-gold pl-4">
+            <p className="text-xl text-gray-600 leading-relaxed mb-6 border-l-4 border-parofc-gold pl-4">
               {article.description}
             </p>
           )}
@@ -311,11 +329,11 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
           {/* Meta info */}
           <div className="flex flex-wrap items-center gap-4 md:gap-6 text-gray-500 text-sm mb-10 pb-6 border-b border-gray-200">
             <div className="flex items-center gap-2">
-              <Calendar size={16} />
+              <HugeiconsIcon icon={Calendar03Icon} size={16} />
               <span>{formatDate(article.publishedAt)}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock size={16} />
+              <HugeiconsIcon icon={Clock01Icon} size={16} />
               <span>{formatTime(article.publishedAt)}</span>
             </div>
             {article.readTime && (
@@ -335,14 +353,19 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
           {/* Article Body */}
           {article.body && (
             <div className="prose prose-lg max-w-none mt-8">
-              <PortableText value={article.body as any} components={portableTextComponents} />
+              <PortableText
+                value={article.body as any}
+                components={portableTextComponents}
+              />
             </div>
           )}
 
           {/* If no body, show description as content */}
           {!article.body && article.description && (
             <div className="prose prose-lg max-w-none mt-8">
-              <p className="text-lg text-gray-700 leading-relaxed">{article.description}</p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                {article.description}
+              </p>
             </div>
           )}
 
@@ -353,47 +376,63 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
                 onClick={handleLike}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
                   isLiked
-                    ? "bg-barca-red text-white"
+                    ? "bg-parofc-red text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                <Heart size={20} fill={isLiked ? "currentColor" : "none"} />
+                <HugeiconsIcon
+                  icon={FavouriteIcon}
+                  size={20}
+                  className={isLiked ? "text-parofc-red" : "text-gray-400"}
+                />
                 <span className="font-semibold">{likes.toLocaleString()}</span>
               </button>
               <button
                 onClick={() => setIsBookmarked(!isBookmarked)}
                 className={`p-2 rounded-full transition-all ${
                   isBookmarked
-                    ? "bg-barca-gold text-dark-charcoal"
+                    ? "bg-parofc-gold text-dark-charcoal"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                <Bookmark size={20} fill={isBookmarked ? "currentColor" : "none"} />
+                <HugeiconsIcon
+                  icon={Bookmark01Icon}
+                  size={20}
+                  className={
+                    isBookmarked ? "text-parofc-gold" : "text-gray-400"
+                  }
+                />
               </button>
             </div>
-            <button 
+            <button
               onClick={handleShare}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
             >
-              <Share2 size={20} />
+              <HugeiconsIcon icon={Share01Icon} size={20} />
               <span className="font-medium">Share</span>
             </button>
           </div>
         </div>
 
         {/* Força Paro engagement box */}
-        <div className="mt-8 mb-12 p-6 md:p-8 bg-gradient-to-r from-barca-blue to-barca-red rounded-2xl text-white">
+        <div className="mt-8 mb-12 p-6 md:p-8 bg-gradient-to-r from-parofc-blue to-parofc-red rounded-2xl text-white">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-xl md:text-2xl font-bold mb-2">FORÇA PARO</h3>
-              <p className="text-white/80 text-sm md:text-base">Show your support for Paro FC!</p>
+              <p className="text-white/80 text-sm md:text-base">
+                Show your support for Paro FC!
+              </p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold">{likes.toLocaleString()}</span>
+              <span className="text-2xl font-bold">
+                {likes.toLocaleString()}
+              </span>
               <button
                 onClick={handleLike}
                 className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
-                  isLiked ? "bg-white text-barca-red" : "bg-white/20 text-white hover:bg-white/30"
+                  isLiked
+                    ? "bg-white text-parofc-red"
+                    : "bg-white/20 text-white hover:bg-white/30"
                 }`}
               >
                 <span className="text-2xl">👏</span>
@@ -411,60 +450,62 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
               <h2 className="text-2xl font-bold text-gray-900">Related News</h2>
               <Link
                 href="/"
-                className="flex items-center gap-1 text-barca-gold hover:text-bronze transition-colors font-medium"
+                className="flex items-center gap-1 text-parofc-gold hover:text-bronze transition-colors font-medium"
               >
                 View all
-                <ChevronRight size={20} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={20} />
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedNews.map((news, index) => (
-              <motion.article
-                key={news._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white overflow-hidden border border-gray-200 cursor-pointer group"
-              >
-                <Link href={`/news/${news.slug}`} className="block">
-                  <div className="relative w-full h-36 overflow-hidden bg-gray-200">
-                    {news.image ? (
-                      <Image
-                        src={urlFor(news.image).width(400).height(300).url()}
-                        alt={news.title}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                        <span className="text-4xl">📰</span>
-                      </div>
-                    )}
-                  </div>
+              {relatedNews.map((news, index) => (
+                <motion.article
+                  key={news._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="bg-white overflow-hidden border border-gray-200 cursor-pointer group"
+                >
+                  <Link href={`/news/${news.slug}`} className="block">
+                    <div className="relative w-full h-36 overflow-hidden bg-gray-200">
+                      {news.image ? (
+                        <Image
+                          src={urlFor(news.image).width(400).height(300).url()}
+                          alt={news.title}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                          <span className="text-4xl">📰</span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="p-4 bg-white transition-transform duration-300 ease-in-out group-hover:-translate-y-4">
-                    {news.badge && (
-                      <span className="inline-block bg-barca-red text-white text-xs font-semibold px-2 py-1 mb-2 uppercase">
-                        {news.badge}
-                      </span>
-                    )}
+                    <div className="p-4 bg-white transition-transform duration-300 ease-in-out group-hover:-translate-y-4">
+                      {news.badge && (
+                        <span className="inline-block bg-parofc-red text-white text-xs font-semibold px-2 py-1 mb-2 uppercase">
+                          {news.badge}
+                        </span>
+                      )}
 
-                    <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
-                      {news.title}
-                    </h3>
+                      <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
+                        {news.title}
+                      </h3>
 
-                    {news.description && (
-                      <p className="text-sm text-gray-600 mb-2 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        {news.description}
+                      {news.description && (
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          {news.description}
+                        </p>
+                      )}
+
+                      <p className="text-xs text-gray-500 mt-2">
+                        {formatRelativeDate(news.publishedAt)}
                       </p>
-                    )}
-
-                    <p className="text-xs text-gray-500 mt-2">{formatRelativeDate(news.publishedAt)}</p>
-                  </div>
-                </Link>
-              </motion.article>
-            ))}
+                    </div>
+                  </Link>
+                </motion.article>
+              ))}
             </div>
           </div>
         </section>
@@ -475,9 +516,8 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
         href="/"
         className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
       >
-        <X size={24} />
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
       </Link>
     </div>
-  )
+  );
 }
-

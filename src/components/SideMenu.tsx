@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Cancel01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -69,7 +70,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                 className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"
                 aria-label="Close menu"
               >
-                <X size={18} />
+                <HugeiconsIcon icon={Cancel01Icon} size={18} />
               </button>
             </div>
 
@@ -89,12 +90,13 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                     onClick={onClose}
                     className="group flex items-center justify-between px-5 py-4 cursor-pointer"
                   >
-                    <span className="text-sm font-bold text-white/60 uppercase tracking-widest group-hover:text-barca-gold transition-colors duration-200">
+                    <span className="text-sm font-bold text-white/60 uppercase tracking-widest group-hover:text-parofc-gold transition-colors duration-200">
                       {item.label}
                     </span>
-                    <ArrowRight
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
                       size={14}
-                      className="text-white/10 group-hover:text-barca-gold transition-colors duration-200"
+                      className="text-white/10 group-hover:text-parofc-gold transition-colors duration-200"
                     />
                   </Link>
                 </motion.div>
@@ -102,7 +104,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
             </div>
 
             {/* Footer accent */}
-            <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+            <div className="h-px bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
           </motion.div>
         </>
       )}

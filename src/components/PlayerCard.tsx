@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { urlFor } from "@/sanity/lib/image"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { urlFor } from "@/sanity/lib/image";
 
 interface PlayerStats {
-  appearances?: { value: number; season: string }
-  cleanSheets?: { value: number; season: string }
-  saves?: { value: number; season: string }
-  goals?: { value: number; season: string }
-  assists?: { value: number; season: string }
+  appearances?: { value: number; season: string };
+  cleanSheets?: { value: number; season: string };
+  saves?: { value: number; season: string };
+  goals?: { value: number; season: string };
+  assists?: { value: number; season: string };
 }
 
 export interface PlayerCardPlayer {
-  _id?: string
-  id?: number
-  number: number
-  firstName: string
-  lastName: string
-  position: string
-  image?: unknown | string | null
-  slug?: string
-  stats?: PlayerStats
+  _id?: string;
+  id?: number;
+  number: number;
+  firstName: string;
+  lastName: string;
+  position: string;
+  image?: unknown | string | null;
+  slug?: string;
+  stats?: PlayerStats;
 }
 
 const statLabels: Record<string, string> = {
@@ -31,32 +31,35 @@ const statLabels: Record<string, string> = {
   saves: "SAVES",
   goals: "GOALS",
   assists: "AST",
-}
+};
 
 function getImageSrc(player: PlayerCardPlayer): string | null {
-  if (!player.image) return null
+  if (!player.image) return null;
   if (typeof player.image === "string") {
     if (player.image.startsWith("http") || player.image.startsWith("/")) {
-      return player.image
+      return player.image;
     }
   }
-  return urlFor(player.image).width(600).height(900).url()
+  return urlFor(player.image).width(600).height(900).url();
 }
 
 export function PlayerCard({
   player,
   index = 0,
 }: {
-  player: PlayerCardPlayer
-  index?: number
+  player: PlayerCardPlayer;
+  index?: number;
 }) {
   const playerSlug =
-    player.slug || player._id || player.id?.toString() || "unknown"
-  const playerId = player._id || player.id?.toString() || "unknown"
-  const imageSrc = getImageSrc(player)
+    player.slug || player._id || player.id?.toString() || "unknown";
+  const playerId = player._id || player.id?.toString() || "unknown";
+  const imageSrc = getImageSrc(player);
 
   return (
-    <Link href={`/players/${playerSlug}`} className="block cursor-pointer group">
+    <Link
+      href={`/players/${playerSlug}`}
+      className="block cursor-pointer group"
+    >
       <motion.div
         key={playerId}
         initial={{ opacity: 0, y: 20 }}
@@ -75,7 +78,7 @@ export function PlayerCard({
               priority={index < 4}
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-barca-red flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red flex items-center justify-center">
               <span className="text-8xl font-black text-white/10">
                 {player.number}
               </span>
@@ -95,7 +98,7 @@ export function PlayerCard({
           {/* Player info - bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
             <div className="mb-2">
-              <p className="text-[10px] font-bold text-barca-gold uppercase tracking-widest mb-0.5">
+              <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
                 {player.position}
               </p>
               <p className="text-white leading-tight">
@@ -109,7 +112,7 @@ export function PlayerCard({
             {player.stats && (
               <div className="flex items-center gap-3 pt-2 border-t border-white/10">
                 {Object.entries(player.stats).map(([key, stat]) => {
-                  if (!stat) return null
+                  if (!stat) return null;
                   return (
                     <div key={key} className="text-center">
                       <div className="text-lg font-black text-white leading-none tabular-nums">
@@ -119,7 +122,7 @@ export function PlayerCard({
                         {statLabels[key] || key}
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             )}
@@ -127,5 +130,5 @@ export function PlayerCard({
         </div>
       </motion.div>
     </Link>
-  )
+  );
 }

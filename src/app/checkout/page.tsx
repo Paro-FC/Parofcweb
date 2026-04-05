@@ -4,16 +4,17 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ShoppingBag,
-  Truck,
-  Shield,
-  Check,
-  Loader2,
-  Upload,
-  QrCode,
-  ArrowLeft,
-} from "lucide-react";
+  ShoppingBag01Icon,
+  TruckIcon,
+  Shield01Icon,
+  Tick02Icon,
+  Loading03Icon,
+  Upload01Icon,
+  QrCodeIcon,
+  ArrowLeft01Icon,
+} from "@hugeicons/core-free-icons";
 import { useCart } from "@/contexts/CartContext";
 
 interface CustomerDetails {
@@ -32,7 +33,7 @@ interface CustomerDetails {
 const inputBase =
   "w-full px-0 py-3 bg-transparent border-0 border-b border-gray-200 text-sm text-dark-charcoal placeholder:text-gray-300 focus:border-dark-charcoal focus:ring-0 focus:outline-none transition-colors duration-200";
 const inputError =
-  "w-full px-0 py-3 bg-transparent border-0 border-b border-barca-red text-sm text-dark-charcoal placeholder:text-gray-300 focus:border-dark-charcoal focus:ring-0 focus:outline-none transition-colors duration-200";
+  "w-full px-0 py-3 bg-transparent border-0 border-b border-parofc-red text-sm text-dark-charcoal placeholder:text-gray-300 focus:border-dark-charcoal focus:ring-0 focus:outline-none transition-colors duration-200";
 
 export default function CheckoutPage() {
   const { items, getSubtotal, clearCart } = useCart();
@@ -53,9 +54,9 @@ export default function CheckoutPage() {
   );
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
-  const [checkoutType, setCheckoutType] = useState<"domestic" | "international">(
-    "domestic",
-  );
+  const [checkoutType, setCheckoutType] = useState<
+    "domestic" | "international"
+  >("domestic");
   const [customerDetails, setCustomerDetails] = useState<CustomerDetails>({
     firstName: "",
     lastName: "",
@@ -102,19 +103,15 @@ export default function CheckoutPage() {
 
   const validateForm = (): boolean => {
     const newErrors: Partial<CustomerDetails> = {};
-    if (!customerDetails.firstName.trim())
-      newErrors.firstName = "Required";
-    if (!customerDetails.lastName.trim())
-      newErrors.lastName = "Required";
+    if (!customerDetails.firstName.trim()) newErrors.firstName = "Required";
+    if (!customerDetails.lastName.trim()) newErrors.lastName = "Required";
     if (!customerDetails.email.trim()) {
       newErrors.email = "Required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerDetails.email)) {
       newErrors.email = "Invalid email";
     }
-    if (!customerDetails.phone.trim())
-      newErrors.phone = "Required";
-    if (!customerDetails.address.trim())
-      newErrors.address = "Required";
+    if (!customerDetails.phone.trim()) newErrors.phone = "Required";
+    if (!customerDetails.address.trim()) newErrors.address = "Required";
     if (!customerDetails.city.trim()) newErrors.city = "Required";
     if (checkoutType === "international" && !customerDetails.zipCode.trim()) {
       newErrors.zipCode = "Required";
@@ -229,13 +226,19 @@ export default function CheckoutPage() {
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
               className="w-16 h-16 bg-emerald-500 mx-auto mb-6 flex items-center justify-center"
             >
-              <Check size={32} className="text-white" />
+              <HugeiconsIcon
+                icon={Tick02Icon}
+                size={32}
+                className="text-white"
+              />
             </motion.div>
 
             <h1 className="text-3xl md:text-4xl font-black text-dark-charcoal uppercase tracking-tight mb-3">
               Order Confirmed
             </h1>
-            <p className="text-sm text-gray-500 mb-1">Thank you for your purchase.</p>
+            <p className="text-sm text-gray-500 mb-1">
+              Thank you for your purchase.
+            </p>
             <p className="text-xs text-gray-400 mb-8">
               Order{" "}
               <span className="font-mono font-bold text-dark-charcoal">
@@ -257,7 +260,7 @@ export default function CheckoutPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/shop"
-                className="bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-barca-red transition-colors cursor-pointer text-center"
+                className="bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors cursor-pointer text-center"
               >
                 Continue Shopping
               </Link>
@@ -319,7 +322,11 @@ export default function CheckoutPage() {
                 </div>
               ) : (
                 <div className="flex items-center gap-3 p-4 border border-gray-100">
-                  <QrCode className="w-6 h-6 text-gray-300 flex-shrink-0" />
+                  <HugeiconsIcon
+                    icon={QrCodeIcon}
+                    size={24}
+                    className="text-gray-300 flex-shrink-0"
+                  />
                   <p className="text-xs text-gray-400">
                     Payment QR is not set for this product. Contact support or
                     complete the order after paying via another method.
@@ -351,19 +358,23 @@ export default function CheckoutPage() {
                   type="button"
                   onClick={handleUploadPayment}
                   disabled={!selectedFile || isUploading}
-                  className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-5 py-2.5 font-bold text-xs uppercase tracking-wider hover:bg-barca-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-5 py-2.5 font-bold text-xs uppercase tracking-wider hover:bg-parofc-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
                   {isUploading ? (
-                    <Loader2 size={14} className="animate-spin" />
+                    <HugeiconsIcon
+                      icon={Loading03Icon}
+                      size={14}
+                      className="animate-spin"
+                    />
                   ) : (
-                    <Upload size={14} />
+                    <HugeiconsIcon icon={Upload01Icon} size={14} />
                   )}
                   {isUploading ? "Uploading..." : "Upload"}
                 </button>
               </div>
 
               {uploadError && (
-                <p className="mt-2 text-xs font-semibold text-barca-red">
+                <p className="mt-2 text-xs font-semibold text-parofc-red">
                   {uploadError}
                 </p>
               )}
@@ -371,7 +382,8 @@ export default function CheckoutPage() {
               {paymentProofUploaded && (
                 <div className="mt-4 p-4 border border-emerald-200 bg-emerald-50/50">
                   <p className="text-xs font-bold text-emerald-700 flex items-center gap-2 mb-2">
-                    <Check size={14} /> Payment proof uploaded
+                    <HugeiconsIcon icon={Tick02Icon} size={14} /> Payment proof
+                    uploaded
                   </p>
                   {uploadedImageUrl && (
                     <div className="flex justify-center">
@@ -391,7 +403,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={handleCompleteOrder}
               disabled={!paymentProofUploaded}
-              className="w-full h-14 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wider hover:bg-barca-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="w-full h-14 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wider hover:bg-parofc-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               Complete Order
             </button>
@@ -406,7 +418,11 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center px-4 max-w-md">
-          <ShoppingBag size={40} className="text-gray-200 mx-auto mb-4" />
+          <HugeiconsIcon
+            icon={ShoppingBag01Icon}
+            size={40}
+            className="text-gray-200 mx-auto mb-4"
+          />
           <h1 className="text-2xl font-black text-dark-charcoal uppercase tracking-tight mb-2">
             Cart is Empty
           </h1>
@@ -415,9 +431,9 @@ export default function CheckoutPage() {
           </p>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-barca-red transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors cursor-pointer"
           >
-            <ArrowLeft size={16} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
             Browse Shop
           </Link>
         </div>
@@ -440,7 +456,7 @@ export default function CheckoutPage() {
             href="/shop"
             className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-dark-charcoal transition-colors cursor-pointer uppercase tracking-wider"
           >
-            <ArrowLeft size={14} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
             Shop
           </Link>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
@@ -457,7 +473,11 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
           {/* Form */}
           <div className="lg:col-span-2">
-            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-10">
+            <form
+              id="checkout-form"
+              onSubmit={handleSubmit}
+              className="space-y-10"
+            >
               {/* Delivery Type */}
               <div>
                 <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
@@ -513,7 +533,7 @@ export default function CheckoutPage() {
                       placeholder="First name"
                     />
                     {errors.firstName && (
-                      <p className="text-[10px] text-barca-red font-semibold mt-1">
+                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
                         {errors.firstName}
                       </p>
                     )}
@@ -531,7 +551,7 @@ export default function CheckoutPage() {
                       placeholder="Last name"
                     />
                     {errors.lastName && (
-                      <p className="text-[10px] text-barca-red font-semibold mt-1">
+                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
                         {errors.lastName}
                       </p>
                     )}
@@ -549,7 +569,7 @@ export default function CheckoutPage() {
                       placeholder="your@email.com"
                     />
                     {errors.email && (
-                      <p className="text-[10px] text-barca-red font-semibold mt-1">
+                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
                         {errors.email}
                       </p>
                     )}
@@ -567,7 +587,7 @@ export default function CheckoutPage() {
                       placeholder="+975 17XXXXXX"
                     />
                     {errors.phone && (
-                      <p className="text-[10px] text-barca-red font-semibold mt-1">
+                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
                         {errors.phone}
                       </p>
                     )}
@@ -594,7 +614,7 @@ export default function CheckoutPage() {
                       placeholder="Street address"
                     />
                     {errors.address && (
-                      <p className="text-[10px] text-barca-red font-semibold mt-1">
+                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
                         {errors.address}
                       </p>
                     )}
@@ -613,7 +633,7 @@ export default function CheckoutPage() {
                         placeholder="City"
                       />
                       {errors.city && (
-                        <p className="text-[10px] text-barca-red font-semibold mt-1">
+                        <p className="text-[10px] text-parofc-red font-semibold mt-1">
                           {errors.city}
                         </p>
                       )}
@@ -647,7 +667,7 @@ export default function CheckoutPage() {
                           placeholder="Postal code"
                         />
                         {errors.zipCode && (
-                          <p className="text-[10px] text-barca-red font-semibold mt-1">
+                          <p className="text-[10px] text-parofc-red font-semibold mt-1">
                             {errors.zipCode}
                           </p>
                         )}
@@ -665,7 +685,7 @@ export default function CheckoutPage() {
                           placeholder="Country"
                         />
                         {errors.country && (
-                          <p className="text-[10px] text-barca-red font-semibold mt-1">
+                          <p className="text-[10px] text-parofc-red font-semibold mt-1">
                             {errors.country}
                           </p>
                         )}
@@ -693,13 +713,21 @@ export default function CheckoutPage() {
               {/* Trust Signals */}
               <div className="flex flex-wrap items-center gap-6 pt-2">
                 <div className="flex items-center gap-2">
-                  <Shield size={14} className="text-barca-gold" />
+                  <HugeiconsIcon
+                    icon={Shield01Icon}
+                    size={14}
+                    className="text-parofc-gold"
+                  />
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                     Secure Checkout
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Truck size={14} className="text-barca-gold" />
+                  <HugeiconsIcon
+                    icon={TruckIcon}
+                    size={14}
+                    className="text-parofc-gold"
+                  />
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                     Fast Delivery
                   </span>
@@ -711,11 +739,15 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-14 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wider hover:bg-barca-red transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full h-14 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 size={16} className="animate-spin" />
+                      <HugeiconsIcon
+                        icon={Loading03Icon}
+                        size={16}
+                        className="animate-spin"
+                      />
                       Processing...
                     </>
                   ) : (
@@ -752,7 +784,9 @@ export default function CheckoutPage() {
                       <h4 className="text-xs font-semibold text-dark-charcoal truncate">
                         {item.name}
                       </h4>
-                      <p className="text-[10px] text-gray-400">Size: {item.size}</p>
+                      <p className="text-[10px] text-gray-400">
+                        Size: {item.size}
+                      </p>
                       <p className="text-xs font-bold text-dark-charcoal mt-0.5">
                         {formatPrice(
                           (item.salePrice || item.price) * item.quantity,
@@ -806,10 +840,10 @@ export default function CheckoutPage() {
               )}
 
               {/* COD Note */}
-              <div className="mt-4 p-3 bg-barca-gold/5 border border-barca-gold/10">
+              <div className="mt-4 p-3 bg-parofc-gold/5 border border-parofc-gold/10">
                 <p className="text-[10px] text-gray-500">
-                  <strong className="text-dark-charcoal">Payment:</strong> Cash on Delivery
-                  (COD). You pay when your order arrives.
+                  <strong className="text-dark-charcoal">Payment:</strong> Cash
+                  on Delivery (COD). You pay when your order arrives.
                 </p>
               </div>
 
@@ -818,11 +852,15 @@ export default function CheckoutPage() {
                 type="submit"
                 form="checkout-form"
                 disabled={isSubmitting}
-                className="hidden lg:flex w-full h-14 mt-6 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wider hover:bg-barca-red transition-colors disabled:opacity-30 disabled:cursor-not-allowed items-center justify-center gap-2 cursor-pointer"
+                className="hidden lg:flex w-full h-14 mt-6 bg-dark-charcoal text-white font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors disabled:opacity-30 disabled:cursor-not-allowed items-center justify-center gap-2 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 size={16} className="animate-spin" />
+                    <HugeiconsIcon
+                      icon={Loading03Icon}
+                      size={16}
+                      className="animate-spin"
+                    />
                     Processing...
                   </>
                 ) : (

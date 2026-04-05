@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { ChevronDown, Trophy, Shield, ArrowDown } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  ArrowDown01Icon,
+  Award01Icon,
+  Shield01Icon,
+} from "@hugeicons/core-free-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { sanityFetch } from "@/sanity/lib/live";
-import {
-  STANDINGS_QUERY,
-  STANDINGS_SEASONS_QUERY,
-} from "@/sanity/lib/queries";
+import { STANDINGS_QUERY, STANDINGS_SEASONS_QUERY } from "@/sanity/lib/queries";
 import Loader from "@/components/Loader";
 
 interface Team {
@@ -108,12 +110,10 @@ export default function StandingsPage() {
   }, [selectedCompetition, selectedSeason]);
 
   const getPositionIndicator = (position: number) => {
-    if (position === 1)
-      return { color: "bg-emerald-400", label: "Champion" };
+    if (position === 1) return { color: "bg-emerald-400", label: "Champion" };
     if (position <= 2)
       return { color: "bg-cyan-400", label: "AFC Qualification" };
-    if (position >= 9)
-      return { color: "bg-rose-500", label: "Relegation" };
+    if (position >= 9) return { color: "bg-rose-500", label: "Relegation" };
     return { color: "bg-transparent", label: "" };
   };
 
@@ -151,19 +151,19 @@ export default function StandingsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-xs font-bold text-barca-gold uppercase tracking-[0.2em] mb-3">
+            <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
               Standings
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
               League
               <br />
-              <span className="text-barca-gold">Tables</span>
+              <span className="text-parofc-gold">Tables</span>
             </h1>
           </motion.div>
         </div>
 
         {/* Bottom accent */}
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       {/* Competition Tabs + Season Filter */}
@@ -187,8 +187,12 @@ export default function StandingsPage() {
                   {selectedCompetition === comp.id && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-barca-gold"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-gold"
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </button>
@@ -199,10 +203,11 @@ export default function StandingsPage() {
             <div className="relative">
               <button
                 onClick={() => setShowSeasonDropdown(!showSeasonDropdown)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-dark-charcoal hover:text-barca-red transition-colors duration-200 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-dark-charcoal hover:text-parofc-red transition-colors duration-200 cursor-pointer"
               >
                 <span>{selectedSeason}</span>
-                <ChevronDown
+                <HugeiconsIcon
+                  icon={ArrowDown01Icon}
                   size={14}
                   className={`transition-transform duration-200 ${showSeasonDropdown ? "rotate-180" : ""}`}
                 />
@@ -251,7 +256,11 @@ export default function StandingsPage() {
       <div className="container mx-auto px-4 py-8 md:py-12">
         {/* Table Title */}
         <div className="flex items-center gap-3 mb-6">
-          <Shield className="w-5 h-5 text-barca-gold" />
+          <HugeiconsIcon
+            icon={Shield01Icon}
+            size={20}
+            className="text-parofc-gold"
+          />
           <h2 className="text-lg font-bold text-dark-charcoal">
             {selectedCompName}{" "}
             <span className="text-gray-400 font-medium">{selectedSeason}</span>
@@ -291,7 +300,7 @@ export default function StandingsPage() {
                   <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
                     GD
                   </th>
-                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-barca-gold uppercase tracking-widest w-14">
+                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-parofc-gold uppercase tracking-widest w-14">
                     Pts
                   </th>
                   <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest hidden md:table-cell">
@@ -310,7 +319,11 @@ export default function StandingsPage() {
                   <tr>
                     <td colSpan={11} className="py-16 text-center">
                       <div className="flex flex-col items-center gap-3">
-                        <Trophy className="w-8 h-8 text-gray-200" />
+                        <HugeiconsIcon
+                          icon={Award01Icon}
+                          size={32}
+                          className="text-gray-200"
+                        />
                         <span className="text-sm text-gray-400 font-medium">
                           No standings data available
                         </span>
@@ -320,9 +333,7 @@ export default function StandingsPage() {
                 ) : (
                   teams.map((team, index) => {
                     const posIndicator = getPositionIndicator(team.position);
-                    const isParoFC = team.name
-                      .toLowerCase()
-                      .includes("paro");
+                    const isParoFC = team.name.toLowerCase().includes("paro");
 
                     return (
                       <motion.tr
@@ -335,7 +346,7 @@ export default function StandingsPage() {
                         }}
                         className={`border-b border-gray-50 transition-colors duration-150 ${
                           isParoFC
-                            ? "bg-barca-gold/5 hover:bg-barca-gold/10"
+                            ? "bg-parofc-gold/5 hover:bg-parofc-gold/10"
                             : "hover:bg-gray-50/80"
                         }`}
                       >
@@ -415,7 +426,7 @@ export default function StandingsPage() {
                         <td
                           className={`py-3.5 px-3 md:px-4 text-center text-base tabular-nums ${
                             isParoFC
-                              ? "font-black text-barca-red"
+                              ? "font-black text-parofc-red"
                               : "font-black text-dark-charcoal"
                           }`}
                         >

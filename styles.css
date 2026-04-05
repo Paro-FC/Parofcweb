@@ -8,9 +8,9 @@
   --primary: #ce0505;
   --secondary: #ffad3d;
   --dark-bg: #4a4a4a;
-  --barca-blue: #004d98;
-  --barca-red: #ce0505;
-  --barca-gold: #ffad3d;
+  --parofc-blue: #004d98;
+  --parofc-red: #ce0505;
+  --parofc-gold: #ffad3d;
   --text-white: #ffffff;
   --text-light: #e0e0e0;
   --gradient-bg: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b3d 100%);
@@ -56,7 +56,7 @@ body {
 }
 
 .ticket-alert .highlight {
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
   font-weight: 700;
 }
 
@@ -76,7 +76,7 @@ body {
 }
 
 .view-plans-btn {
-  background: var(--barca-red);
+  background: var(--parofc-red);
   color: var(--text-white);
   padding: 8px 16px;
   border-radius: 4px;
@@ -142,7 +142,7 @@ body {
 }
 
 .nav-link:hover {
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
 }
 
 .caret {
@@ -196,7 +196,7 @@ body {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--barca-gold) 0%, #d4a017 100%);
+  background: linear-gradient(135deg, var(--parofc-gold) 0%, #d4a017 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -204,12 +204,12 @@ body {
   position: relative;
 }
 
-.barca-crest::before {
-  content: "🔵🔴";
+.parofc-crest::before {
+  content: "⚽";
   font-size: 80px;
 }
 
-.copenhagen-crest::before {
+.opponent-crest::before {
   content: "🦁";
   font-size: 80px;
 }
@@ -217,7 +217,7 @@ body {
 .vs-divider {
   font-size: 24px;
   font-weight: 700;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
   text-transform: uppercase;
 }
 
@@ -239,7 +239,7 @@ body {
 }
 
 .category {
-  background: var(--barca-red);
+  background: var(--parofc-red);
   padding: 5px 12px;
   border-radius: 4px;
   font-weight: 600;
@@ -296,7 +296,7 @@ body {
 
 .news-badge {
   display: inline-block;
-  background: var(--barca-red);
+  background: var(--parofc-red);
   color: var(--text-white);
   padding: 4px 10px;
   border-radius: 4px;
@@ -351,8 +351,8 @@ body {
 }
 
 .partner-logo:hover {
-  border-color: var(--barca-gold);
-  color: var(--barca-gold);
+  border-color: var(--parofc-gold);
+  color: var(--parofc-gold);
 }
 
 /* Tickets Section */
@@ -390,7 +390,7 @@ body {
 
 .ticket-item:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: var(--barca-gold);
+  border-color: var(--parofc-gold);
   transform: translateY(-3px);
 }
 
@@ -407,7 +407,7 @@ body {
 }
 
 .carousel-btn:hover {
-  background: var(--barca-red);
+  background: var(--parofc-red);
 }
 
 /* Calendar Section */
@@ -444,7 +444,7 @@ body {
 .countdown-value {
   font-size: 48px;
   font-weight: 700;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
   line-height: 1;
 }
 
@@ -457,7 +457,7 @@ body {
 
 .countdown-separator {
   font-size: 32px;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
   font-weight: 700;
 }
 
@@ -486,7 +486,7 @@ body {
 }
 
 .vs {
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
   font-weight: 700;
 }
 
@@ -512,7 +512,7 @@ body {
 }
 
 .btn-primary {
-  background: var(--barca-red);
+  background: var(--parofc-red);
   color: var(--text-white);
 }
 
@@ -527,8 +527,8 @@ body {
 }
 
 .btn-secondary:hover {
-  border-color: var(--barca-gold);
-  color: var(--barca-gold);
+  border-color: var(--parofc-gold);
+  color: var(--parofc-gold);
 }
 
 /* Store Section */
@@ -554,7 +554,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   margin-bottom: 15px;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
 }
 
 .store-item p {
@@ -565,7 +565,7 @@ body {
 
 .btn-store {
   display: inline-block;
-  background: var(--barca-red);
+  background: var(--parofc-red);
   color: var(--text-white);
   padding: 12px 24px;
   border-radius: 4px;
@@ -580,8 +580,8 @@ body {
   transform: translateY(-2px);
 }
 
-/* Barça News Section */
-.barca-news-section {
+/* Paro FC news section */
+.parofc-news-section {
   padding: 60px 20px;
   background: rgba(10, 14, 39, 0.5);
 }
@@ -694,7 +694,7 @@ body {
 .player-number {
   font-size: 32px;
   font-weight: 700;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
   display: block;
   margin-bottom: 10px;
 }
@@ -744,7 +744,7 @@ body {
   display: block;
   font-size: 20px;
   font-weight: 700;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
 }
 
 .footer-partners,
@@ -778,8 +778,8 @@ body {
 }
 
 .social-links a:hover {
-  border-color: var(--barca-gold);
-  color: var(--barca-gold);
+  border-color: var(--parofc-gold);
+  color: var(--parofc-gold);
 }
 
 .footer-links {
@@ -794,7 +794,7 @@ body {
   font-weight: 600;
   margin-bottom: 15px;
   text-transform: uppercase;
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
 }
 
 .footer-column ul {
@@ -813,7 +813,7 @@ body {
 }
 
 .footer-column ul li a:hover {
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
 }
 
 .footer-bottom {
@@ -843,7 +843,7 @@ body {
 }
 
 .footer-legal a:hover {
-  color: var(--barca-gold);
+  color: var(--parofc-gold);
 }
 
 /* Responsive Design */

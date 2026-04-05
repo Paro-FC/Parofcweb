@@ -1,54 +1,61 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import Link from "next/link"
-import { X, ChevronLeft, ChevronRight, Share2, Trophy } from "lucide-react"
-import { urlFor } from "@/sanity/lib/image"
-import { PortableText, PortableTextComponents } from "@portabletext/react"
-import { useState } from "react"
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Cancel01Icon,
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  Share01Icon,
+  ChampionIcon,
+} from "@hugeicons/core-free-icons";
+import { urlFor } from "@/sanity/lib/image";
+import { PortableText, PortableTextComponents } from "@portabletext/react";
+import { useState } from "react";
 
 interface PlayerStats {
-  appearances?: { value: number; season: string }
-  cleanSheets?: { value: number; season: string }
-  saves?: { value: number; season: string }
-  goals?: { value: number; season: string }
-  assists?: { value: number; season: string }
+  appearances?: { value: number; season: string };
+  cleanSheets?: { value: number; season: string };
+  saves?: { value: number; season: string };
+  goals?: { value: number; season: string };
+  assists?: { value: number; season: string };
 }
 
 interface Honour {
-  title: string
-  competition?: string
-  season?: string
-  country?: string
+  title: string;
+  competition?: string;
+  season?: string;
+  country?: string;
 }
 
 interface PlayerPageProps {
   player: {
-    _id: string
-    firstName: string
-    lastName: string
-    number: number
-    position: string
-    image: unknown
-    stats?: PlayerStats
-    slug: string
-    bio?: unknown[]
-    placeOfBirth?: string
-    dateOfBirth?: string
-    height?: number
-    weight?: number
-    honours?: Honour[]
-  }
+    _id: string;
+    firstName: string;
+    lastName: string;
+    number: number;
+    position: string;
+    image: unknown;
+    stats?: PlayerStats;
+    slug: string;
+    bio?: unknown[];
+    placeOfBirth?: string;
+    dateOfBirth?: string;
+    height?: number;
+    weight?: number;
+    honours?: Honour[];
+  };
   relatedPlayers: {
-    _id: string
-    firstName: string
-    lastName: string
-    number: number
-    position: string
-    image: unknown
-    slug: string
-  }[]
+    _id: string;
+    firstName: string;
+    lastName: string;
+    number: number;
+    position: string;
+    image: unknown;
+    slug: string;
+  }[];
 }
 
 const statLabels: Record<string, string> = {
@@ -57,12 +64,12 @@ const statLabels: Record<string, string> = {
   saves: "Saves",
   goals: "Goals",
   assists: "Assists",
-}
+};
 
 const portableTextComponents: PortableTextComponents = {
   types: {
     image: ({ value }) => {
-      if (!value?.asset) return null
+      if (!value?.asset) return null;
       return (
         <figure className="my-8">
           <div className="relative w-full aspect-video overflow-hidden">
@@ -79,21 +86,25 @@ const portableTextComponents: PortableTextComponents = {
             </figcaption>
           )}
         </figure>
-      )
+      );
     },
   },
   block: {
     h2: ({ children }) => (
-      <h2 className="text-2xl font-black text-dark-charcoal mt-10 mb-4 uppercase tracking-tight">{children}</h2>
+      <h2 className="text-2xl font-black text-dark-charcoal mt-10 mb-4 uppercase tracking-tight">
+        {children}
+      </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-xl font-bold text-dark-charcoal mt-8 mb-3">{children}</h3>
+      <h3 className="text-xl font-bold text-dark-charcoal mt-8 mb-3">
+        {children}
+      </h3>
     ),
     normal: ({ children }) => (
       <p className="text-base text-gray-600 leading-relaxed mb-4">{children}</p>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-[3px] border-barca-gold pl-5 my-8 text-lg text-gray-500 italic">
+      <blockquote className="border-l-[3px] border-parofc-gold pl-5 my-8 text-lg text-gray-500 italic">
         {children}
       </blockquote>
     ),
@@ -102,7 +113,7 @@ const portableTextComponents: PortableTextComponents = {
     link: ({ children, value }) => (
       <a
         href={value?.href}
-        className="text-barca-red hover:text-dark-charcoal underline transition-colors"
+        className="text-parofc-red hover:text-dark-charcoal underline transition-colors"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -112,60 +123,61 @@ const portableTextComponents: PortableTextComponents = {
     strong: ({ children }) => <strong className="font-bold">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
   },
-}
+};
 
 export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
-  const [currentHonourPage, setCurrentHonourPage] = useState(0)
-  const [showFullBio, setShowFullBio] = useState(false)
-  const honoursPerPage = 4
+  const [currentHonourPage, setCurrentHonourPage] = useState(0);
+  const [showFullBio, setShowFullBio] = useState(false);
+  const honoursPerPage = 4;
 
   const getBioPreview = () => {
-    if (!player.bio || !Array.isArray(player.bio)) return []
-    const blocks = player.bio.filter((block: any) => block._type === "block")
-    return blocks.slice(0, 1)
-  }
+    if (!player.bio || !Array.isArray(player.bio)) return [];
+    const blocks = player.bio.filter((block: any) => block._type === "block");
+    return blocks.slice(0, 1);
+  };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/players/${player.slug}`
+    const url = `${window.location.origin}/players/${player.slug}`;
     const shareData = {
       title: `${player.firstName} ${player.lastName} - Paro FC`,
       text: `Check out ${player.firstName} ${player.lastName} from Paro FC!`,
       url,
-    }
+    };
 
     try {
       if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share(shareData)
+        await navigator.share(shareData);
       } else {
-        await navigator.clipboard.writeText(url)
-        alert("Link copied to clipboard!")
+        await navigator.clipboard.writeText(url);
+        alert("Link copied to clipboard!");
       }
     } catch (err) {
       if ((err as Error).name !== "AbortError") {
         try {
-          await navigator.clipboard.writeText(url)
-          alert("Link copied to clipboard!")
+          await navigator.clipboard.writeText(url);
+          alert("Link copied to clipboard!");
         } catch {
           // silently fail
         }
       }
     }
-  }
+  };
 
   const totalHonourPages = player.honours
     ? Math.ceil(player.honours.length / honoursPerPage)
-    : 0
+    : 0;
 
-  const hasBioData = player.placeOfBirth || player.dateOfBirth || player.height || player.weight
+  const hasBioData =
+    player.placeOfBirth || player.dateOfBirth || player.height || player.weight;
 
   return (
     <div className="min-h-screen bg-white">
       {/* Floating Close Button */}
       <Link
         href="/players"
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-dark-charcoal hover:bg-barca-red text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-dark-charcoal hover:bg-parofc-red text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
       >
-        <X size={24} />
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
       </Link>
 
       {/* Hero — full-width image with player info overlay */}
@@ -191,7 +203,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                 transition={{ delay: 0.1, duration: 0.5 }}
                 className="relative"
               >
-                <p className="text-[10px] font-bold text-barca-gold uppercase tracking-[0.3em] mb-2">
+                <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-[0.3em] mb-2">
                   #{player.number} / {player.position}
                 </p>
 
@@ -209,28 +221,49 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                   <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
                     {player.dateOfBirth && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">DOB</span>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                          DOB
+                        </span>
                         <span className="text-sm text-white/70 font-medium">
-                          {new Date(player.dateOfBirth).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                          {new Date(player.dateOfBirth).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            },
+                          )}
                         </span>
                       </div>
                     )}
                     {player.placeOfBirth && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">From</span>
-                        <span className="text-sm text-white/70 font-medium">{player.placeOfBirth}</span>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                          From
+                        </span>
+                        <span className="text-sm text-white/70 font-medium">
+                          {player.placeOfBirth}
+                        </span>
                       </div>
                     )}
                     {player.height && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">Height</span>
-                        <span className="text-sm text-white/70 font-medium">{player.height}cm</span>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                          Height
+                        </span>
+                        <span className="text-sm text-white/70 font-medium">
+                          {player.height}cm
+                        </span>
                       </div>
                     )}
                     {player.weight && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">Weight</span>
-                        <span className="text-sm text-white/70 font-medium">{player.weight}kg</span>
+                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                          Weight
+                        </span>
+                        <span className="text-sm text-white/70 font-medium">
+                          {player.weight}kg
+                        </span>
                       </div>
                     )}
                   </div>
@@ -241,7 +274,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                   onClick={handleShare}
                   className="inline-flex items-center gap-2 text-xs font-bold text-white/30 hover:text-white/60 transition-colors cursor-pointer uppercase tracking-wider"
                 >
-                  <Share2 size={14} />
+                  <HugeiconsIcon icon={Share01Icon} size={14} />
                   Share
                 </button>
               </motion.div>
@@ -285,7 +318,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
         />
 
         {/* Bottom accent */}
-        <div className="h-1 bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </section>
 
       {/* Stats Section */}
@@ -294,7 +327,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
           <div className="container mx-auto px-4 py-10 md:py-14">
             <div className="flex flex-wrap justify-center gap-8 md:gap-16">
               {Object.entries(player.stats).map(([key, stat], index) => {
-                if (!stat) return null
+                if (!stat) return null;
                 return (
                   <motion.div
                     key={key}
@@ -314,7 +347,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                       {stat.season}
                     </div>
                   </motion.div>
-                )
+                );
               })}
             </div>
           </div>
@@ -331,19 +364,26 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
 
             <div className="prose prose-lg max-w-none">
               {showFullBio ? (
-                <PortableText value={player.bio as any} components={portableTextComponents} />
+                <PortableText
+                  value={player.bio as any}
+                  components={portableTextComponents}
+                />
               ) : (
-                <PortableText value={getBioPreview() as any} components={portableTextComponents} />
+                <PortableText
+                  value={getBioPreview() as any}
+                  components={portableTextComponents}
+                />
               )}
             </div>
 
             {player.bio.length > 1 && (
               <button
                 onClick={() => setShowFullBio(!showFullBio)}
-                className="mt-4 text-xs font-bold text-dark-charcoal hover:text-barca-red transition-colors cursor-pointer uppercase tracking-widest inline-flex items-center gap-1"
+                className="mt-4 text-xs font-bold text-dark-charcoal hover:text-parofc-red transition-colors cursor-pointer uppercase tracking-widest inline-flex items-center gap-1"
               >
                 {showFullBio ? "Show less" : "Read full bio"}
-                <ChevronRight
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
                   size={12}
                   className={`transition-transform duration-200 ${showFullBio ? "rotate-90" : ""}`}
                 />
@@ -364,23 +404,37 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
               {totalHonourPages > 1 && (
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setCurrentHonourPage(Math.max(0, currentHonourPage - 1))}
+                    onClick={() =>
+                      setCurrentHonourPage(Math.max(0, currentHonourPage - 1))
+                    }
                     disabled={currentHonourPage === 0}
                     className="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white/30 disabled:opacity-20 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     aria-label="Previous page"
                   >
-                    <ChevronLeft size={14} className="text-white" />
+                    <HugeiconsIcon
+                      icon={ArrowLeft01Icon}
+                      size={14}
+                      className="text-white"
+                    />
                   </button>
                   <span className="text-xs text-white/30 tabular-nums">
                     {currentHonourPage + 1}/{totalHonourPages}
                   </span>
                   <button
-                    onClick={() => setCurrentHonourPage(Math.min(totalHonourPages - 1, currentHonourPage + 1))}
+                    onClick={() =>
+                      setCurrentHonourPage(
+                        Math.min(totalHonourPages - 1, currentHonourPage + 1),
+                      )
+                    }
                     disabled={currentHonourPage === totalHonourPages - 1}
                     className="w-8 h-8 flex items-center justify-center border border-white/10 hover:border-white/30 disabled:opacity-20 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     aria-label="Next page"
                   >
-                    <ChevronRight size={14} className="text-white" />
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      size={14}
+                      className="text-white"
+                    />
                   </button>
                 </div>
               )}
@@ -388,7 +442,10 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {player.honours
-                .slice(currentHonourPage * honoursPerPage, (currentHonourPage + 1) * honoursPerPage)
+                .slice(
+                  currentHonourPage * honoursPerPage,
+                  (currentHonourPage + 1) * honoursPerPage,
+                )
                 .map((honour, index) => (
                   <motion.div
                     key={index}
@@ -396,20 +453,30 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.05 }}
-                    className="border border-white/10 p-5 group hover:border-barca-gold/30 transition-colors duration-200"
+                    className="border border-white/10 p-5 group hover:border-parofc-gold/30 transition-colors duration-200"
                   >
-                    <Trophy size={16} className="text-barca-gold mb-3" />
+                    <HugeiconsIcon
+                      icon={ChampionIcon}
+                      size={16}
+                      className="text-parofc-gold mb-3"
+                    />
                     <p className="text-sm font-bold text-white leading-snug mb-2">
                       {honour.title}
                     </p>
                     {honour.competition && (
-                      <p className="text-[10px] text-white/40 font-medium">{honour.competition}</p>
+                      <p className="text-[10px] text-white/40 font-medium">
+                        {honour.competition}
+                      </p>
                     )}
                     {honour.season && (
-                      <p className="text-[10px] text-white/40 font-medium">{honour.season}</p>
+                      <p className="text-[10px] text-white/40 font-medium">
+                        {honour.season}
+                      </p>
                     )}
                     {honour.country && (
-                      <p className="text-[10px] text-white/40 font-medium">{honour.country}</p>
+                      <p className="text-[10px] text-white/40 font-medium">
+                        {honour.country}
+                      </p>
                     )}
                   </motion.div>
                 ))}
@@ -431,7 +498,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                 className="inline-flex items-center gap-1 text-xs font-bold text-gray-400 hover:text-dark-charcoal transition-colors cursor-pointer uppercase tracking-wider"
               >
                 All Players
-                <ChevronRight size={14} />
+                <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
               </Link>
             </div>
 
@@ -444,7 +511,10 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.04, duration: 0.3 }}
                 >
-                  <Link href={`/players/${rp.slug}`} className="block group cursor-pointer">
+                  <Link
+                    href={`/players/${rp.slug}`}
+                    className="block group cursor-pointer"
+                  >
                     <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
                       {rp.image ? (
                         <Image
@@ -454,19 +524,23 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-barca-red flex items-center justify-center">
-                          <span className="text-5xl font-black text-white/10">{rp.number}</span>
+                        <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red flex items-center justify-center">
+                          <span className="text-5xl font-black text-white/10">
+                            {rp.number}
+                          </span>
                         </div>
                       )}
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
                       <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                        <p className="text-[9px] font-bold text-barca-gold uppercase tracking-widest mb-0.5">
+                        <p className="text-[9px] font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
                           #{rp.number}
                         </p>
                         <p className="text-white leading-tight">
-                          <span className="text-xs font-normal">{rp.firstName} </span>
+                          <span className="text-xs font-normal">
+                            {rp.firstName}{" "}
+                          </span>
                           <span className="text-sm md:text-base font-black uppercase">
                             {rp.lastName || rp.firstName}
                           </span>
@@ -481,5 +555,5 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
         </section>
       )}
     </div>
-  )
+  );
 }

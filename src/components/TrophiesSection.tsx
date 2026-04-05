@@ -13,10 +13,10 @@ interface TrophiesSectionProps {
 }
 
 const fallbackTrophies: Trophy[] = [
-  { _id: "1", name: "La Liga", total: 28 },
-  { _id: "2", name: "UEFA Champions League", total: 5 },
-  { _id: "3", name: "FIFA Club World Cup", total: 3 },
-  { _id: "4", name: "Copa Del Rey", total: 32 },
+  { _id: "1", name: "Liga Premier", total: 8 },
+  { _id: "2", name: "AFC Cup", total: 2 },
+  { _id: "3", name: "Copa Nacional", total: 5 },
+  { _id: "4", name: "Super Cup", total: 3 },
 ];
 
 export function TrophiesSection({
@@ -72,7 +72,7 @@ export function TrophiesSection({
                 }}
                 className="mb-3"
               >
-                <span className="text-6xl md:text-8xl font-black text-barca-gold leading-none">
+                <span className="text-6xl md:text-8xl font-black text-parofc-gold leading-none">
                   {trophy.total}
                 </span>
               </motion.div>

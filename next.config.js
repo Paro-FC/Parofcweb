@@ -4,7 +4,7 @@ const nextConfig = {
   // Enable experimental features for better performance
   experimental: {
     // Optimize package imports
-    optimizePackageImports: ["framer-motion", "lucide-react"],
+    optimizePackageImports: ["framer-motion", "@hugeicons/react"],
   },
   // Image optimization
   images: {

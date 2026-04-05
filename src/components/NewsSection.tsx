@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
-import { ArrowRight } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 
 interface NewsItem {
   _id: string;
@@ -28,10 +29,10 @@ const fallbackNews: NewsItem[] = [
   {
     _id: "2",
     image: null,
-    title: "Agreement for the transfer of player to partner club",
+    title: "Agreement for the transfer of a Paro FC player to a partner club",
     badge: "TRANSFERS",
     publishedAt: new Date().toISOString(),
-    description: "The Club retains a percentage of any future sale...",
+    description: "Paro FC retains a percentage of any future sale...",
     slug: "transfer-agreement",
   },
 ];
@@ -66,10 +67,10 @@ export function NewsSection({ news }: { news?: NewsItem[] }) {
           </h2>
           <Link
             href="/news"
-            className="inline-flex items-center gap-2 text-sm font-bold text-dark-charcoal hover:text-barca-red transition-colors duration-200 uppercase tracking-wider cursor-pointer"
+            className="inline-flex items-center gap-2 text-sm font-bold text-dark-charcoal hover:text-parofc-red transition-colors duration-200 uppercase tracking-wider cursor-pointer"
           >
             All News
-            <ArrowRight className="w-4 h-4" />
+            <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
           </Link>
         </div>
 
@@ -96,13 +97,13 @@ export function NewsSection({ news }: { news?: NewsItem[] }) {
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-barca-red" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
                   <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                     {featured.badge && (
-                      <span className="inline-block bg-barca-gold text-dark-charcoal text-[10px] font-bold px-3 py-1 mb-3 uppercase tracking-widest">
+                      <span className="inline-block bg-parofc-gold text-dark-charcoal text-[10px] font-bold px-3 py-1 mb-3 uppercase tracking-widest">
                         {featured.badge}
                       </span>
                     )}
@@ -147,11 +148,11 @@ export function NewsSection({ news }: { news?: NewsItem[] }) {
 
                   <div className="flex-1 py-1">
                     {item.badge && (
-                      <span className="inline-block text-barca-red text-[10px] font-bold mb-1 uppercase tracking-widest">
+                      <span className="inline-block text-parofc-red text-[10px] font-bold mb-1 uppercase tracking-widest">
                         {item.badge}
                       </span>
                     )}
-                    <h3 className="text-sm md:text-base font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-barca-red transition-colors duration-200">
+                    <h3 className="text-sm md:text-base font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
                       {item.title}
                     </h3>
                     <span className="text-xs text-gray-400 mt-1 block">
