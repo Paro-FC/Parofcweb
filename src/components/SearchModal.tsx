@@ -167,20 +167,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="w-full max-w-3xl mx-auto mt-20 bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="w-full max-w-3xl mx-auto mt-20 bg-dark-charcoal rounded-2xl shadow-2xl overflow-hidden border border-white/5"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Search Header */}
-          <form onSubmit={handleSearchSubmit} className="border-b border-gray-200">
+          <form onSubmit={handleSearchSubmit} className="border-b border-white/5">
             <div className="flex items-center px-6 py-4">
-              <Search className="w-6 h-6 text-gray-400 mr-4" />
+              <Search className="w-5 h-5 text-white/30 mr-4" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news, players, photos..."
-                className="flex-1 text-lg text-gray-900 placeholder-gray-400 outline-none bg-transparent"
+                className="flex-1 text-lg text-white placeholder-white/30 outline-none bg-transparent"
               />
               {query && (
                 <button
@@ -192,17 +192,17 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     setPhotoResults([])
                     setHasSearched(false)
                   }}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-2 hover:bg-white/5 rounded-full transition-colors"
                 >
-                  <X className="w-5 h-5 text-gray-500" />
+                  <X className="w-5 h-5 text-white/40" />
                 </button>
               )}
               <button
                 type="button"
                 onClick={onClose}
-                className="ml-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="ml-2 px-2 py-1 bg-white/5 rounded text-xs text-white/30 font-medium hover:bg-white/10 transition-colors"
               >
-                <span className="text-sm text-gray-500 font-medium">ESC</span>
+                ESC
               </button>
             </div>
           </form>
@@ -212,7 +212,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Loading State */}
             {isSearching && (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-barca-blue"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-barca-gold"></div>
               </div>
             )}
 
@@ -221,8 +221,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <div className="p-6">
                 {/* Recent Searches */}
                 <div className="mb-6">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                    <Clock className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+                    <Clock className="w-3.5 h-3.5" />
                     Recent Searches
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -230,7 +230,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <button
                         key={term}
                         onClick={() => handleQuickSearch(term)}
-                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                        className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-sm text-white/60 transition-colors"
                       >
                         {term}
                       </button>
@@ -240,8 +240,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                 {/* Trending Searches */}
                 <div>
-                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                    <TrendingUp className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-white/30 uppercase tracking-widest mb-3">
+                    <TrendingUp className="w-3.5 h-3.5" />
                     Trending
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -258,42 +258,42 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
 
                 {/* Quick Links */}
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <div className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
+                <div className="mt-8 pt-6 border-t border-white/5">
+                  <div className="text-xs font-semibold text-white/30 uppercase tracking-widest mb-4">
                     Quick Links
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <Link
                       href="/news"
                       onClick={onClose}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                      className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
                       <Newspaper className="w-5 h-5 text-barca-red" />
-                      <span className="text-sm font-medium text-gray-900">News</span>
+                      <span className="text-sm font-medium text-white/60">News</span>
                     </Link>
                     <Link
                       href="/players"
                       onClick={onClose}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                      className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
                       <User className="w-5 h-5 text-barca-gold" />
-                      <span className="text-sm font-medium text-gray-900">Players</span>
+                      <span className="text-sm font-medium text-white/60">Players</span>
                     </Link>
                     <Link
                       href="/photos"
                       onClick={onClose}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                      className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
                       <ImageIcon className="w-5 h-5 text-barca-gold" />
-                      <span className="text-sm font-medium text-gray-900">Photos</span>
+                      <span className="text-sm font-medium text-white/60">Photos</span>
                     </Link>
                     <Link
                       href="/standings"
                       onClick={onClose}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                      className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
                     >
-                      <TrendingUp className="w-5 h-5 text-green-600" />
-                      <span className="text-sm font-medium text-gray-900">Standings</span>
+                      <TrendingUp className="w-5 h-5 text-barca-gold" />
+                      <span className="text-sm font-medium text-white/60">Standings</span>
                     </Link>
                   </div>
                 </div>
@@ -305,9 +305,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <div className="p-6">
                 {totalResults === 0 ? (
                   <div className="text-center py-12">
-                    <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">No results found for "{query}"</p>
-                    <p className="text-gray-400 text-sm mt-2">Try different keywords or check spelling</p>
+                    <Search className="w-12 h-12 text-white/10 mx-auto mb-4" />
+                    <p className="text-white/50 text-lg">No results found for &ldquo;{query}&rdquo;</p>
+                    <p className="text-white/30 text-sm mt-2">Try different keywords or check spelling</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -315,8 +315,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     {newsResults.length > 0 && (
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-                            <Newspaper className="w-4 h-4" />
+                          <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest flex items-center gap-2">
+                            <Newspaper className="w-3.5 h-3.5" />
                             News ({newsResults.length})
                           </h3>
                           <Link
@@ -327,15 +327,15 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             View all →
                           </Link>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           {newsResults.map((news) => (
                             <Link
                               key={news._id}
                               href={`/news/${news.slug}`}
                               onClick={onClose}
-                              className="flex items-center gap-4 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group"
+                              className="flex items-center gap-4 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors group"
                             >
-                              <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                              <div className="w-16 h-16 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
                                 {news.image ? (
                                   <Image
                                     src={urlFor(news.image).width(128).height(128).url()}
@@ -346,7 +346,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <Newspaper className="w-6 h-6 text-gray-400" />
+                                    <Newspaper className="w-6 h-6 text-white/20" />
                                   </div>
                                 )}
                               </div>
@@ -356,11 +356,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     {news.badge}
                                   </span>
                                 )}
-                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-gold transition-colors">
+                                <h4 className="font-semibold text-white/80 line-clamp-1 group-hover:text-barca-gold transition-colors">
                                   {news.title}
                                 </h4>
                                 {news.description && (
-                                  <p className="text-sm text-gray-500 line-clamp-1">{news.description}</p>
+                                  <p className="text-sm text-white/30 line-clamp-1">{news.description}</p>
                                 )}
                               </div>
                             </Link>
@@ -373,8 +373,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     {playerResults.length > 0 && (
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-                            <User className="w-4 h-4" />
+                          <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest flex items-center gap-2">
+                            <User className="w-3.5 h-3.5" />
                             Players ({playerResults.length})
                           </h3>
                           <Link
@@ -391,9 +391,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                               key={player._id}
                               href={`/players/${player.slug || player._id}`}
                               onClick={onClose}
-                              className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group"
+                              className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors group"
                             >
-                              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-barca-blue to-barca-red flex-shrink-0">
+                              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-barca-red to-barca-gold flex-shrink-0">
                                 {player.image ? (
                                   <Image
                                     src={urlFor(player.image).width(96).height(96).url()}
@@ -409,10 +409,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-gold transition-colors">
+                                <h4 className="font-semibold text-white/80 line-clamp-1 group-hover:text-barca-gold transition-colors">
                                   {player.firstName} {player.lastName}
                                 </h4>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-white/30">
                                   #{player.number} • {player.position}
                                 </p>
                               </div>
@@ -426,8 +426,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     {photoResults.length > 0 && (
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-                            <ImageIcon className="w-4 h-4" />
+                          <h3 className="text-xs font-semibold text-white/30 uppercase tracking-widest flex items-center gap-2">
+                            <ImageIcon className="w-3.5 h-3.5" />
                             Photos ({photoResults.length})
                           </h3>
                           <Link
@@ -444,7 +444,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                               key={photo._id}
                               href="/photos"
                               onClick={onClose}
-                              className="group relative aspect-video rounded-xl overflow-hidden bg-gray-200"
+                              className="group relative aspect-video rounded-xl overflow-hidden bg-white/5"
                             >
                               {photo.coverImage ? (
                                 <Image
@@ -455,7 +455,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                  <ImageIcon className="w-8 h-8 text-gray-400" />
+                                  <ImageIcon className="w-8 h-8 text-white/20" />
                                 </div>
                               )}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -474,6 +474,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               </div>
             )}
           </div>
+
+          {/* Bottom accent */}
+          <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
         </motion.div>
       </motion.div>
     </AnimatePresence>
