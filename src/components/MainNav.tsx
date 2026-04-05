@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Button } from "./ui/button";
 import { Search, Menu, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -58,13 +59,15 @@ export function MainNav() {
           </Link>
 
           <div className="flex items-center gap-1">
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setIsSearchOpen(true)}
-              className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer"
+              className="text-white hover:bg-white/20 rounded-full w-10 h-10"
               aria-label="Search"
             >
-              <Search size={18} />
-            </button>
+              <Search className="w-5 h-5" />
+            </Button>
             <button
               onClick={() => setIsCartOpen(true)}
               className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors cursor-pointer relative"
@@ -125,6 +128,7 @@ export function MainNav() {
                   {link.label}
                 </Link>
               ))}
+              
             </div>
           </div>
 
@@ -142,13 +146,14 @@ export function MainNav() {
 
             <div className="w-px h-4 bg-white/10" />
 
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setIsSearchOpen(true)}
-              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer"
               aria-label="Search"
             >
-              <Search size={16} />
-            </button>
+              <Search className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
+            </Button>
             <button
               onClick={() => setIsCartOpen(true)}
               className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer relative"

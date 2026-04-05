@@ -324,6 +324,79 @@ export const SEARCH_PHOTOS_QUERY = `*[_type == "photo" && title match $searchTer
   "slug": slug.current
 }`;
 
+// Live Score - all matches grouped by competition (recent and upcoming)
+export const LIVE_MATCHES_QUERY = `*[_type == "match"] | order(date desc) {
+  _id,
+  homeTeam,
+  awayTeam,
+  "homeCrest": homeCrest.asset->url,
+  "awayCrest": awayCrest.asset->url,
+  competition,
+  "competitionLogo": competitionLogo.asset->url,
+  date,
+  matchday,
+  status,
+  minute,
+  homeScore,
+  awayScore
+}`;
+
+// Live Score - single match with full detail (stats, events, lineups)
+export const LIVE_MATCH_DETAIL_QUERY = `*[_type == "match" && _id == $id][0] {
+  _id,
+  homeTeam,
+  awayTeam,
+  "homeCrest": homeCrest.asset->url,
+  "awayCrest": awayCrest.asset->url,
+  competition,
+  "competitionLogo": competitionLogo.asset->url,
+  date,
+  matchday,
+  event,
+  venue,
+  status,
+  minute,
+  homeScore,
+  awayScore,
+  matchEvents[] {
+    type,
+    minute,
+    player,
+    team,
+    assistPlayer
+  },
+  matchStats,
+  homeLineup[] {
+    name,
+    number,
+    position,
+    isCaptain,
+    rating
+  },
+  awayLineup[] {
+    name,
+    number,
+    position,
+    isCaptain,
+    rating
+  },
+  homeFormation,
+  awayFormation
+}`;
+
+// Standings mini - top 8 teams for sidebar
+export const STANDINGS_MINI_QUERY = `*[_type == "standing" && competition == $competition] | order(season desc) [0] {
+  _id,
+  season,
+  competition,
+  teams[] {
+    position,
+    teamName,
+    "teamLogo": teamLogo.asset->url,
+    points
+  }
+}`;
+
 // Categories query
 export const CATEGORIES_QUERY = `*[_type == "category"] | order(title asc) {
   _id,

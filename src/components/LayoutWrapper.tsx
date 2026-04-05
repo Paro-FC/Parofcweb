@@ -1,6 +1,6 @@
 "use client";
 
-import { TopNav } from "./TopNav";
+// import { TopNav } from "./TopNav";
 import { MainNav } from "./MainNav";
 import { Footer } from "./Footer";
 import { SideMenu } from "./SideMenu";
@@ -23,7 +23,7 @@ function LayoutContent({
 
   return (
     <>
-      <TopNav latestMatch={latestMatch} />
+      {/* <TopNav latestMatch={latestMatch} /> */}
       <MainNav />
       {children}
       <Footer partners={partners} />

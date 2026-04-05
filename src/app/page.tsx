@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Hero } from "@/components/Hero";
 import { CalendarSection } from "@/components/CalendarSection";
 import { NewsSection } from "@/components/NewsSection";
@@ -64,6 +65,22 @@ export default async function Home() {
         </div>
 
         <NewsSection news={newsResult.data as any} />
+      </div>
+
+      {/* Sponsor Banner */}
+      <div className="bg-white py-6">
+        <div className="container mx-auto px-4">
+          <a href="https://www.tashinamgay.com" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/assets/newBanner-ads_TNR.jpg"
+              alt="Tashi Namgay Resort — Poolside Café, Swimming Pool & Bumpy Castle"
+              width={1200}
+              height={120}
+              className="w-full h-auto rounded-lg"
+              priority={false}
+            />
+          </a>
+        </div>
       </div>
 
       {/* Dark sections */}

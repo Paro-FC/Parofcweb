@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["Plein", "system-ui", "sans-serif"],
+        serif: ['"Instrument Serif"', "Georgia", "serif"],
       },
       fontSize: {
         xs: ["11px", { lineHeight: "1.5", letterSpacing: "0.01em" }],
@@ -24,13 +25,15 @@ module.exports = {
       },
       colors: {
         // Primary & secondary (brand)
-        primary: "#b91a1b",
-        secondary: "#d6a84f",
-        // Primary Colors
-        "barca-gold": "#d6a84f", // Secondary - Gold
+        primary: "#ce0505",
+        secondary: "#ffad3d",
+        // Primary Colors — Paro FC Brand
+        "paro-red": "#ce0505", // Paro Red — Primary brand & accent
+        "tiger-yellow": "#ffad3d", // Tiger Yellow — Secondary accent
+        // Legacy aliases (mapped to new brand colors)
+        "barca-gold": "#ffad3d", // → Tiger Yellow
         "light-gold": "#EFE28D", // Light Gold / Cream
-        // Secondary Colors
-        "barca-red": "#b91a1b", // Primary - Deep Red
+        "barca-red": "#ce0505", // → Paro Red
         bronze: "#A66337", // Brown / Bronze
         // Neutral / Supporting Colors
         "dark-charcoal": "#1A1A1A", // Dark Charcoal (instead of pure black)

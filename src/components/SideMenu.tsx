@@ -13,6 +13,7 @@ interface SideMenuProps {
 
 const menuItems = [
   { label: "Home", href: "/" },
+  { label: "Live Score", href: "/live" },
   { label: "Standings", href: "/standings" },
   { label: "Shop", href: "/shop" },
   { label: "Photos", href: "/photos" },

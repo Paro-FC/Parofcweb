@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Search, TrendingUp, User, Newspaper, Camera, ArrowRight } from "lucide-react"
+import { X, Search, Clock, TrendingUp, User, Newspaper, Image as ImageIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { sanityFetch } from "@/sanity/lib/live"
@@ -43,14 +43,8 @@ interface PhotoResult {
   slug: string
 }
 
-const trendingSearches = ["BOB Premier League", "Goals", "Transfer news", "Highlights"]
-
-const quickLinks = [
-  { href: "/news", label: "News", icon: Newspaper },
-  { href: "/players", label: "Players", icon: User },
-  { href: "/photos", label: "Photos", icon: Camera },
-  { href: "/standings", label: "Standings", icon: TrendingUp },
-]
+const recentSearches = ["Paro FC vs Thimphu", "Latest news", "Match schedule"]
+const trendingSearches = ["BOB Premier League", "Goals", "Transfer news", "Match highlights"]
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState("")
@@ -62,27 +56,26 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Focus input when modal opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100)
     }
-    if (!isOpen) {
-      setQuery("")
-      setNewsResults([])
-      setPlayerResults([])
-      setPhotoResults([])
-      setHasSearched(false)
-    }
   }, [isOpen])
 
+  // Handle escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
+      if (e.key === "Escape") {
+        onClose()
+      }
     }
+
     if (isOpen) {
       document.addEventListener("keydown", handleKeyDown)
       document.body.style.overflow = "hidden"
     }
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown)
       document.body.style.overflow = ""
@@ -103,10 +96,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
     try {
       const searchPattern = `*${searchTerm}*`
+
       const [newsResult, playersResult, photosResult] = await Promise.all([
-        sanityFetch({ query: SEARCH_NEWS_QUERY, params: { searchTerm: searchPattern } }).catch(() => ({ data: [] })),
-        sanityFetch({ query: SEARCH_PLAYERS_QUERY, params: { searchTerm: searchPattern } }).catch(() => ({ data: [] })),
-        sanityFetch({ query: SEARCH_PHOTOS_QUERY, params: { searchTerm: searchPattern } }).catch(() => ({ data: [] })),
+        sanityFetch({
+          query: SEARCH_NEWS_QUERY,
+          params: { searchTerm: searchPattern }
+        }).catch(() => ({ data: [] })),
+        sanityFetch({
+          query: SEARCH_PLAYERS_QUERY,
+          params: { searchTerm: searchPattern }
+        }).catch(() => ({ data: [] })),
+        sanityFetch({
+          query: SEARCH_PHOTOS_QUERY,
+          params: { searchTerm: searchPattern }
+        }).catch(() => ({ data: [] })),
       ])
 
       setNewsResults((newsResult.data as NewsResult[]) || [])
@@ -119,13 +122,27 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     }
   }, [])
 
+  // Debounced search
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => performSearch(query), 300)
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current)
+    }
+
+    debounceRef.current = setTimeout(() => {
+      performSearch(query)
+    }, 300)
+
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
     }
   }, [query, performSearch])
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    performSearch(query)
+  }
 
   const handleQuickSearch = (term: string) => {
     setQuery(term)
@@ -142,32 +159,28 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.15 }}
-        className="fixed inset-0 z-[100] bg-black/50"
+        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className="w-full max-w-2xl mx-auto mt-12 md:mt-20 bg-white shadow-2xl overflow-hidden mx-4 sm:mx-auto"
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className="w-full max-w-3xl mx-auto mt-20 bg-white rounded-2xl shadow-2xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Search Input */}
-          <form
-            onSubmit={(e) => { e.preventDefault(); performSearch(query) }}
-            className="border-b border-gray-100"
-          >
-            <div className="flex items-center h-14 px-5">
-              <Search className="w-4 h-4 text-gray-300 mr-3 flex-shrink-0" />
+          {/* Search Header */}
+          <form onSubmit={handleSearchSubmit} className="border-b border-gray-200">
+            <div className="flex items-center px-6 py-4">
+              <Search className="w-6 h-6 text-gray-400 mr-4" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news, players, photos..."
-                className="flex-1 text-sm text-dark-charcoal placeholder-gray-300 outline-none bg-transparent"
+                className="flex-1 text-lg text-gray-900 placeholder-gray-400 outline-none bg-transparent"
               />
               {query && (
                 <button
@@ -178,42 +191,65 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     setPlayerResults([])
                     setPhotoResults([])
                     setHasSearched(false)
-                    inputRef.current?.focus()
                   }}
-                  className="w-6 h-6 flex items-center justify-center text-gray-300 hover:text-dark-charcoal transition-colors cursor-pointer mr-2"
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <X size={14} />
+                  <X className="w-5 h-5 text-gray-500" />
                 </button>
               )}
-              <kbd className="hidden sm:inline-flex text-[9px] font-bold text-gray-300 border border-gray-200 px-1.5 py-0.5 uppercase tracking-wider">
-                Esc
-              </kbd>
+              <button
+                type="button"
+                onClick={onClose}
+                className="ml-2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <span className="text-sm text-gray-500 font-medium">ESC</span>
+              </button>
             </div>
           </form>
 
-          {/* Content */}
-          <div className="max-h-[65vh] overflow-y-auto">
-            {/* Loading */}
+          {/* Content Area */}
+          <div className="max-h-[60vh] overflow-y-auto">
+            {/* Loading State */}
             {isSearching && (
-              <div className="flex items-center justify-center py-16">
-                <div className="w-6 h-6 border-2 border-barca-gold border-t-transparent rounded-full animate-spin" />
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-barca-blue"></div>
               </div>
             )}
 
-            {/* No Query — Suggestions */}
+            {/* No Query - Show Suggestions */}
             {!query && !isSearching && (
-              <div className="p-5">
-                {/* Trending */}
+              <div className="p-6">
+                {/* Recent Searches */}
                 <div className="mb-6">
-                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                    <Clock className="w-4 h-4" />
+                    Recent Searches
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {recentSearches.map((term) => (
+                      <button
+                        key={term}
+                        onClick={() => handleQuickSearch(term)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trending Searches */}
+                <div>
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                    <TrendingUp className="w-4 h-4" />
                     Trending
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
+                  </div>
+                  <div className="flex flex-wrap gap-2">
                     {trendingSearches.map((term) => (
                       <button
                         key={term}
                         onClick={() => handleQuickSearch(term)}
-                        className="px-3 py-1.5 bg-gray-50 hover:bg-dark-charcoal hover:text-white text-xs font-medium text-gray-500 transition-colors duration-150 cursor-pointer"
+                        className="px-4 py-2 bg-barca-gold/10 hover:bg-barca-gold/20 rounded-full text-sm text-barca-gold font-medium transition-colors"
                       >
                         {term}
                       </button>
@@ -222,177 +258,193 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
 
                 {/* Quick Links */}
-                <div>
-                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <div className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
                     Quick Links
-                  </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                    {quickLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={onClose}
-                        className="flex items-center gap-2 px-3 py-2.5 bg-gray-50 hover:bg-dark-charcoal hover:text-white text-xs font-bold text-gray-500 transition-colors duration-150 cursor-pointer"
-                      >
-                        <link.icon size={14} />
-                        {link.label}
-                      </Link>
-                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <Link
+                      href="/news"
+                      onClick={onClose}
+                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <Newspaper className="w-5 h-5 text-barca-red" />
+                      <span className="text-sm font-medium text-gray-900">News</span>
+                    </Link>
+                    <Link
+                      href="/players"
+                      onClick={onClose}
+                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <User className="w-5 h-5 text-barca-gold" />
+                      <span className="text-sm font-medium text-gray-900">Players</span>
+                    </Link>
+                    <Link
+                      href="/photos"
+                      onClick={onClose}
+                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <ImageIcon className="w-5 h-5 text-barca-gold" />
+                      <span className="text-sm font-medium text-gray-900">Photos</span>
+                    </Link>
+                    <Link
+                      href="/standings"
+                      onClick={onClose}
+                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      <TrendingUp className="w-5 h-5 text-green-600" />
+                      <span className="text-sm font-medium text-gray-900">Standings</span>
+                    </Link>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Results */}
+            {/* Search Results */}
             {query && !isSearching && hasSearched && (
-              <div>
+              <div className="p-6">
                 {totalResults === 0 ? (
-                  <div className="text-center py-16 px-5">
-                    <Search className="w-6 h-6 text-gray-200 mx-auto mb-3" />
-                    <p className="text-sm font-bold text-dark-charcoal mb-1">
-                      No results for &ldquo;{query}&rdquo;
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      Try different keywords
-                    </p>
+                  <div className="text-center py-12">
+                    <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 text-lg">No results found for "{query}"</p>
+                    <p className="text-gray-400 text-sm mt-2">Try different keywords or check spelling</p>
                   </div>
                 ) : (
-                  <div>
-                    {/* News */}
+                  <div className="space-y-6">
+                    {/* News Results */}
                     {newsResults.length > 0 && (
-                      <div className="px-5 py-4">
+                      <div>
                         <div className="flex items-center justify-between mb-3">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                            News
-                          </p>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+                            <Newspaper className="w-4 h-4" />
+                            News ({newsResults.length})
+                          </h3>
                           <Link
                             href="/news"
                             onClick={onClose}
-                            className="text-[9px] font-bold text-gray-400 hover:text-dark-charcoal uppercase tracking-widest transition-colors cursor-pointer"
+                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
                           >
-                            View all
+                            View all →
                           </Link>
                         </div>
-                        <div className="space-y-1">
+                        <div className="space-y-3">
                           {newsResults.map((news) => (
                             <Link
                               key={news._id}
                               href={`/news/${news.slug}`}
                               onClick={onClose}
-                              className="flex items-center gap-3 py-2.5 group cursor-pointer"
+                              className="flex items-center gap-4 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group"
                             >
-                              <div className="w-10 h-10 bg-gray-50 flex-shrink-0 overflow-hidden">
+                              <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
                                 {news.image ? (
                                   <Image
-                                    src={urlFor(news.image).width(80).height(80).url()}
+                                    src={urlFor(news.image).width(128).height(128).url()}
                                     alt={news.title}
-                                    width={40}
-                                    height={40}
+                                    width={64}
+                                    height={64}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <Newspaper size={14} className="text-gray-300" />
+                                    <Newspaper className="w-6 h-6 text-gray-400" />
                                   </div>
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
                                 {news.badge && (
-                                  <span className="text-[9px] font-bold text-barca-red uppercase tracking-widest mr-2">
+                                  <span className="inline-block bg-barca-red text-white text-xs font-semibold px-2 py-0.5 rounded mb-1">
                                     {news.badge}
                                   </span>
                                 )}
-                                <h4 className="text-xs font-bold text-dark-charcoal line-clamp-1 group-hover:text-barca-red transition-colors">
+                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-gold transition-colors">
                                   {news.title}
                                 </h4>
+                                {news.description && (
+                                  <p className="text-sm text-gray-500 line-clamp-1">{news.description}</p>
+                                )}
                               </div>
-                              <ArrowRight size={12} className="text-gray-200 group-hover:text-dark-charcoal transition-colors flex-shrink-0" />
                             </Link>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Players */}
+                    {/* Players Results */}
                     {playerResults.length > 0 && (
-                      <div className="px-5 py-4 border-t border-gray-50">
+                      <div>
                         <div className="flex items-center justify-between mb-3">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                            Players
-                          </p>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            Players ({playerResults.length})
+                          </h3>
                           <Link
                             href="/players"
                             onClick={onClose}
-                            className="text-[9px] font-bold text-gray-400 hover:text-dark-charcoal uppercase tracking-widest transition-colors cursor-pointer"
+                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
                           >
-                            View all
+                            View all →
                           </Link>
                         </div>
-                        <div className="space-y-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                           {playerResults.map((player) => (
                             <Link
                               key={player._id}
                               href={`/players/${player.slug || player._id}`}
                               onClick={onClose}
-                              className="flex items-center gap-3 py-2.5 group cursor-pointer"
+                              className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors group"
                             >
-                              <div className="w-10 h-10 bg-gradient-to-br from-dark-charcoal to-barca-red flex-shrink-0 overflow-hidden">
+                              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-barca-blue to-barca-red flex-shrink-0">
                                 {player.image ? (
                                   <Image
-                                    src={urlFor(player.image).width(80).height(80).url()}
+                                    src={urlFor(player.image).width(96).height(96).url()}
                                     alt={`${player.firstName} ${player.lastName}`}
-                                    width={40}
-                                    height={40}
+                                    width={48}
+                                    height={48}
                                     className="w-full h-full object-cover"
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
-                                    <span className="text-[10px] font-black text-white/30">
-                                      {player.number}
-                                    </span>
+                                    <User className="w-6 h-6 text-white" />
                                   </div>
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="text-xs font-bold text-dark-charcoal line-clamp-1 group-hover:text-barca-red transition-colors">
-                                  {player.firstName}{" "}
-                                  <span className="uppercase">
-                                    {player.lastName}
-                                  </span>
+                                <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-barca-gold transition-colors">
+                                  {player.firstName} {player.lastName}
                                 </h4>
-                                <p className="text-[10px] text-gray-400">
-                                  #{player.number} · {player.position}
+                                <p className="text-sm text-gray-500">
+                                  #{player.number} • {player.position}
                                 </p>
                               </div>
-                              <ArrowRight size={12} className="text-gray-200 group-hover:text-dark-charcoal transition-colors flex-shrink-0" />
                             </Link>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Photos */}
+                    {/* Photos Results */}
                     {photoResults.length > 0 && (
-                      <div className="px-5 py-4 border-t border-gray-50">
+                      <div>
                         <div className="flex items-center justify-between mb-3">
-                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                            Photos
-                          </p>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
+                            <ImageIcon className="w-4 h-4" />
+                            Photos ({photoResults.length})
+                          </h3>
                           <Link
                             href="/photos"
                             onClick={onClose}
-                            className="text-[9px] font-bold text-gray-400 hover:text-dark-charcoal uppercase tracking-widest transition-colors cursor-pointer"
+                            className="text-sm text-barca-gold hover:text-barca-gold/80 font-medium"
                           >
-                            View all
+                            View all →
                           </Link>
                         </div>
-                        <div className="grid grid-cols-3 gap-1.5">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                           {photoResults.map((photo) => (
                             <Link
                               key={photo._id}
                               href="/photos"
                               onClick={onClose}
-                              className="group relative aspect-[16/10] overflow-hidden bg-gray-50 cursor-pointer"
+                              className="group relative aspect-video rounded-xl overflow-hidden bg-gray-200"
                             >
                               {photo.coverImage ? (
                                 <Image
@@ -403,14 +455,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                  <Camera size={14} className="text-gray-300" />
+                                  <ImageIcon className="w-8 h-8 text-gray-400" />
                                 </div>
                               )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                              <div className="absolute bottom-1.5 left-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                <p className="text-white text-[9px] font-bold line-clamp-1">
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                              <div className="absolute bottom-2 left-2 right-2">
+                                <h4 className="text-white text-sm font-semibold line-clamp-1">
                                   {photo.title}
-                                </p>
+                                </h4>
                               </div>
                             </Link>
                           ))}
@@ -421,6 +473,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div className="flex items-center justify-between text-sm text-gray-500">
+              <span>Press <kbd className="px-2 py-1 bg-white rounded border border-gray-300 font-mono text-xs">ESC</kbd> to close</span>
+              <span>Search powered by Sanity</span>
+            </div>
           </div>
         </motion.div>
       </motion.div>

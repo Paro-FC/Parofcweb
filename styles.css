@@ -5,12 +5,12 @@
 }
 
 :root {
-  --primary: #b91a1b;
-  --secondary: #d6a84f;
+  --primary: #ce0505;
+  --secondary: #ffad3d;
   --dark-bg: #4a4a4a;
   --barca-blue: #004d98;
-  --barca-red: #b91a1b;
-  --barca-gold: #d6a84f;
+  --barca-red: #ce0505;
+  --barca-gold: #ffad3d;
   --text-white: #ffffff;
   --text-light: #e0e0e0;
   --gradient-bg: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b3d 100%);
