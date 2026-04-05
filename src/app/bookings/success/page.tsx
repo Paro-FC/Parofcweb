@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { CheckCircle2, Ticket, ArrowLeft, Copy, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 function BookingSuccessContent() {
   const searchParams = useSearchParams();
@@ -166,11 +167,7 @@ function BookingSuccessContent() {
 export default function BookingSuccessPage() {
   return (
     <Suspense
-      fallback={
-        <div className="min-h-screen bg-gradient-to-br from-dark-charcoal via-dark-charcoal to-barca-gold/20 flex items-center justify-center">
-          <div className="text-white">Loading...</div>
-        </div>
-      }
+      fallback={<Loader fullScreen />}
     >
       <BookingSuccessContent />
     </Suspense>

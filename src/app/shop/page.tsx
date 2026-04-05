@@ -8,6 +8,7 @@ import { SlidersHorizontal, ChevronDown, ShoppingBag, ArrowRight } from 'lucide-
 import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PRODUCTS_QUERY, CATEGORIES_QUERY } from '@/sanity/lib/queries'
+import Loader from '@/components/Loader'
 import type { SanityImageSource } from '@sanity/image-url'
 
 interface Category {
@@ -390,18 +391,7 @@ export default function ShopPage() {
       {/* Products Grid */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-gray-100" />
-                <div className="mt-3 space-y-2">
-                  <div className="h-2 bg-gray-100 rounded w-1/3" />
-                  <div className="h-3 bg-gray-100 rounded w-3/4" />
-                  <div className="h-3 bg-gray-100 rounded w-1/4" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <Loader />
         ) : sortedProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-x-6 md:gap-y-10">
             {sortedProducts.map((product, index) => (

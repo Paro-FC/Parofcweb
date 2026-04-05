@@ -6,18 +6,13 @@ import { useState, useRef, useEffect } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import dynamic from "next/dynamic";
 
+import Loader from "./Loader";
+
 const StoriesViewer = dynamic(
   () =>
     import("./StoriesViewer").then((mod) => ({ default: mod.StoriesViewer })),
   {
-    loading: () => (
-      <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
-        <div className="text-center text-white">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p>Loading story...</p>
-        </div>
-      </div>
-    ),
+    loading: () => <Loader fullScreen />,
   },
 );
 

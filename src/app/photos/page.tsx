@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from "react"
 import { X, Camera, ChevronLeft, ChevronRight } from "lucide-react"
 import { sanityFetch } from "@/sanity/lib/live"
 import { PHOTOS_QUERY } from "@/sanity/lib/queries"
+import Loader from "@/components/Loader"
 
 interface PhotoImage {
   url: string
@@ -178,17 +179,7 @@ export default function PhotosPage() {
       {/* Gallery Grid */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[16/10] bg-gray-100" />
-                <div className="mt-3 space-y-2">
-                  <div className="h-3 bg-gray-100 rounded w-3/4" />
-                  <div className="h-2 bg-gray-100 rounded w-1/3" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <Loader />
         ) : photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
             <Camera className="w-8 h-8 text-gray-200 mb-3" />

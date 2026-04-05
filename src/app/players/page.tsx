@@ -10,6 +10,7 @@ import {
   COACHING_STAFF_QUERY,
 } from "@/sanity/lib/queries";
 import { PlayerCard, type PlayerCardPlayer } from "@/components/PlayerCard";
+import Loader from "@/components/Loader";
 
 interface Player extends PlayerCardPlayer {
   team?: string;
@@ -198,12 +199,7 @@ export default function PlayersPage() {
       {/* Content */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <div className="w-8 h-8 border-2 border-barca-gold border-t-transparent rounded-full animate-spin mb-3" />
-            <span className="text-sm text-gray-400 font-medium">
-              Loading squad...
-            </span>
-          </div>
+          <Loader />
         ) : activeCategory === "coaching" ? (
           /* Coaching Staff */
           <AnimatePresence mode="wait">

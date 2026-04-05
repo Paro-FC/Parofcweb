@@ -11,6 +11,7 @@ import { PRODUCT_QUERY, PRODUCTS_QUERY } from '@/sanity/lib/queries'
 import { useParams } from 'next/navigation'
 import type { SanityImageSource } from '@sanity/image-url'
 import { useCart } from '@/contexts/CartContext'
+import Loader from '@/components/Loader'
 
 interface Category {
   _id: string
@@ -219,17 +220,7 @@ export default function ProductDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-            <div className="aspect-[3/4] bg-gray-50 animate-pulse" />
-            <div className="space-y-6 py-4">
-              <div className="h-3 bg-gray-100 rounded w-1/4 animate-pulse" />
-              <div className="h-8 bg-gray-100 rounded w-3/4 animate-pulse" />
-              <div className="h-6 bg-gray-100 rounded w-1/4 animate-pulse" />
-              <div className="h-24 bg-gray-100 rounded animate-pulse" />
-            </div>
-          </div>
-        </div>
+        <Loader />
       </div>
     )
   }

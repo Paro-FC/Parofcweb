@@ -9,6 +9,7 @@ import {
   STANDINGS_QUERY,
   STANDINGS_SEASONS_QUERY,
 } from "@/sanity/lib/queries";
+import Loader from "@/components/Loader";
 
 interface Team {
   id: number;
@@ -301,13 +302,8 @@ export default function StandingsPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={11} className="py-16 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="w-8 h-8 border-2 border-barca-gold border-t-transparent rounded-full animate-spin" />
-                        <span className="text-sm text-gray-400 font-medium">
-                          Loading standings...
-                        </span>
-                      </div>
+                    <td colSpan={11}>
+                      <Loader />
                     </td>
                   </tr>
                 ) : teams.length === 0 ? (

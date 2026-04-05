@@ -15,6 +15,7 @@ import {
   TROPHIES_QUERY,
 } from "@/sanity/lib/queries";
 import dynamic from "next/dynamic";
+import Loader from "@/components/Loader";
 
 const BarcaStoriesSection = dynamic(
   () =>
@@ -22,9 +23,7 @@ const BarcaStoriesSection = dynamic(
       default: mod.BarcaStoriesSection,
     })),
   {
-    loading: () => (
-      <div className="py-16 text-center text-gray-500">Loading stories...</div>
-    ),
+    loading: () => <Loader />,
   },
 );
 

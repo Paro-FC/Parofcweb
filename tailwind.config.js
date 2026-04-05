@@ -55,8 +55,13 @@ module.exports = {
         "marquee-vertical-reverse":
           "marquee-vertical-reverse 25s linear infinite",
         gradient: "gradient 8s linear infinite",
+        shimmer: "shimmer 1.5s ease-in-out infinite",
       },
       keyframes: {
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
         marquee: {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-100%)" },
