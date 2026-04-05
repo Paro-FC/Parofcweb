@@ -32,12 +32,12 @@ export function PartnersSection({
   }
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-dark-charcoal border-t border-white/5">
+    <section className="py-5 md:py-6 px-4 bg-gradient-to-b from-gray-50 border-gray-100">
       <div className="container mx-auto">
-        <p className="text-xs font-semibold text-center text-white/30 uppercase tracking-[0.2em] mb-8">
+        {/* <p className="text-[10px] font-semibold text-center text-gray-300 uppercase tracking-[0.25em] mb-4">
           {title}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">
+        </p> */}
+        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-14">
           {filteredPartners.map((partner, index) => (
             <motion.div
               key={partner._id}
@@ -51,14 +51,15 @@ export function PartnersSection({
                 href={partner.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block opacity-50 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                className="block opacity-40 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
               >
-                <div className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
+                <div className="relative w-16 h-16 md:w-20 md:h-20 p-2 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
                     fill
-                    className="object-contain"
+                    className="object-contain p-1"
+                    sizes="(max-width: 768px) 64px, 80px"
                   />
                 </div>
               </Link>

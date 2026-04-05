@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Search, Menu, ShoppingBag } from "lucide-react";
+import { Search, Menu, ShoppingBag, Trophy, Store, Camera, Users, Newspaper } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { SearchModal } from "./SearchModal";
@@ -10,14 +10,14 @@ import { useSideMenu } from "@/contexts/SideMenuContext";
 import { useCart } from "@/contexts/CartContext";
 
 const leftLinks = [
-  { href: "/standings", label: "Standings" },
-  { href: "/shop", label: "Shop" },
+  { href: "/standings", label: "Standings", icon: Trophy },
+  { href: "/shop", label: "Shop", icon: Store },
 ];
 
 const rightLinks = [
-  { href: "/photos", label: "Photos" },
-  { href: "/players", label: "Players" },
-  { href: "/news", label: "News" },
+  { href: "/photos", label: "Photos", icon: Camera },
+  { href: "/players", label: "Players", icon: Users },
+  { href: "/news", label: "News", icon: Newspaper },
 ];
 
 export function MainNav() {
@@ -46,15 +46,16 @@ export function MainNav() {
   return (
     <>
       {/* Mobile Header */}
-      <nav className="md:hidden sticky top-0 z-50 bg-dark-charcoal">
-        <div className="flex items-center justify-between px-4 h-14">
+      <nav className="md:hidden sticky top-0 z-50 bg-dark-charcoal font-display">
+        <div className="flex items-center justify-between px-4 h-16">
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/assets/logo.webp"
               alt="Paro FC"
-              width={40}
-              height={40}
-              className="w-10 h-10 object-contain"
+              width={128}
+              height={128}
+              className="w-14 h-14 object-contain"
+              quality={100}
             />
           </Link>
 
@@ -89,33 +90,22 @@ export function MainNav() {
             </button>
           </div>
         </div>
-
-        {/* Mobile quick links */}
-        <div className="flex items-center border-t border-white/5 overflow-x-auto scrollbar-hide">
-          {[...leftLinks, ...rightLinks].map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex-shrink-0 px-4 py-2.5 text-[10px] font-bold text-white/40 uppercase tracking-widest hover:text-white transition-colors cursor-pointer"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+        <div className="h-px bg-gradient-to-r from-barca-red via-barca-gold to-bronze" />
       </nav>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal">
-        <div className="container mx-auto px-4 flex items-center justify-between h-16">
+      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal font-display">
+        <div className="container mx-auto px-4 flex items-center justify-between h-20">
           {/* Left: Logo + links */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex-shrink-0">
               <Image
                 src="/assets/logo.webp"
                 alt="Paro FC"
-                width={48}
-                height={48}
-                className="w-12 h-12 object-contain"
+                width={128}
+                height={128}
+                className="w-16 h-16 object-contain"
+                quality={100}
               />
             </Link>
             <div className="flex items-center gap-6">
@@ -123,12 +113,12 @@ export function MainNav() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
+                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
                 >
                   {link.label}
+                  <link.icon size={12} />
                 </Link>
               ))}
-              
             </div>
           </div>
 
@@ -138,22 +128,22 @@ export function MainNav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
+                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/50 hover:text-barca-gold transition-colors duration-200 cursor-pointer"
               >
                 {link.label}
+                <link.icon size={12} />
               </Link>
             ))}
 
             <div className="w-px h-4 bg-white/10" />
 
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={() => setIsSearchOpen(true)}
+              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer"
               aria-label="Search"
             >
-              <Search className="h-5 w-5 text-light-gold hover:text-barca-gold transition-colors" />
-            </Button>
+              <Search size={16} />
+            </button>
             <button
               onClick={() => setIsCartOpen(true)}
               className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-barca-gold transition-colors cursor-pointer relative"

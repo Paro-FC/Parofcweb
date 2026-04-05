@@ -83,6 +83,17 @@
   font-display: swap;
 }
 
+/* Excon Font Declaration (Variable) */
+@font-face {
+  font-family: "Excon";
+  src: url("/fonts/Excon-Variable.woff2") format("woff2"),
+    url("/fonts/Excon-Variable.woff") format("woff"),
+    url("/fonts/Excon-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   body {
     @apply bg-white text-dark-charcoal font-sans antialiased;

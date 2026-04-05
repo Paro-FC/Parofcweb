@@ -474,14 +474,6 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               </div>
             )}
           </div>
-
-          {/* Footer */}
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>Press <kbd className="px-2 py-1 bg-white rounded border border-gray-300 font-mono text-xs">ESC</kbd> to close</span>
-              <span>Search powered by Sanity</span>
-            </div>
-          </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>

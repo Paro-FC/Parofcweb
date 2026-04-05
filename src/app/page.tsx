@@ -49,6 +49,11 @@ export default async function Home() {
     <div className="min-h-screen bg-white">
       <Hero news={newsResult.data as any} />
 
+      <PartnersSection
+        partners={mainPartnersResult.data as any}
+        title="Main Partners"
+      />
+
       {/* Content sections with clean white background */}
       <div className="bg-white">
         <BarcaStoriesSection stories={storiesResult.data as any} />
@@ -86,10 +91,6 @@ export default async function Home() {
       {/* Dark sections */}
       <PlayersSection players={playersResult.data as any} />
       <TrophiesSection trophies={trophiesResult.data as any} />
-      <PartnersSection
-        partners={mainPartnersResult.data as any}
-        title="Main Partners"
-      />
     </div>
   );
 }

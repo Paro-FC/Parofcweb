@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { X, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SideMenuProps {
@@ -13,7 +12,6 @@ interface SideMenuProps {
 
 const menuItems = [
   { label: "Home", href: "/" },
-  { label: "Live Score", href: "/live" },
   { label: "Standings", href: "/standings" },
   { label: "Shop", href: "/shop" },
   { label: "Photos", href: "/photos" },
@@ -65,16 +63,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
             className="fixed right-0 top-0 bottom-0 w-full max-w-sm bg-dark-charcoal shadow-2xl z-[70] flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 h-14 flex-shrink-0">
-              <Link href="/" onClick={onClose} className="flex-shrink-0">
-                <Image
-                  src="/assets/logo.webp"
-                  alt="Paro FC"
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 object-contain"
-                />
-              </Link>
+            <div className="flex items-center justify-end px-5 h-14 flex-shrink-0">
               <button
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"
