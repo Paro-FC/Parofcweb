@@ -22,6 +22,7 @@ import { useParams } from "next/navigation";
 import type { SanityImageSource } from "@sanity/image-url";
 import { useCart } from "@/contexts/CartContext";
 import Loader from "@/components/Loader";
+import { isShareUserCanceled } from "@/lib/share";
 
 interface Category {
   _id: string;
@@ -274,30 +275,48 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-100">
-        <div className="container mx-auto px-4 py-3">
-          <nav className="flex items-center gap-2 text-xs text-gray-400">
+      {/* Top band — same language as /shop (hero + gradient) */}
+      <div className="relative bg-dark-charcoal overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+          }}
+        />
+        <div className="container mx-auto px-4 py-8 md:py-10 relative z-10">
+          <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
+            Official Merchandise
+          </p>
+          <nav
+            className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/65"
+            aria-label="Breadcrumb"
+          >
             <Link
               href="/shop"
-              className="hover:text-dark-charcoal transition-colors cursor-pointer font-medium"
+              className="hover:text-white transition-colors cursor-pointer font-semibold"
             >
               Shop
             </Link>
-            <span>/</span>
+            <span className="text-white/35" aria-hidden>
+              /
+            </span>
             {product.category?.title && (
               <>
-                <span className="hover:text-dark-charcoal transition-colors cursor-pointer font-medium">
+                <span className="text-white/90 font-medium">
                   {product.category.title}
                 </span>
-                <span>/</span>
+                <span className="text-white/35" aria-hidden>
+                  /
+                </span>
               </>
             )}
-            <span className="text-dark-charcoal font-semibold truncate max-w-[200px]">
+            <span className="text-white font-semibold truncate max-w-[min(100%,20rem)]">
               {product.name}
             </span>
           </nav>
         </div>
+        <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
       <div className="container mx-auto px-4 py-6 md:py-10">
@@ -560,15 +579,26 @@ export default function ProductDetailPage() {
 
               {/* Share */}
               <button
-                onClick={() => {
+                onClick={async () => {
+                  const url = window.location.href;
                   if (navigator.share) {
-                    navigator.share({
-                      title: product.name,
-                      text: `Check out ${product.name} on Paro FC Shop!`,
-                      url: window.location.href,
-                    });
+                    try {
+                      await navigator.share({
+                        title: product.name,
+                        text: `Check out ${product.name} on Paro FC Shop!`,
+                        url,
+                      });
+                    } catch (err) {
+                      if (isShareUserCanceled(err)) return;
+                      try {
+                        await navigator.clipboard.writeText(url);
+                        alert("Link copied to clipboard!");
+                      } catch {
+                        /* ignore */
+                      }
+                    }
                   } else {
-                    navigator.clipboard.writeText(window.location.href);
+                    await navigator.clipboard.writeText(url);
                     alert("Link copied to clipboard!");
                   }
                 }}
@@ -580,7 +610,7 @@ export default function ProductDetailPage() {
 
               {/* Trust signals */}
               <div className="pt-2 space-y-3">
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <HugeiconsIcon
                     icon={TruckIcon}
                     size={16}
@@ -594,8 +624,8 @@ export default function ProductDetailPage() {
                       on orders over Nu. 5,000
                     </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
+                </div> */}
+                {/* <div className="flex items-center gap-3">
                   <HugeiconsIcon
                     icon={RotateLeft01Icon}
                     size={16}
@@ -609,7 +639,7 @@ export default function ProductDetailPage() {
                       30-day return policy
                     </span>
                   </div>
-                </div>
+                </div> */}
                 <div className="flex items-center gap-3">
                   <HugeiconsIcon
                     icon={Shield01Icon}
@@ -635,7 +665,7 @@ export default function ProductDetailPage() {
       {relatedProducts.length > 0 && (
         <div className="border-t border-gray-100 mt-12 md:mt-20">
           <div className="container mx-auto px-4 py-12 md:py-16">
-            <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal uppercase tracking-tight mb-8">
+            <h2 className="text-4xl md:text-5xl font-black text-dark-charcoal uppercase tracking-tight leading-none mb-10">
               You May Also Like
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

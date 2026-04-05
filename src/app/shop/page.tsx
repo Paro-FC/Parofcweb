@@ -296,9 +296,7 @@ export default function ShopPage() {
               Official Merchandise
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              Paro FC
-              <br />
-              <span className="text-parofc-gold">Shop</span>
+              Paro FC <span className="text-parofc-gold">Shop</span>
             </h1>
           </motion.div>
         </div>

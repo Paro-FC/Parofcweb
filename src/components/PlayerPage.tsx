@@ -12,6 +12,7 @@ import {
   ChampionIcon,
 } from "@hugeicons/core-free-icons";
 import { urlFor } from "@/sanity/lib/image";
+import { isShareUserCanceled } from "@/lib/share";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { useState } from "react";
 
@@ -152,7 +153,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
         alert("Link copied to clipboard!");
       }
     } catch (err) {
-      if ((err as Error).name !== "AbortError") {
+      if (!isShareUserCanceled(err)) {
         try {
           await navigator.clipboard.writeText(url);
           alert("Link copied to clipboard!");

@@ -35,6 +35,60 @@ const inputBase =
 const inputError =
   "w-full px-0 py-3 bg-transparent border-0 border-b border-parofc-red text-sm text-dark-charcoal placeholder:text-gray-300 focus:border-dark-charcoal focus:ring-0 focus:outline-none transition-colors duration-200";
 
+function CheckoutHero({
+  title,
+  description,
+  step,
+  back,
+}: {
+  title: string;
+  description?: string;
+  step?: string;
+  back?: { href: string; label: string };
+}) {
+  return (
+    <div className="relative bg-dark-charcoal overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
+        }}
+      />
+      <div className="container mx-auto px-4 py-8 md:py-10 relative z-10">
+        <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
+          Official Merchandise
+        </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white uppercase tracking-tight leading-none">
+              {title}
+            </h1>
+            {description ? (
+              <p className="text-sm text-white/70 mt-3 max-w-xl">{description}</p>
+            ) : null}
+            {step ? (
+              <p className="text-xs font-bold text-white/50 uppercase tracking-widest mt-3">
+                {step}
+              </p>
+            ) : null}
+          </div>
+          {back ? (
+            <Link
+              href={back.href}
+              className="inline-flex items-center gap-2 text-xs font-bold text-white/70 hover:text-white uppercase tracking-wider transition-colors shrink-0"
+            >
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
+              {back.label}
+            </Link>
+          ) : null}
+        </div>
+      </div>
+      <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
+    </div>
+  );
+}
+
 export default function CheckoutPage() {
   const { items, getSubtotal, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -213,8 +267,13 @@ export default function CheckoutPage() {
   // ─── Order Success ───
   if (orderComplete) {
     return (
-      <div className="min-h-screen bg-white">
-        <div className="max-w-lg mx-auto px-4 py-16 md:py-24">
+      <div className="min-h-screen bg-white flex flex-col">
+        <CheckoutHero
+          title="Order Confirmed"
+          description="Thank you for your purchase."
+          step={`Order ${orderId}`}
+        />
+        <div className="max-w-lg mx-auto px-4 py-12 md:py-16 w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -232,19 +291,6 @@ export default function CheckoutPage() {
                 className="text-white"
               />
             </motion.div>
-
-            <h1 className="text-3xl md:text-4xl font-black text-dark-charcoal uppercase tracking-tight mb-3">
-              Order Confirmed
-            </h1>
-            <p className="text-sm text-gray-500 mb-1">
-              Thank you for your purchase.
-            </p>
-            <p className="text-xs text-gray-400 mb-8">
-              Order{" "}
-              <span className="font-mono font-bold text-dark-charcoal">
-                {orderId}
-              </span>
-            </p>
 
             <div className="border border-gray-100 p-5 mb-8 text-left">
               <p className="text-sm text-gray-500">
@@ -281,30 +327,18 @@ export default function CheckoutPage() {
   if (showPaymentStep && !orderComplete) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Header */}
-        <div className="border-b border-gray-100">
-          <div className="container mx-auto px-4 py-3">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-              Step 2 of 2 — Payment
-            </p>
-          </div>
-        </div>
+        <CheckoutHero
+          title="Complete Payment"
+          description={`Order ${orderId} — ${formatPrice(orderTotal, orderCurrency)}`}
+          step="Step 2 of 2 — Payment"
+          back={{ href: "/shop", label: "Back to shop" }}
+        />
 
         <div className="max-w-lg mx-auto px-4 py-10 md:py-14">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal uppercase tracking-tight mb-1">
-              Complete Payment
-            </h2>
-            <p className="text-sm text-gray-400 mb-8">
-              Order{" "}
-              <span className="font-mono font-bold text-dark-charcoal">
-                {orderId}
-              </span>{" "}
-              — {formatPrice(orderTotal, orderCurrency)}
-            </p>
 
             {/* QR Code */}
             <div className="mb-8">
@@ -416,26 +450,27 @@ export default function CheckoutPage() {
   // ─── Empty Cart ───
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center px-4 max-w-md">
-          <HugeiconsIcon
-            icon={ShoppingBag01Icon}
-            size={40}
-            className="text-gray-200 mx-auto mb-4"
-          />
-          <h1 className="text-2xl font-black text-dark-charcoal uppercase tracking-tight mb-2">
-            Cart is Empty
-          </h1>
-          <p className="text-sm text-gray-400 mb-6">
-            Add some items before checking out.
-          </p>
-          <Link
-            href="/shop"
-            className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors cursor-pointer"
-          >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
-            Browse Shop
-          </Link>
+      <div className="min-h-screen bg-white flex flex-col">
+        <CheckoutHero
+          title="Checkout"
+          description="Your cart is empty. Add items from the shop to continue."
+          back={{ href: "/shop", label: "Browse shop" }}
+        />
+        <div className="flex-1 flex items-center justify-center px-4 py-12">
+          <div className="text-center max-w-md">
+            <HugeiconsIcon
+              icon={ShoppingBag01Icon}
+              size={40}
+              className="text-gray-200 mx-auto mb-4"
+            />
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 bg-dark-charcoal text-white px-6 py-3 font-bold text-sm uppercase tracking-wider hover:bg-parofc-red transition-colors cursor-pointer"
+            >
+              <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
+              Browse shop
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -449,27 +484,13 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="border-b border-gray-100">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link
-            href="/shop"
-            className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-dark-charcoal transition-colors cursor-pointer uppercase tracking-wider"
-          >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
-            Shop
-          </Link>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-            Step 1 of 2 — Details
-          </p>
-        </div>
-      </div>
+      <CheckoutHero
+        title="Checkout"
+        step="Step 1 of 2 — Details"
+        back={{ href: "/shop", label: "Back to shop" }}
+      />
 
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <h1 className="text-3xl md:text-4xl font-black text-dark-charcoal uppercase tracking-tight mb-8">
-          Checkout
-        </h1>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
           {/* Form */}
           <div className="lg:col-span-2">

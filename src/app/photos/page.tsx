@@ -169,9 +169,7 @@ export default function PhotosPage() {
               Gallery
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              Match Day
-              <br />
-              <span className="text-parofc-gold">Photos</span>
+              Match Day <span className="text-parofc-gold">Photos</span>
             </h1>
           </motion.div>
         </div>

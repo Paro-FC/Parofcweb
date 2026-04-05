@@ -112,9 +112,7 @@ export default function PlayersPage() {
               First Team
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              The
-              <br />
-              <span className="text-parofc-gold">Squad</span>
+              The <span className="text-parofc-gold">Squad</span>
             </h1>
           </motion.div>
         </div>

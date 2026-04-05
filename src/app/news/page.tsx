@@ -112,9 +112,7 @@ export default function NewsPage() {
               Latest Updates
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              Paro FC
-              <br />
-              <span className="text-parofc-gold">News</span>
+              Paro FC <span className="text-parofc-gold">News</span>
             </h1>
           </motion.div>
         </div>

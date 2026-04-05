@@ -15,6 +15,7 @@ import {
   getYoutubeThumbnailUrl,
   getYoutubeWatchUrl,
 } from "@/lib/youtube";
+import { isShareUserCanceled } from "@/lib/share";
 
 export interface YoutubeVideoEntry {
   _id: string;
@@ -111,7 +112,10 @@ export function YouTubeCarouselSection({
     e.preventDefault();
     const url = getYoutubeWatchUrl(videoId);
     if (navigator.share) {
-      navigator.share({ title, url }).catch(() => {});
+      void navigator.share({ title, url }).catch((err) => {
+        if (isShareUserCanceled(err)) return;
+        void navigator.clipboard.writeText(url);
+      });
     } else {
       void navigator.clipboard.writeText(url);
     }

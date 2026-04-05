@@ -14,6 +14,7 @@ import {
   Cancel01Icon,
 } from "@hugeicons/core-free-icons";
 import { urlFor } from "@/sanity/lib/image";
+import { isShareUserCanceled } from "@/lib/share";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { useState, useEffect } from "react";
 
@@ -262,8 +263,7 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
         alert("Link copied to clipboard!");
       }
     } catch (err) {
-      // User cancelled or error occurred
-      if ((err as Error).name !== "AbortError") {
+      if (!isShareUserCanceled(err)) {
         // Fallback: Copy link to clipboard
         try {
           await navigator.clipboard.writeText(url);

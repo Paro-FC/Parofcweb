@@ -155,9 +155,7 @@ export default function StandingsPage() {
               Standings
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              League
-              <br />
-              <span className="text-parofc-gold">Tables</span>
+              League <span className="text-parofc-gold">Tables</span>
             </h1>
           </motion.div>
         </div>

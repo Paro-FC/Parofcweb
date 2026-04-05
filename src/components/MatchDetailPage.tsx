@@ -121,25 +121,6 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Top Navigation */}
-        <div className="flex items-center gap-4 p-6">
-          <Link
-            href="/"
-            className="flex items-center gap-3 text-white hover:text-parofc-gold transition-colors"
-          >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={24} />
-            <div className="relative w-10 h-10">
-              <Image
-                src="/assets/logo.webp"
-                alt="Paro FC Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span className="text-lg font-semibold">PARO FC</span>
-          </Link>
-        </div>
-
         {/* Main Content - Two Column Layout */}
         <div className="flex-1 flex items-start justify-center px-4 py-12">
           <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
