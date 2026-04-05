@@ -6,6 +6,7 @@ import { PlayersSection } from "@/components/PlayersSection";
 import { TrophiesSection } from "@/components/TrophiesSection";
 import { PartnersSection } from "@/components/PartnersSection";
 import { YouTubeCarouselSection } from "@/components/YouTubeCarouselSection";
+import { getYoutubeIdFromUrl } from "@/lib/youtube";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   NEWS_QUERY,
@@ -48,6 +49,13 @@ export default async function Home() {
     sanityFetch({ query: YOUTUBE_VIDEOS_QUERY }).catch(() => ({ data: [] })),
   ]);
 
+  const youtubeList = (youtubeVideosResult.data ?? []) as {
+    youtubeUrl?: string;
+  }[];
+  const showYoutubeDivider = youtubeList.some(
+    (v) => v?.youtubeUrl && getYoutubeIdFromUrl(v.youtubeUrl),
+  );
+
   return (
     <div className="min-h-screen bg-white">
       <Hero news={newsResult.data as any} />
@@ -67,6 +75,12 @@ export default async function Home() {
         </div>
 
         <YouTubeCarouselSection videos={youtubeVideosResult.data as any} />
+
+        {showYoutubeDivider ? (
+          <div className="container mx-auto px-4">
+            <div className="h-px bg-gray-100" />
+          </div>
+        ) : null}
 
         <CalendarSection matches={matchesResult.data as any} />
 
