@@ -86,8 +86,9 @@ export function Hero({ news }: HeroProps) {
     </div>
   );
 
+  /* Fill viewport below MainNav: mobile h-16 + divider, desktop h-20 + divider */
   return (
-    <section className="relative h-[85vh] md:h-[90vh] overflow-hidden">
+    <section className="relative w-full overflow-hidden min-h-[calc(100dvh-4rem-1px)] md:min-h-[calc(100dvh-5rem-1px)] h-[calc(100dvh-4rem-1px)] md:h-[calc(100dvh-5rem-1px)]">
       {newsItem.image ? (
         <Image
           src={urlFor(newsItem.image).width(1920).height(1080).url()}
