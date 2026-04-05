@@ -1,7 +1,7 @@
 export default function Loader({ fullScreen = false }: { fullScreen?: boolean }) {
   const wrapperClass = fullScreen
-    ? "fixed inset-0 z-50 flex items-center justify-center bg-dark-charcoal"
-    : "flex items-center justify-center py-24";
+    ? "fixed inset-0 z-[100] flex min-h-[100dvh] items-center justify-center bg-dark-charcoal"
+    : "flex min-h-[50vh] items-center justify-center py-24";
 
   return (
     <div className={wrapperClass}>

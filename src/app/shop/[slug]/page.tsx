@@ -240,13 +240,9 @@ export default function ProductDetailPage() {
     ? [product.image, product.hoverImage].filter(Boolean)
     : [];
 
-  // Loading state
+  // Loading state — fullScreen centers in viewport (inline Loader sits under nav otherwise)
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Loader />
-      </div>
-    );
+    return <Loader fullScreen />;
   }
 
   // Not found

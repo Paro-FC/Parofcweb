@@ -240,13 +240,8 @@ export default function ProductDetailPage() {
     ? [product.image, product.hoverImage].filter(Boolean)
     : [];
 
-  // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Loader />
-      </div>
-    );
+    return <Loader fullScreen />;
   }
 
   // Not found
