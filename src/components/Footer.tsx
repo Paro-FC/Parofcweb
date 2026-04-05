@@ -47,50 +47,9 @@ export function Footer({ partners = [] }: FooterProps) {
           <PartnersSection partners={otherPartners} title="Partners" />
         )}
 
-        {/* Divider */}
-        <div className="border-t border-white/20 mb-12"></div>
-
-        {/* Social Media Section */}
-        <div className="mb-16">
-          <h3 className="text-xl font-semibold text-center text-light-gold mb-8">
-            Follow Paro FC on social media
-          </h3>
-          <div className="flex justify-center items-center gap-6">
-            <a href="#" aria-label="Facebook" className="cursor-pointer">
-              <HugeiconsIcon
-                icon={Facebook01Icon}
-                size={32}
-                className="text-light-gold hover:text-parofc-gold transition-colors"
-              />
-            </a>
-            <a href="#" aria-label="YouTube" className="cursor-pointer">
-              <HugeiconsIcon
-                icon={YoutubeIcon}
-                size={32}
-                className="text-light-gold hover:text-parofc-gold transition-colors"
-              />
-            </a>
-            <a href="#" aria-label="Instagram" className="cursor-pointer">
-              <HugeiconsIcon
-                icon={InstagramIcon}
-                size={32}
-                className="text-light-gold hover:text-parofc-gold transition-colors"
-              />
-            </a>
-            <a href="#" aria-label="TikTok" className="cursor-pointer">
-              <HugeiconsIcon
-                icon={TiktokIcon}
-                size={32}
-                className="text-light-gold hover:text-parofc-gold transition-colors"
-              />
-            </a>
-          </div>
-        </div>
-
-        {/* Footer Bar */}
-        <div className="border-t border-white/20 pt-8">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            {/* Left - Logo and Copyright */}
+        {/* Footer Bar — social where legal row used to be */}
+        <div className="border-t border-white/20 pt-8 mt-12">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-8">
             <div className="flex items-center gap-4">
               <Image
                 src="/assets/logo.webp"
@@ -109,36 +68,35 @@ export function Footer({ partners = [] }: FooterProps) {
               </div>
             </div>
 
-            {/* Center - Legal Links */}
-            <div className="flex flex-wrap items-center justify-center gap-2 text-light-gold/70 text-sm">
-              <a href="#" className="hover:text-parofc-gold transition-colors">
-                Legal Terms
+            <div className="flex items-center justify-center gap-5 sm:gap-6 shrink-0">
+              <a href="#" aria-label="Facebook" className="cursor-pointer p-1">
+                <HugeiconsIcon
+                  icon={Facebook01Icon}
+                  size={28}
+                  className="text-light-gold hover:text-parofc-gold transition-colors"
+                />
               </a>
-              <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-parofc-gold transition-colors">
-                Privacy Policy
+              <a href="#" aria-label="YouTube" className="cursor-pointer p-1">
+                <HugeiconsIcon
+                  icon={YoutubeIcon}
+                  size={28}
+                  className="text-light-gold hover:text-parofc-gold transition-colors"
+                />
               </a>
-              <span className="text-light-gold/30">|</span>
-              <a
-                href="/font-license"
-                className="hover:text-parofc-gold transition-colors"
-              >
-                Font License
+              <a href="#" aria-label="Instagram" className="cursor-pointer p-1">
+                <HugeiconsIcon
+                  icon={InstagramIcon}
+                  size={28}
+                  className="text-light-gold hover:text-parofc-gold transition-colors"
+                />
               </a>
-              <span className="text-light-gold/30">|</span>
-              {/* <a href="#" className="hover:text-parofc-gold transition-colors">Accessibility</a>
-              <span className="text-light-gold/30">|</span> */}
-              <a href="#" className="hover:text-parofc-gold transition-colors">
-                Contact Us
+              <a href="#" aria-label="TikTok" className="cursor-pointer p-1">
+                <HugeiconsIcon
+                  icon={TiktokIcon}
+                  size={28}
+                  className="text-light-gold hover:text-parofc-gold transition-colors"
+                />
               </a>
-              <span className="text-light-gold/30">|</span>
-              <a href="#" className="hover:text-parofc-gold transition-colors">
-                Support/FAQs
-              </a>
-              {/* <span className="text-light-gold/30">|</span> */}
-              {/* <a href="#" className="hover:text-parofc-gold transition-colors">Consent management</a> */}
-              {/* <span className="text-light-gold/30">|</span> */}
-              {/* <a href="#" className="hover:text-parofc-gold transition-colors">Consent choices</a> */}
             </div>
           </div>
         </div>
