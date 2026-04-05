@@ -319,13 +319,6 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
             {article.title}
           </h1>
 
-          {/* Description/Summary */}
-          {article.description && (
-            <p className="text-xl text-gray-600 leading-relaxed mb-6 border-l-4 border-parofc-gold pl-4">
-              {article.description}
-            </p>
-          )}
-
           {/* Meta info */}
           <div className="flex flex-wrap items-center gap-4 md:gap-6 text-gray-500 text-sm mb-10 pb-6 border-b border-gray-200">
             <div className="flex items-center gap-2">

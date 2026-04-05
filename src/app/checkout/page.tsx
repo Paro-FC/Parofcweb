@@ -65,7 +65,9 @@ function CheckoutHero({
               {title}
             </h1>
             {description ? (
-              <p className="text-sm text-white/70 mt-3 max-w-xl">{description}</p>
+              <p className="text-sm text-white/70 mt-3 max-w-xl">
+                {description}
+              </p>
             ) : null}
             {step ? (
               <p className="text-xs font-bold text-white/50 uppercase tracking-widest mt-3">
@@ -339,7 +341,6 @@ export default function CheckoutPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-
             {/* QR Code */}
             <div className="mb-8">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
@@ -863,8 +864,8 @@ export default function CheckoutPage() {
               {/* COD Note */}
               <div className="mt-4 p-3 bg-parofc-gold/5 border border-parofc-gold/10">
                 <p className="text-[10px] text-gray-500">
-                  <strong className="text-dark-charcoal">Payment:</strong> Cash
-                  on Delivery (COD). You pay when your order arrives.
+                  <strong className="text-dark-charcoal">Payment:</strong> Pay
+                  and upload the payment proof/screenshot in next step.
                 </p>
               </div>
 
