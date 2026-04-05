@@ -7,7 +7,6 @@ import {
   InstagramIcon,
   TiktokIcon,
 } from "@hugeicons/core-free-icons";
-import { Button } from "./ui/button";
 import Image from "next/image";
 import { PartnersSection } from "./PartnersSection";
 
@@ -85,100 +84,6 @@ export function Footer({ partners = [] }: FooterProps) {
                 className="text-light-gold hover:text-parofc-gold transition-colors"
               />
             </a>
-          </div>
-        </div>
-
-        {/* Information Columns */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 mb-12">
-          {/* Goalkeepers */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">Goalkeepers</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>Ugyen Namgay</li>
-              <li>Pema Dorji</li>
-            </ul>
-          </div>
-
-          {/* Defenders */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">Defenders</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>Karma Thinley</li>
-              <li>Sonam Tshering</li>
-              <li>Jigme Wangchuk</li>
-              <li>Dorji Tashi</li>
-              <li>Tshering Pelden</li>
-              <li>Ugyen Phuntsho</li>
-              <li>Rinzin Gyeltshen</li>
-              <li>Tenzin Norbu</li>
-            </ul>
-          </div>
-
-          {/* Midfielders */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">Midfielders</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>Kinley Wangdi</li>
-              <li>Dechen Zangmo</li>
-              <li>Chimi Dema</li>
-              <li>Phub Dorji</li>
-              <li>Tashi Dema</li>
-              <li>Kezang Dorji</li>
-              <li>Sonam Lhamo</li>
-            </ul>
-          </div>
-
-          {/* Forwards */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">Forwards</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>Dawa Zangmo</li>
-              <li>Karma Dema</li>
-              <li>Cheki Wangmo</li>
-              <li>Pema Tashi</li>
-              <li>Tashi Phuntsho</li>
-              <li>Ugyen Dema</li>
-            </ul>
-          </div>
-
-          {/* Paro FC products & digital */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">Paro FC products</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>Supporters membership</li>
-              <li>Paro FC+</li>
-              <li>Tickets & museum</li>
-              <li>Paro FC app</li>
-              <li>Online store</li>
-              <li>Support/FAQs</li>
-              <li>Become beta tester</li>
-              <li>Black Friday</li>
-              <li>Holiday shop</li>
-            </ul>
-          </div>
-
-          {/* Club */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">Club</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>Changlimithang Stadium</li>
-              <li>Ethical channel</li>
-              <li>The crest</li>
-              <li>Anthem</li>
-              <li>Work at the club stores</li>
-            </ul>
-          </div>
-
-          {/* History */}
-          <div>
-            <h4 className="text-light-gold font-bold mb-4">History</h4>
-            <ul className="space-y-2 text-light-gold/70 text-sm">
-              <li>2010s–2020s. Our strongest years</li>
-              <li>Building the modern squad</li>
-              <li>2000s. Growing the academy</li>
-              <li>Foundation and early years</li>
-              <li>Paro FC in the AFC Cup</li>
-            </ul>
           </div>
         </div>
 
