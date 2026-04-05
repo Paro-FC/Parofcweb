@@ -74,7 +74,11 @@ export default async function Home() {
       {/* Sponsor Banner */}
       <div className="bg-white py-6">
         <div className="container mx-auto px-4">
-          <a href="https://www.tashinamgay.com" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.tashinamgay.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Image
               src="/assets/newBanner-ads_TNR.jpg"
               alt="Tashi Namgay Resort — Poolside Café, Swimming Pool & Bumpy Castle"
