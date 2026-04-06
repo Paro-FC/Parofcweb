@@ -31,19 +31,6 @@ interface Photo {
   images?: PhotoImage[];
 }
 
-const fallbackPhotos: Photo[] = [
-  {
-    _id: "1",
-    coverImage:
-      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop",
-    title: "Last session before Paro FC v Thimphu City",
-    category: "PARO FC",
-    date: new Date().toISOString(),
-    photoCount: 27,
-    slug: "last-session",
-  },
-];
-
 function getTimeAgo(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
@@ -92,11 +79,11 @@ export default function PhotosPage() {
           }));
           setPhotos(photosData);
         } else {
-          setPhotos(fallbackPhotos);
+          setPhotos([]);
         }
       } catch (error) {
         console.error("Error fetching photos:", error);
-        setPhotos(fallbackPhotos);
+        setPhotos([]);
       } finally {
         setLoading(false);
       }
