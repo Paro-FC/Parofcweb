@@ -10,7 +10,6 @@ import {
   Clock01Icon,
   Calendar03Icon,
   ArrowRight01Icon,
-  FavouriteIcon,
   Cancel01Icon,
 } from "@hugeicons/core-free-icons";
 import { urlFor } from "@/sanity/lib/image";
@@ -142,13 +141,8 @@ function formatRelativeDate(dateString: string) {
 
 export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
   const articleId = article._id;
-  const likesKey = `article_likes_${articleId}`;
-  const likedKey = `article_liked_${articleId}`;
   const bookmarkedKey = `article_bookmarked_${articleId}`;
 
-  // Initialize with default values to avoid hydration mismatch
-  const [likes, setLikes] = useState(1831);
-  const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -156,19 +150,6 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const storedLikes = localStorage.getItem(likesKey);
-        if (storedLikes) {
-          const parsedLikes = parseInt(storedLikes, 10);
-          if (!isNaN(parsedLikes)) {
-            setLikes(parsedLikes);
-          }
-        }
-
-        const storedLiked = localStorage.getItem(likedKey);
-        if (storedLiked === "true") {
-          setIsLiked(true);
-        }
-
         const storedBookmarked = localStorage.getItem(bookmarkedKey);
         if (storedBookmarked === "true") {
           setIsBookmarked(true);
@@ -183,41 +164,7 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
         setIsHydrated(true);
       }
     }
-  }, [likesKey, likedKey, bookmarkedKey]);
-
-  // Sync likes to localStorage (only after hydration)
-  useEffect(() => {
-    if (isHydrated && typeof window !== "undefined") {
-      try {
-        localStorage.setItem(likesKey, likes.toString());
-      } catch (e) {
-        if (e instanceof DOMException && e.name === "QuotaExceededError") {
-          console.error("localStorage quota exceeded for likes");
-        } else if (e instanceof DOMException) {
-          console.warn("localStorage not available:", e.message);
-        } else {
-          console.error("Error saving likes:", e);
-        }
-      }
-    }
-  }, [likes, likesKey, isHydrated]);
-
-  // Sync liked state to localStorage (only after hydration)
-  useEffect(() => {
-    if (isHydrated && typeof window !== "undefined") {
-      try {
-        localStorage.setItem(likedKey, isLiked.toString());
-      } catch (e) {
-        if (e instanceof DOMException && e.name === "QuotaExceededError") {
-          console.error("localStorage quota exceeded for liked state");
-        } else if (e instanceof DOMException) {
-          console.warn("localStorage not available:", e.message);
-        } else {
-          console.error("Error saving liked state:", e);
-        }
-      }
-    }
-  }, [isLiked, likedKey, isHydrated]);
+  }, [bookmarkedKey]);
 
   // Sync bookmarked state to localStorage (only after hydration)
   useEffect(() => {
@@ -235,15 +182,6 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
       }
     }
   }, [isBookmarked, bookmarkedKey, isHydrated]);
-
-  const handleLike = () => {
-    if (isLiked) {
-      setLikes((prev) => prev - 1);
-    } else {
-      setLikes((prev) => prev + 1);
-    }
-    setIsLiked(!isLiked);
-  };
 
   const handleShare = async () => {
     const url = `${window.location.origin}/news/${article.slug}`;
@@ -366,21 +304,6 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
           <div className="flex items-center justify-between mt-10 pt-6 border-t border-gray-200">
             <div className="flex items-center gap-4">
               <button
-                onClick={handleLike}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
-                  isLiked
-                    ? "bg-parofc-red text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                <HugeiconsIcon
-                  icon={FavouriteIcon}
-                  size={20}
-                  className={isLiked ? "text-parofc-red" : "text-gray-400"}
-                />
-                <span className="font-semibold">{likes.toLocaleString()}</span>
-              </button>
-              <button
                 onClick={() => setIsBookmarked(!isBookmarked)}
                 className={`p-2 rounded-full transition-all ${
                   isBookmarked
@@ -407,32 +330,6 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
           </div>
         </div>
 
-        {/* Força Paro engagement box */}
-        <div className="mt-8 mb-12 p-6 md:p-8 bg-gradient-to-r from-parofc-blue to-parofc-red rounded-2xl text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">FORÇA PARO</h3>
-              <p className="text-white/80 text-sm md:text-base">
-                Show your support for Paro FC!
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold">
-                {likes.toLocaleString()}
-              </span>
-              <button
-                onClick={handleLike}
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
-                  isLiked
-                    ? "bg-white text-parofc-red"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                }`}
-              >
-                <span className="text-2xl">👏</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </motion.article>
 
       {/* Related News */}
@@ -450,54 +347,55 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-8">
               {relatedNews.map((news, index) => (
-                <motion.article
+                <motion.div
                   key={news._id}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="bg-white overflow-hidden border border-gray-200 cursor-pointer group"
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.04, duration: 0.3 }}
                 >
-                  <Link href={`/news/${news.slug}`} className="block">
-                    <div className="relative w-full h-36 overflow-hidden bg-gray-200">
+                  <Link
+                    href={`/news/${news.slug}`}
+                    className="group block cursor-pointer"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 mb-3">
                       {news.image ? (
                         <Image
-                          src={urlFor(news.image).width(400).height(300).url()}
+                          src={urlFor(news.image).width(500).height(313).url()}
                           alt={news.title}
                           fill
-                          className="object-cover"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                          <span className="text-4xl">📰</span>
-                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" />
                       )}
                     </div>
 
-                    <div className="p-4 bg-white transition-transform duration-300 ease-in-out group-hover:-translate-y-4">
+                    <div className="flex items-center gap-2 mb-2">
                       {news.badge && (
-                        <span className="inline-block bg-parofc-red text-white text-xs font-semibold px-2 py-1 mb-2 uppercase">
+                        <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
                           {news.badge}
                         </span>
                       )}
-
-                      <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight">
-                        {news.title}
-                      </h3>
-
-                      {news.description && (
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          {news.description}
-                        </p>
-                      )}
-
-                      <p className="text-xs text-gray-500 mt-2">
+                      {news.badge && <span className="text-gray-300">·</span>}
+                      <span className="text-[10px] text-gray-400 font-medium">
                         {formatRelativeDate(news.publishedAt)}
-                      </p>
+                      </span>
                     </div>
+
+                    <h3 className="text-base font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
+                      {news.title}
+                    </h3>
+
+                    {news.description && (
+                      <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 mt-1.5">
+                        {news.description}
+                      </p>
+                    )}
                   </Link>
-                </motion.article>
+                </motion.div>
               ))}
             </div>
           </div>
