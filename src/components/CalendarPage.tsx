@@ -108,9 +108,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                 Paro FC · Fixtures & results
               </p>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-                Match
-                <br />
-                <span className="text-parofc-gold">Calendar</span>
+                Match <span className="text-parofc-gold">Calendar</span>
               </h1>
             </motion.div>
 
