@@ -11,6 +11,7 @@ module.exports = {
         sans: ["Plein", "system-ui", "sans-serif"],
         serif: ['"Instrument Serif"', "Georgia", "serif"],
         display: ["Excon", "system-ui", "sans-serif"],
+        heading: ['"Gotham"', "system-ui", "sans-serif"],
       },
       fontSize: {
         xs: ["11px", { lineHeight: "1.5", letterSpacing: "0.01em" }],
