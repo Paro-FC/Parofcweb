@@ -193,7 +193,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="text-[120px] md:text-[180px] lg:text-[220px] font-black text-white/[0.04] leading-none absolute -left-4 -top-8 lg:top-0 select-none pointer-events-none">
+                <span className="text-hero-120 md:text-hero-180 lg:text-hero-220 font-black text-white/[0.04] leading-none absolute -left-4 -top-8 lg:top-0 select-none pointer-events-none">
                   {player.number}
                 </span>
               </motion.div>
@@ -204,7 +204,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                 transition={{ delay: 0.1, duration: 0.5 }}
                 className="relative"
               >
-                <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-[0.3em] mb-2">
+                <p className="text-2xs font-bold text-parofc-gold uppercase tracking-[0.3em] mb-2">
                   #{player.number} / {player.position}
                 </p>
 
@@ -222,7 +222,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                   <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
                     {player.dateOfBirth && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                        <span className="text-3xs font-bold text-white/25 uppercase tracking-widest block">
                           DOB
                         </span>
                         <span className="text-sm text-white/70 font-medium">
@@ -239,7 +239,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                     )}
                     {player.placeOfBirth && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                        <span className="text-3xs font-bold text-white/25 uppercase tracking-widest block">
                           From
                         </span>
                         <span className="text-sm text-white/70 font-medium">
@@ -249,7 +249,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                     )}
                     {player.height && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                        <span className="text-3xs font-bold text-white/25 uppercase tracking-widest block">
                           Height
                         </span>
                         <span className="text-sm text-white/70 font-medium">
@@ -259,7 +259,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                     )}
                     {player.weight && (
                       <div>
-                        <span className="text-[9px] font-bold text-white/25 uppercase tracking-widest block">
+                        <span className="text-3xs font-bold text-white/25 uppercase tracking-widest block">
                           Weight
                         </span>
                         <span className="text-sm text-white/70 font-medium">
@@ -299,7 +299,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-[200px] font-black text-white/5">
+                    <span className="text-hero-200 font-black text-white/5">
                       {player.number}
                     </span>
                   </div>
@@ -341,10 +341,10 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                     <div className="text-5xl md:text-6xl font-black text-dark-charcoal leading-none tabular-nums">
                       {stat.value}
                     </div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">
+                    <div className="text-2xs font-bold text-gray-400 uppercase tracking-widest mt-2">
                       {statLabels[key] || key}
                     </div>
-                    <div className="text-[10px] text-gray-300 mt-0.5">
+                    <div className="text-2xs text-gray-300 mt-0.5">
                       {stat.season}
                     </div>
                   </motion.div>
@@ -465,17 +465,17 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                       {honour.title}
                     </p>
                     {honour.competition && (
-                      <p className="text-[10px] text-white/40 font-medium">
+                      <p className="text-2xs text-white/40 font-medium">
                         {honour.competition}
                       </p>
                     )}
                     {honour.season && (
-                      <p className="text-[10px] text-white/40 font-medium">
+                      <p className="text-2xs text-white/40 font-medium">
                         {honour.season}
                       </p>
                     )}
                     {honour.country && (
-                      <p className="text-[10px] text-white/40 font-medium">
+                      <p className="text-2xs text-white/40 font-medium">
                         {honour.country}
                       </p>
                     )}
@@ -535,7 +535,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
                       <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                        <p className="text-[9px] font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
+                        <p className="text-3xs font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
                           #{rp.number}
                         </p>
                         <p className="text-white leading-tight">

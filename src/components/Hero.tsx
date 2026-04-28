@@ -45,7 +45,7 @@ export function Hero({ news }: HeroProps) {
   }, [newsItem.publishedAt]);
 
   const content = (
-    <div className="container mx-auto relative z-10 flex flex-col items-center justify-end h-full pb-16 md:pb-24 px-4">
+    <div className="mx-auto max-w-[1400px] relative z-10 flex flex-col items-center justify-end h-full pb-16 md:pb-24 px-5">
       {/* Badge */}
       {newsItem.badge && (
         <motion.div

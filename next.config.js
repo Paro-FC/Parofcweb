@@ -22,6 +22,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.ytimg.com",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+      },
     ],
     // Enable image optimization
     minimumCacheTTL: 60,

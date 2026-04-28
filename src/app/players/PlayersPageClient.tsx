@@ -258,7 +258,7 @@ export default function PlayersPage() {
 
                         {/* Info */}
                         <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-widest mb-1">
+                          <p className="text-2xs font-bold text-parofc-gold uppercase tracking-widest mb-1">
                             {staff.role}
                           </p>
                           <p className="text-base md:text-lg font-black text-white uppercase leading-tight">

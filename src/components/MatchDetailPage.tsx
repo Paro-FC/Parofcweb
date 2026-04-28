@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { ArrowUpRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import { Countdown } from "./ui/countdown";
-import { TicketBookingForm } from "./TicketBookingForm";
 
 interface Match {
   _id: string;
@@ -21,9 +19,11 @@ interface Match {
   date: string;
   event: string;
   venue: string;
-  hasTickets: boolean;
-  ticketAvailability?: number;
-  ticketPrice?: number;
+  matchUrl?: string;
+  status?: "upcoming" | "live" | "ht" | "ft" | "postponed" | string;
+  minute?: string;
+  homeScore?: number;
+  awayScore?: number;
 }
 
 interface MatchDetailPageProps {
@@ -61,52 +61,58 @@ function formatMatchDate(dateString: string) {
 }
 
 export function MatchDetailPage({ match }: MatchDetailPageProps) {
-  const [timeRemaining, setTimeRemaining] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  const matchDateString = match.date;
   const formatted = formatMatchDate(match.date);
 
-  useEffect(() => {
-    const matchDate = new Date(matchDateString);
+  const scoreHome = match.homeScore ?? 0;
+  const scoreAway = match.awayScore ?? 0;
+  const statusNorm = (match.status ?? "upcoming").toString().toLowerCase();
+  const isUpcoming = statusNorm === "upcoming";
+  const isPostponed = statusNorm === "postponed";
+  const showScore = !isUpcoming && !isPostponed;
+  const matchMeta =
+    statusNorm === "live"
+      ? match.minute
+        ? `Live • ${match.minute}'`
+        : "Live"
+      : statusNorm === "ht"
+        ? "Half Time"
+        : statusNorm === "ft"
+          ? "Full Time"
+          : statusNorm === "upcoming"
+            ? "Upcoming"
+            : statusNorm === "postponed"
+              ? "Postponed"
+              : match.status
+                ? match.status.toString()
+                : null;
 
-    const updateCountdown = () => {
-      const now = new Date();
-      const diff = matchDate.getTime() - now.getTime();
+  const matchDate = new Date(match.date);
+  const dateLong = matchDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+  const time24 = matchDate.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
-      if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        setTimeRemaining({ days, hours, minutes, seconds });
-      } else {
-        setTimeRemaining({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      }
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-
-    return () => clearInterval(interval);
-  }, [matchDateString]);
-
-  // Determine competition color
-  const getCompetitionColor = (competition: string) => {
-    if (competition?.toLowerCase().includes("liga")) {
-      return "text-[#FF006E]"; // Accent for domestic league competitions
+  function crestUrl(crest: unknown) {
+    if (!crest) return null;
+    try {
+      return urlFor(crest).width(160).height(160).url();
+    } catch {
+      return null;
     }
-    return "text-parofc-gold";
-  };
+  }
+
+  const homeCrestUrl = crestUrl(match.homeCrest);
+  const awayCrestUrl = crestUrl(match.awayCrest);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-black">
       {/* Background with blurred crowd image */}
       <div className="absolute inset-0">
         <Image
@@ -116,158 +122,183 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+        <div
+          className="absolute inset-0 opacity-[0.08] mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.35) 1px, transparent 1px, transparent 10px)",
+          }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-black via-black/60 to-transparent" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Main Content - Two Column Layout */}
-        <div className="flex-1 flex items-start justify-center px-4 py-12">
-          <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Left Column - Match Information */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-center"
-            >
-              {/* League Name */}
-              <h1
-                className={`text-4xl md:text-5xl font-bold mb-2 ${getCompetitionColor(match.competition)}`}
-              >
-                {match.competition?.toUpperCase() || "MATCH"}
-              </h1>
-
-              {/* Date */}
-              <p className="text-3xl md:text-4xl font-bold text-parofc-gold mb-8">
-                {formatted.day} {formatted.date} {formatted.month}
-              </p>
-
-              {/* Match Countdown */}
-              <div className="mb-12">
-                <p className="text-white text-lg mb-4">Match countdown</p>
-                <div className="flex items-center justify-center gap-4 md:gap-8">
-                  <div className="flex flex-col items-center">
-                    <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.days).padStart(2, "0")}
-                    </span>
-                    <span className="text-white text-sm mt-2">DAYS</span>
-                  </div>
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    :
-                  </span>
-                  <div className="flex flex-col items-center">
-                    <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.hours).padStart(2, "0")}
-                    </span>
-                    <span className="text-white text-sm mt-2">HOURS</span>
-                  </div>
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    :
-                  </span>
-                  <div className="flex flex-col items-center">
-                    <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.minutes).padStart(2, "0")}
-                    </span>
-                    <span className="text-white text-sm mt-2">MINS</span>
-                  </div>
-                  <span className="text-5xl md:text-7xl font-bold text-white">
-                    :
-                  </span>
-                  <div className="flex flex-col items-center">
-                    <span className="text-5xl md:text-7xl font-bold text-white">
-                      {String(timeRemaining.seconds).padStart(2, "0")}
-                    </span>
-                    <span className="text-white text-sm mt-2">SECS</span>
-                  </div>
-                </div>
+      <div className="relative z-10 min-h-screen">
+        <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 md:py-14">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="mb-8 flex flex-col gap-4"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-parofc-red shadow-[0_0_0_3px_rgba(206,5,5,0.25)]" />
+                <p className="truncate text-xs font-black uppercase tracking-[0.26em] text-white/60">
+                  Match Center
+                </p>
               </div>
 
-              {/* Kickoff Time */}
-              {/* <div className="mb-12">
-                <p className="text-white text-lg mb-2">Kickoff CET</p>
-                <p className="text-6xl md:text-8xl font-bold text-white">
-                  {formatted.time}
-                </p>
-              </div> */}
+              {matchMeta ? (
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-2xs font-black uppercase tracking-wider text-parofc-gold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-parofc-gold" />
+                  {matchMeta}
+                </span>
+              ) : null}
+            </div>
 
-              {/* Teams */}
-              <div className="flex items-center justify-center gap-8 md:gap-16 mb-12">
-                {/* Home Team */}
-                <div className="flex flex-col items-center">
-                  <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
-                    {match.homeCrest ? (
+            <div className="flex flex-col items-start gap-1">
+              <h1 className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+                {match.competition || "Match"}
+              </h1>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/45">
+                {match.venue || "Venue TBA"} · {dateLong} · {time24} CET
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Scoreboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.05 }}
+            className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/35 backdrop-blur-xl"
+          >
+            <div className="absolute inset-0 opacity-[0.12]">
+              <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-parofc-red/40 blur-3xl" />
+              <div className="absolute -right-24 -bottom-24 h-64 w-64 rounded-full bg-parofc-gold/25 blur-3xl" />
+            </div>
+
+            <div className="relative p-6 md:p-8">
+              <div className="grid items-center gap-6 md:grid-cols-[1fr_auto_1fr] md:gap-8">
+                {/* Home */}
+                <div className="flex items-center gap-4 md:gap-5">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 md:h-16 md:w-16">
+                    {homeCrestUrl ? (
                       <Image
-                        src={urlFor(match.homeCrest)
-                          .width(128)
-                          .height(128)
-                          .url()}
+                        src={homeCrestUrl}
                         alt={match.homeTeam}
                         fill
-                        className="object-contain"
+                        className="object-contain p-2"
                       />
                     ) : (
-                      <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center text-4xl">
-                        ⚽
+                      <div className="grid h-full w-full place-items-center text-xs font-black text-white/30">
+                        {match.homeTeam?.slice(0, 2).toUpperCase()}
                       </div>
                     )}
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
-                    {match.homeTeam}
-                  </h2>
+                  <div className="min-w-0">
+                    <p className="text-2xs font-black uppercase tracking-[0.22em] text-white/40">
+                      Home
+                    </p>
+                    <p className="truncate text-lg font-black uppercase tracking-tight text-white md:text-xl">
+                      {match.homeTeam}
+                    </p>
+                  </div>
                 </div>
 
-                {/* VS / Time */}
-                <div className="flex flex-col items-center">
-                  <p className="text-4xl md:text-6xl font-bold text-white mb-2">
-                    {formatted.time}
-                  </p>
-                  <p className="text-white/80 text-sm">CET</p>
+                {/* Middle */}
+                <div className="flex flex-col items-center justify-center">
+                  {showScore ? (
+                    <div className="flex items-baseline gap-3 tabular-nums">
+                      <span className="text-5xl font-black text-white md:text-6xl">
+                        {scoreHome}
+                      </span>
+                      <span className="text-lg font-black text-white/20 md:text-xl">
+                        —
+                      </span>
+                      <span className="text-5xl font-black text-white md:text-6xl">
+                        {scoreAway}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <p className="text-4xl font-black text-white md:text-5xl tabular-nums">
+                        {formatted.time}
+                      </p>
+                      <p className="mt-1 text-2xs font-bold uppercase tracking-[0.26em] text-white/40">
+                        Kickoff (CET)
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className="h-px w-10 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    <span className="text-2xs font-black uppercase tracking-[0.26em] text-white/45">
+                      {match.event || "Fixture"}
+                    </span>
+                    <span className="h-px w-10 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                  </div>
                 </div>
 
-                {/* Away Team */}
-                <div className="flex flex-col items-center">
-                  <div className="relative w-24 h-24 md:w-32 md:h-32 mb-4">
-                    {match.awayCrest ? (
+                {/* Away */}
+                <div className="flex items-center gap-4 md:gap-5 md:justify-end">
+                  <div className="min-w-0 text-right">
+                    <p className="text-2xs font-black uppercase tracking-[0.22em] text-white/40">
+                      Away
+                    </p>
+                    <p className="truncate text-lg font-black uppercase tracking-tight text-white md:text-xl">
+                      {match.awayTeam}
+                    </p>
+                  </div>
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10 md:h-16 md:w-16">
+                    {awayCrestUrl ? (
                       <Image
-                        src={urlFor(match.awayCrest)
-                          .width(128)
-                          .height(128)
-                          .url()}
+                        src={awayCrestUrl}
                         alt={match.awayTeam}
                         fill
-                        className="object-contain"
+                        className="object-contain p-2"
                       />
                     ) : (
-                      <div className="w-full h-full bg-white/20 rounded-full flex items-center justify-center text-4xl">
-                        ⚽
+                      <div className="grid h-full w-full place-items-center text-xs font-black text-white/30">
+                        {match.awayTeam?.slice(0, 2).toUpperCase()}
                       </div>
                     )}
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white uppercase">
-                    {match.awayTeam}
-                  </h2>
                 </div>
               </div>
-            </motion.div>
 
-            {/* Right Column - Ticket Booking Form */}
-            {match.hasTickets && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-start justify-center"
-              >
-                <div className="w-full max-w-md">
-                  <TicketBookingForm
-                    matchId={match._id}
-                    matchTitle={`${match.homeTeam} vs ${match.awayTeam}`}
-                    availability={match.ticketAvailability ?? 0}
-                  />
+              {/* Upcoming countdown */}
+              {isUpcoming ? (
+                <div className="mt-7 flex flex-col items-center gap-2">
+                  <p className="text-2xs font-black uppercase tracking-[0.26em] text-white/45">
+                    Countdown to kickoff
+                  </p>
+                  <div className="rounded-full border border-white/10 bg-white/5 px-5 py-2">
+                    <Countdown targetDate={matchDate} />
+                  </div>
                 </div>
-              </motion.div>
-            )}
-          </div>
+              ) : null}
+
+              {match.matchUrl ? (
+                <div className="mt-8 flex justify-center">
+                  <a
+                    href={match.matchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-parofc-gold/40 bg-parofc-gold/10 px-8 py-3 text-xs font-black uppercase tracking-[0.2em] text-parofc-gold transition hover:bg-parofc-gold hover:text-dark-charcoal"
+                  >
+                    Open match link
+                    <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
+                  </a>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="h-px bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
+          </motion.div>
         </div>
       </div>
 

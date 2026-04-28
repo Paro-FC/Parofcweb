@@ -375,12 +375,12 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
 
                     <div className="flex items-center gap-2 mb-2">
                       {news.badge && (
-                        <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
+                        <span className="text-2xs font-bold text-parofc-red uppercase tracking-widest">
                           {news.badge}
                         </span>
                       )}
                       {news.badge && <span className="text-gray-300">·</span>}
-                      <span className="text-[10px] text-gray-400 font-medium">
+                      <span className="text-2xs text-gray-400 font-medium">
                         {formatRelativeDate(news.publishedAt)}
                       </span>
                     </div>

@@ -103,7 +103,7 @@ export function NewsSection({ news }: { news?: NewsItem[] }) {
 
                   <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                     {featured.badge && (
-                      <span className="inline-block bg-parofc-gold text-dark-charcoal text-[10px] font-bold px-3 py-1 mb-3 uppercase tracking-widest">
+                      <span className="inline-block bg-parofc-gold text-dark-charcoal text-2xs font-bold px-3 py-1 mb-3 uppercase tracking-widest">
                         {featured.badge}
                       </span>
                     )}
@@ -148,7 +148,7 @@ export function NewsSection({ news }: { news?: NewsItem[] }) {
 
                   <div className="flex-1 py-1">
                     {item.badge && (
-                      <span className="inline-block text-parofc-red text-[10px] font-bold mb-1 uppercase tracking-widest">
+                      <span className="inline-block text-parofc-red text-2xs font-bold mb-1 uppercase tracking-widest">
                         {item.badge}
                       </span>
                     )}

@@ -109,10 +109,10 @@ export default function PlayersPage() {
             transition={{ duration: 0.5 }}
           >
             <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
-              First Team
+               Team
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              The <span className="text-parofc-gold">Squad</span>
+              The <span className="text-parofc-gold">Squads</span>
             </h1>
           </motion.div>
         </div>
@@ -256,7 +256,7 @@ export default function PlayersPage() {
 
                         {/* Info */}
                         <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-widest mb-1">
+                          <p className="text-2xs font-bold text-parofc-gold uppercase tracking-widest mb-1">
                             {staff.role}
                           </p>
                           <p className="text-base md:text-lg font-black text-white uppercase leading-tight">

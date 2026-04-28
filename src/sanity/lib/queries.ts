@@ -130,7 +130,7 @@ export const MATCHES_QUERY = `*[_type == "match"] | order(date asc) [0...3] {
   date,
   event,
   venue,
-  hasTickets
+  matchUrl
 }`;
 
 // All matches query for calendar page
@@ -160,7 +160,7 @@ export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
   date,
   event,
   venue,
-  hasTickets
+  matchUrl
 }`;
 
 // Single match query
@@ -190,9 +190,11 @@ export const MATCH_QUERY = `*[_type == "match" && _id == $id][0] {
   date,
   event,
   venue,
-  hasTickets,
-  ticketAvailability,
-  ticketPrice
+  matchUrl,
+  status,
+  minute,
+  homeScore,
+  awayScore
 }`;
 
 // Stories queries
@@ -231,10 +233,12 @@ export const MAIN_PARTNERS_QUERY = `*[_type == "partner" && isActive == true && 
 }`;
 
 // Standings queries
-export const STANDINGS_QUERY = `*[_type == "standing" && competition == $competition && season == $season][0] {
+export const STANDINGS_QUERY = `*[_type == "standing" && competition->slug.current == $competition && season == $season][0] {
   _id,
   season,
-  competition,
+  "competition": competition->slug.current,
+  "competitionName": competition->name,
+  "competitionShort": competition->short,
   teams[] {
     position,
     teamName,
@@ -250,50 +254,82 @@ export const STANDINGS_QUERY = `*[_type == "standing" && competition == $competi
   }
 }`;
 
-export const STANDINGS_SEASONS_QUERY = `*[_type == "standing" && competition == $competition] | order(season desc) {
+// Latest standings (full) for a competition
+export const STANDINGS_LATEST_QUERY = `*[_type == "standing" && competition->slug.current == $competition] | order(_updatedAt desc)[0] {
+  _id,
+  season,
+  "competition": competition->slug.current,
+  "competitionName": competition->name,
+  "competitionShort": competition->short,
+  teams[] {
+    position,
+    teamName,
+    "teamLogo": teamLogo.asset->url,
+    played,
+    won,
+    drawn,
+    lost,
+    goalsFor,
+    goalsAgainst,
+    points,
+    form
+  }
+}`;
+
+// Latest standings overall (homepage default)
+export const STANDINGS_HOME_LATEST_QUERY = `*[_type == "standing"] | order(_updatedAt desc)[0] {
+  _id,
+  season,
+  "competition": competition->slug.current,
+  "competitionName": competition->name,
+  "competitionShort": competition->short,
+  teams[] {
+    position,
+    teamName,
+    "teamLogo": teamLogo.asset->url,
+    played,
+    won,
+    drawn,
+    lost,
+    goalsFor,
+    goalsAgainst,
+    points,
+    form
+  }
+}`;
+
+export const STANDINGS_SEASONS_QUERY = `*[_type == "standing" && competition->slug.current == $competition] | order(season desc) {
   season
+}`;
+
+// List competitions that have standings docs
+export const STANDINGS_COMPETITIONS_QUERY = `*[_type == "standingsCompetition" && isActive == true] | order(order asc, name asc) {
+  "id": slug.current,
+  name,
+  short,
+  order
 }`;
 
 // Photos queries
 export const PHOTOS_QUERY = `*[_type == "photo"] | order(date desc) {
   _id,
   title,
-  "coverImage": coverImage.asset->url,
-  category,
+  "coverImage": image.asset->url,
   date,
   "slug": slug.current,
-  "photoCount": count(images),
-  images[] {
-    "url": asset->url,
-    alt,
-    caption
-  }
+  galleryUrl
 }`;
 
 export const PHOTO_QUERY = `*[_type == "photo" && slug.current == $slug][0] {
   _id,
   title,
-  "coverImage": coverImage.asset->url,
-  category,
+  "coverImage": image.asset->url,
   date,
   "slug": slug.current,
-  images[] {
-    "url": asset->url,
-    alt,
-    caption
-  }
+  galleryUrl
 }`;
 
-// Latest match with tickets query (for TopNav)
-export const LATEST_TICKETS_MATCH_QUERY = `*[_type == "match" && hasTickets == true] | order(date asc) [0] {
-  _id,
-  homeTeam,
-  awayTeam,
-  competition,
-  date,
-  venue,
-  event
-}`;
+// (tickets removed)
 
 // Trophies queries
 export const TROPHIES_QUERY = `*[_type == "trophy"] | order(name asc) {
@@ -334,10 +370,12 @@ export const SEARCH_PHOTOS_QUERY = `*[_type == "photo" && title match $searchTer
 
 
 // Standings mini - top 8 teams for sidebar
-export const STANDINGS_MINI_QUERY = `*[_type == "standing" && competition == $competition] | order(season desc) [0] {
+export const STANDINGS_MINI_QUERY = `*[_type == "standing" && competition->slug.current == $competition] | order(season desc) [0] {
   _id,
   season,
-  competition,
+  "competition": competition->slug.current,
+  "competitionName": competition->name,
+  "competitionShort": competition->short,
   teams[] {
     position,
     teamName,

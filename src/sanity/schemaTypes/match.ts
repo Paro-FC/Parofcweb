@@ -1,4 +1,4 @@
-import { defineType, defineField, defineArrayMember } from 'sanity'
+import { defineType, defineField } from 'sanity'
 import { CalendarIcon } from '@sanity/icons'
 
 export const match = defineType({
@@ -77,6 +77,14 @@ export const match = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'matchUrl',
+      title: 'Match link',
+      type: 'url',
+      description:
+        'External URL for this match (stream, recap, tickets, league page, etc.). Shown as a button on the match page.',
+      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+    }),
+    defineField({
       name: 'status',
       title: 'Match Status',
       type: 'string',
@@ -112,221 +120,6 @@ export const match = defineType({
       type: 'number',
       initialValue: 0,
       validation: (rule) => rule.min(0),
-    }),
-
-    // Match Events (goals, cards, substitutions)
-    defineField({
-      name: 'matchEvents',
-      title: 'Match Events',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'type',
-              title: 'Event Type',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Goal', value: 'goal' },
-                  { title: 'Penalty Goal', value: 'penalty' },
-                  { title: 'Own Goal', value: 'ownGoal' },
-                  { title: 'Yellow Card', value: 'yellowCard' },
-                  { title: 'Red Card', value: 'redCard' },
-                  { title: 'Substitution', value: 'substitution' },
-                ],
-              },
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: 'minute',
-              title: 'Minute',
-              type: 'string',
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: 'player',
-              title: 'Player Name',
-              type: 'string',
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: 'team',
-              title: 'Team',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Home', value: 'home' },
-                  { title: 'Away', value: 'away' },
-                ],
-              },
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: 'assistPlayer',
-              title: 'Assist / Substituted Player',
-              type: 'string',
-              description: 'Assist for goals, player substituted off for subs',
-            }),
-          ],
-          preview: {
-            select: {
-              type: 'type',
-              minute: 'minute',
-              player: 'player',
-              team: 'team',
-            },
-            prepare({ type, minute, player, team }) {
-              const icons: Record<string, string> = {
-                goal: '\u26BD',
-                penalty: '\u26BD(P)',
-                ownGoal: '\u26BD(OG)',
-                yellowCard: '\uD83D\uDFE8',
-                redCard: '\uD83D\uDFE5',
-                substitution: '\uD83D\uDD04',
-              }
-              return {
-                title: `${minute}' ${icons[type] || ''} ${player}`,
-                subtitle: `${team === 'home' ? 'Home' : 'Away'}`,
-              }
-            },
-          },
-        }),
-      ],
-    }),
-
-    // Match Statistics
-    defineField({
-      name: 'matchStats',
-      title: 'Match Statistics',
-      type: 'object',
-      fields: [
-        defineField({ name: 'homeShots', title: 'Home Shots', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayShots', title: 'Away Shots', type: 'number', initialValue: 0 }),
-        defineField({ name: 'homeShotsOnTarget', title: 'Home Shots on Target', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayShotsOnTarget', title: 'Away Shots on Target', type: 'number', initialValue: 0 }),
-        defineField({ name: 'homePossession', title: 'Home Possession (%)', type: 'number', initialValue: 50 }),
-        defineField({ name: 'awayPossession', title: 'Away Possession (%)', type: 'number', initialValue: 50 }),
-        defineField({ name: 'homePasses', title: 'Home Passes', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayPasses', title: 'Away Passes', type: 'number', initialValue: 0 }),
-        defineField({ name: 'homePassAccuracy', title: 'Home Pass Accuracy (%)', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayPassAccuracy', title: 'Away Pass Accuracy (%)', type: 'number', initialValue: 0 }),
-        defineField({ name: 'homeFouls', title: 'Home Fouls', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayFouls', title: 'Away Fouls', type: 'number', initialValue: 0 }),
-        defineField({ name: 'homeOffsides', title: 'Home Offsides', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayOffsides', title: 'Away Offsides', type: 'number', initialValue: 0 }),
-        defineField({ name: 'homeCorners', title: 'Home Corners', type: 'number', initialValue: 0 }),
-        defineField({ name: 'awayCorners', title: 'Away Corners', type: 'number', initialValue: 0 }),
-      ],
-    }),
-
-    // Lineups
-    defineField({
-      name: 'homeLineup',
-      title: 'Home Team Lineup',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({ name: 'name', title: 'Player Name', type: 'string', validation: (rule) => rule.required() }),
-            defineField({ name: 'number', title: 'Number', type: 'number' }),
-            defineField({
-              name: 'position',
-              title: 'Position',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Goalkeeper', value: 'GK' },
-                  { title: 'Defender', value: 'DEF' },
-                  { title: 'Midfielder', value: 'MID' },
-                  { title: 'Forward', value: 'FWD' },
-                ],
-              },
-            }),
-            defineField({ name: 'isCaptain', title: 'Captain', type: 'boolean', initialValue: false }),
-            defineField({ name: 'rating', title: 'Rating', type: 'number', description: 'Player rating (0-10)' }),
-          ],
-          preview: {
-            select: { name: 'name', number: 'number', position: 'position' },
-            prepare({ name, number, position }) {
-              return { title: `${number ? '#' + number + ' ' : ''}${name}`, subtitle: position }
-            },
-          },
-        }),
-      ],
-    }),
-    defineField({
-      name: 'awayLineup',
-      title: 'Away Team Lineup',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({ name: 'name', title: 'Player Name', type: 'string', validation: (rule) => rule.required() }),
-            defineField({ name: 'number', title: 'Number', type: 'number' }),
-            defineField({
-              name: 'position',
-              title: 'Position',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'Goalkeeper', value: 'GK' },
-                  { title: 'Defender', value: 'DEF' },
-                  { title: 'Midfielder', value: 'MID' },
-                  { title: 'Forward', value: 'FWD' },
-                ],
-              },
-            }),
-            defineField({ name: 'isCaptain', title: 'Captain', type: 'boolean', initialValue: false }),
-            defineField({ name: 'rating', title: 'Rating', type: 'number', description: 'Player rating (0-10)' }),
-          ],
-          preview: {
-            select: { name: 'name', number: 'number', position: 'position' },
-            prepare({ name, number, position }) {
-              return { title: `${number ? '#' + number + ' ' : ''}${name}`, subtitle: position }
-            },
-          },
-        }),
-      ],
-    }),
-    defineField({
-      name: 'homeFormation',
-      title: 'Home Formation',
-      type: 'string',
-      description: 'e.g., 4-3-3, 4-4-2',
-    }),
-    defineField({
-      name: 'awayFormation',
-      title: 'Away Formation',
-      type: 'string',
-      description: 'e.g., 4-3-3, 4-4-2',
-    }),
-
-    // Tickets
-    defineField({
-      name: 'hasTickets',
-      title: 'Tickets Available',
-      type: 'boolean',
-      initialValue: false,
-    }),
-    defineField({
-      name: 'ticketAvailability',
-      title: 'Ticket Availability',
-      type: 'number',
-      description: 'Number of tickets available for this match',
-      validation: (rule) => rule.min(0),
-      hidden: ({ document }) => !document?.hasTickets,
-    }),
-    defineField({
-      name: 'ticketPrice',
-      title: 'Ticket Price',
-      type: 'number',
-      description: 'Price per ticket (optional)',
-      validation: (rule) => rule.min(0),
-      hidden: ({ document }) => !document?.hasTickets,
     }),
   ],
   preview: {

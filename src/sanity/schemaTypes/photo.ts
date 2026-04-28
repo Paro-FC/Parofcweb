@@ -1,4 +1,4 @@
-import { defineType, defineField, defineArrayMember } from 'sanity'
+import { defineType, defineField } from 'sanity'
 import { ImageIcon } from '@sanity/icons'
 
 export const photo = defineType({
@@ -14,30 +14,11 @@ export const photo = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'coverImage',
-      title: 'Cover Image',
+      name: 'image',
+      title: 'Image',
       type: 'image',
-      description: 'Main image displayed in the gallery grid',
-      options: {
-        hotspot: true,
-      },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'category',
-      title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Match', value: 'Match' },
-          { title: 'Training', value: 'Training' },
-          { title: 'Press', value: 'Press' },
-          { title: 'Team', value: 'Team' },
-          { title: 'First Team', value: 'FIRST TEAM' },
-          { title: 'Paro FC', value: 'PARO FC' },
-        ],
-        layout: 'radio',
-      },
+      description: 'Single image used as the gallery thumbnail',
+      options: { hotspot: true },
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -47,31 +28,13 @@ export const photo = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'images',
-      title: 'Gallery Images',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'image',
-          options: {
-            hotspot: true,
-          },
-          fields: [
-            defineField({
-              name: 'alt',
-              title: 'Alt Text',
-              type: 'string',
-            }),
-            defineField({
-              name: 'caption',
-              title: 'Caption',
-              type: 'string',
-            }),
-          ],
-        }),
-      ],
-      description: 'All images in this gallery',
-      validation: (rule) => rule.required().min(1),
+      name: 'galleryUrl',
+      title: 'Gallery URL',
+      type: 'url',
+      description:
+        'Link to the full gallery (Google Drive, Facebook album, website page, etc.)',
+      validation: (rule) =>
+        rule.required().uri({ scheme: ['http', 'https'] }),
     }),
     defineField({
       name: 'slug',
@@ -87,17 +50,15 @@ export const photo = defineType({
   preview: {
     select: {
       title: 'title',
-      category: 'category',
       date: 'date',
-      media: 'coverImage',
-      imageCount: 'images',
+      media: 'image',
+      galleryUrl: 'galleryUrl',
     },
-    prepare({ title, category, date, media, imageCount }) {
-      const imageCountValue = Array.isArray(imageCount) ? imageCount.length : 0
+    prepare({ title, date, galleryUrl, media }) {
       const formattedDate = date ? new Date(date).toLocaleDateString() : ''
       return {
         title,
-        subtitle: `${category} - ${imageCountValue} photos - ${formattedDate}`,
+        subtitle: `${formattedDate}${galleryUrl ? ' - has link' : ''}`,
         media,
       }
     },

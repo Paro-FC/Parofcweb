@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon,
@@ -10,8 +10,10 @@ import {
 } from "@hugeicons/core-free-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { sanityFetch } from "@/sanity/lib/live";
-import { STANDINGS_QUERY, STANDINGS_SEASONS_QUERY } from "@/sanity/lib/queries";
+import { useSanityLiveQuery } from "@/sanity/lib/live-client";
+import { STANDINGS_COMPETITIONS_QUERY, STANDINGS_QUERY, STANDINGS_SEASONS_QUERY } from "@/sanity/lib/queries";
 import Loader from "@/components/Loader";
+import { STANDINGS_COMPETITIONS_FALLBACK } from "@/shared/standingsCompetitions";
 
 interface Team {
   id: number;
@@ -29,37 +31,64 @@ interface Team {
   form?: ("W" | "D" | "L")[];
 }
 
-const competitions = [
-  { id: "bpl", name: "BOB Premier League", short: "BPL" },
-  { id: "cup", name: "National Cup", short: "Cup" },
-  { id: "afc", name: "AFC Qualifiers", short: "AFC" },
-];
+function FormBadge({ v }: { v: "W" | "D" | "L" }) {
+  const c = v === "W" ? "bg-green-500" : v === "D" ? "bg-yellow-500" : "bg-red-600";
+  return (
+    <span className={`grid h-[18px] w-[18px] place-items-center rounded-[4px] text-3xs font-black text-white ${c}`}>
+      {v}
+    </span>
+  );
+}
+
+function ZoneBar({ position, totalTeams }: { position: number; totalTeams: number }) {
+  let color = "";
+  if (position === 1) color = "bg-parofc-red";
+  else if (position <= 2) color = "bg-green-500";
+  else if (position >= totalTeams - 1) color = "bg-red-500";
+  else if (position === totalTeams - 2) color = "bg-orange-400";
+  if (!color) return null;
+  return <div className={`absolute left-0 top-0 h-full w-[3px] ${color}`} />;
+}
 
 export default function StandingsPage() {
   const [selectedCompetition, setSelectedCompetition] = useState("bpl");
-  const [selectedSeason, setSelectedSeason] = useState("2025");
+  const [selectedSeason, setSelectedSeason] = useState<string>("");
   const [showSeasonDropdown, setShowSeasonDropdown] = useState(false);
   const [teams, setTeams] = useState<Team[]>([]);
-  const [seasons, setSeasons] = useState<string[]>(["2025", "2024", "2023"]);
+  const [seasons, setSeasons] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Live: available competitions for tabs (fallback to static list if empty)
+  const liveCompetitions = useSanityLiveQuery<
+    { id: string; name: string; short: string; order?: number }[]
+  >(
+    STANDINGS_COMPETITIONS_QUERY,
+    {},
+    []
+  );
+
+  const competitions = useMemo(() => {
+    const fromStudio = (liveCompetitions || []).filter((c) => c?.id);
+    if (fromStudio.length) return fromStudio;
+    return STANDINGS_COMPETITIONS_FALLBACK;
+  }, [liveCompetitions]);
+
+  // Keep selectedCompetition valid when Sanity competitions change
+  useEffect(() => {
+    if (competitions.length === 0) return;
+    if (!competitions.some((c) => c.id === selectedCompetition)) {
+      setSelectedCompetition(competitions[0].id);
+    }
+  }, [competitions, selectedCompetition]);
 
   useEffect(() => {
     const fetchStandings = async () => {
       setLoading(true);
       try {
-        const [standingsResult, seasonsResult] = await Promise.all([
-          sanityFetch({
-            query: STANDINGS_QUERY,
-            params: {
-              competition: selectedCompetition,
-              season: selectedSeason,
-            },
-          }).catch(() => ({ data: null })),
-          sanityFetch({
-            query: STANDINGS_SEASONS_QUERY,
-            params: { competition: selectedCompetition },
-          }).catch(() => ({ data: [] })),
-        ]);
+        const seasonsResult = await sanityFetch<any[]>({
+          query: STANDINGS_SEASONS_QUERY,
+          params: { competition: selectedCompetition },
+        }).catch(() => ({ data: [] }));
 
         if (seasonsResult.data && Array.isArray(seasonsResult.data)) {
           const uniqueSeasons = Array.from(
@@ -69,64 +98,53 @@ export default function StandingsPage() {
           ).sort((a, b) => b.localeCompare(a)) as string[];
           if (uniqueSeasons.length > 0) {
             setSeasons(uniqueSeasons);
-            if (!uniqueSeasons.includes(selectedSeason)) {
-              setSelectedSeason(uniqueSeasons[0]);
-            }
+            setSelectedSeason((prev) => (prev && uniqueSeasons.includes(prev) ? prev : uniqueSeasons[0]));
           }
         }
 
-        const standingsData = standingsResult.data as any;
-        if (standingsData?.teams) {
-          const teamsData = standingsData.teams.map(
-            (team: any, index: number) => ({
-              id: index + 1,
-              position: team.position,
-              name: team.teamName,
-              logo: team.teamLogo,
-              played: team.played,
-              won: team.won,
-              drawn: team.drawn,
-              lost: team.lost,
-              goalsFor: team.goalsFor,
-              goalsAgainst: team.goalsAgainst,
-              goalDifference: team.goalsFor - team.goalsAgainst,
-              points: team.points,
-              form: (team.form || []) as ("W" | "D" | "L")[],
-            }),
-          );
-          setTeams(teamsData);
-        } else {
-          setTeams([]);
-        }
       } catch (error) {
         console.error("Error fetching standings:", error);
-        setTeams([]);
       } finally {
-        setLoading(false);
+        // loading for table is handled by live query below once season exists
       }
     };
 
     fetchStandings();
-  }, [selectedCompetition, selectedSeason]);
+  }, [selectedCompetition]);
 
-  const getPositionIndicator = (position: number) => {
-    if (position === 1) return { color: "bg-emerald-400", label: "Champion" };
-    if (position <= 2)
-      return { color: "bg-cyan-400", label: "AFC Qualification" };
-    if (position >= 9) return { color: "bg-rose-500", label: "Relegation" };
-    return { color: "bg-transparent", label: "" };
-  };
+  // Live standings doc (depends on chosen competition + season)
+  const liveStandingDoc = useSanityLiveQuery<any>(
+    STANDINGS_QUERY,
+    { competition: selectedCompetition, season: selectedSeason || "" },
+    null
+  );
 
-  const getFormColor = (result: "W" | "D" | "L") => {
-    switch (result) {
-      case "W":
-        return "bg-emerald-500 text-white";
-      case "D":
-        return "bg-gray-300 text-gray-600";
-      case "L":
-        return "bg-rose-500 text-white";
+  useEffect(() => {
+    if (!selectedSeason) return;
+    setLoading(true);
+    const doc = liveStandingDoc as any;
+    if (doc?.teams) {
+      const teamsData = doc.teams.map((team: any, index: number) => ({
+        id: index + 1,
+        position: team.position,
+        name: team.teamName,
+        logo: team.teamLogo,
+        played: team.played,
+        won: team.won,
+        drawn: team.drawn,
+        lost: team.lost,
+        goalsFor: team.goalsFor,
+        goalsAgainst: team.goalsAgainst,
+        goalDifference: team.goalsFor - team.goalsAgainst,
+        points: team.points,
+        form: (team.form || []) as ("W" | "D" | "L")[],
+      }));
+      setTeams(teamsData);
+    } else {
+      setTeams([]);
     }
-  };
+    setLoading(false);
+  }, [liveStandingDoc, selectedSeason]);
 
   const selectedCompName =
     competitions.find((c) => c.id === selectedCompetition)?.name ||
@@ -136,7 +154,6 @@ export default function StandingsPage() {
     <div className="min-h-screen bg-white">
       {/* Hero Header */}
       <div className="relative bg-dark-charcoal overflow-hidden">
-        {/* Diagonal pattern */}
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -160,7 +177,6 @@ export default function StandingsPage() {
           </motion.div>
         </div>
 
-        {/* Bottom accent */}
         <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
@@ -168,7 +184,6 @@ export default function StandingsPage() {
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            {/* Tabs */}
             <div className="flex items-center gap-0 overflow-x-auto -mb-px">
               {competitions.map((comp) => (
                 <button
@@ -265,51 +280,38 @@ export default function StandingsPage() {
           </h2>
         </div>
 
-        {/* Table */}
-        <div className="rounded-xl overflow-hidden border border-gray-100">
+        {/* Table — dark card matching homepage */}
+        <div className="rounded-lg border border-parofc-red/20 bg-[#111111] p-5">
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <h2 className="flex items-center gap-2 text-xl font-black uppercase text-white">
+                Live Standings
+                <span className="flex items-center gap-1 text-xs font-bold text-red-500">
+                  <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" /> LIVE
+                </span>
+              </h2>
+              <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
+                {selectedCompName} {selectedSeason}
+              </p>
+            </div>
+          </div>
+
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[700px] border-collapse text-xs">
               <thead>
-                <tr className="bg-dark-charcoal">
-                  <th className="text-left py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest w-14">
-                    #
-                  </th>
-                  <th className="text-left py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                    Club
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
-                    Pl
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
-                    W
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
-                    D
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
-                    L
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
-                    GF
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
-                    GA
-                  </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
-                    GD
-                  </th>
-                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-parofc-gold uppercase tracking-widest w-14">
-                    Pts
-                  </th>
-                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest hidden md:table-cell">
-                    Form
-                  </th>
+                <tr className="border-b border-white/10 text-2xs font-bold uppercase tracking-wider text-white/40">
+                  <th className="w-8 px-2 py-2.5 text-left">Pos</th>
+                  <th className="px-2 py-2.5 text-left">Club</th>
+                  {["P", "W", "D", "L", "GF", "GA", "GD", "Pts"].map((h) => (
+                    <th key={h} className="px-2 py-2.5 text-center">{h}</th>
+                  ))}
+                  <th className="px-2 py-2.5 text-center">Form</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={11}>
+                    <td colSpan={11} className="py-16">
                       <Loader />
                     </td>
                   </tr>
@@ -320,9 +322,9 @@ export default function StandingsPage() {
                         <HugeiconsIcon
                           icon={Award01Icon}
                           size={32}
-                          className="text-gray-200"
+                          className="text-white/20"
                         />
-                        <span className="text-sm text-gray-400 font-medium">
+                        <span className="text-sm text-white/30 font-medium">
                           No standings data available
                         </span>
                       </div>
@@ -330,7 +332,6 @@ export default function StandingsPage() {
                   </tr>
                 ) : (
                   teams.map((team, index) => {
-                    const posIndicator = getPositionIndicator(team.position);
                     const isParoFC = team.name.toLowerCase().includes("paro");
 
                     return (
@@ -338,37 +339,17 @@ export default function StandingsPage() {
                         key={team.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          delay: index * 0.03,
-                          duration: 0.3,
-                        }}
-                        className={`border-b border-gray-50 transition-colors duration-150 ${
-                          isParoFC
-                            ? "bg-parofc-gold/5 hover:bg-parofc-gold/10"
-                            : "hover:bg-gray-50/80"
+                        transition={{ delay: index * 0.03, duration: 0.3 }}
+                        className={`relative border-b border-white/5 transition ${
+                          isParoFC ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"
                         }`}
                       >
-                        {/* Position */}
-                        <td className="py-3.5 px-3 md:px-4">
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`w-[3px] h-5 rounded-full ${posIndicator.color}`}
-                            />
-                            <span
-                              className={`text-sm font-bold ${
-                                team.position <= 3
-                                  ? "text-dark-charcoal"
-                                  : "text-gray-400"
-                              }`}
-                            >
-                              {team.position}
-                            </span>
-                          </div>
+                        <td className="px-2 py-3 font-black text-white relative">
+                          <ZoneBar position={team.position} totalTeams={teams.length} />
+                          {team.position}
                         </td>
-
-                        {/* Club */}
-                        <td className="py-3.5 px-3 md:px-4">
-                          <div className="flex items-center gap-3">
+                        <td className="px-2 py-3">
+                          <div className="flex items-center gap-2">
                             <div className="relative w-7 h-7 flex-shrink-0">
                               {team.logo ? (
                                 <Image
@@ -378,70 +359,33 @@ export default function StandingsPage() {
                                   className="object-contain"
                                 />
                               ) : (
-                                <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center">
-                                  <span className="text-[10px] font-black text-gray-400">
+                                <div className="w-7 h-7 bg-white/10 rounded-full flex items-center justify-center">
+                                  <span className="text-2xs font-black text-white/40">
                                     {team.name.charAt(0)}
                                   </span>
                                 </div>
                               )}
                             </div>
-                            <span
-                              className={`text-sm truncate ${
-                                isParoFC
-                                  ? "font-black text-dark-charcoal"
-                                  : "font-semibold text-gray-800"
-                              }`}
-                            >
+                            <span className={`font-black uppercase ${isParoFC ? "text-parofc-red" : "text-white"}`}>
                               {team.name}
                             </span>
                           </div>
                         </td>
-
-                        {/* Stats */}
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
-                          {team.played}
+                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.played}</td>
+                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.won}</td>
+                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.drawn}</td>
+                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.lost}</td>
+                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.goalsFor}</td>
+                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.goalsAgainst}</td>
+                        <td className="px-2 py-3 text-center font-bold text-white/70">
+                          {team.goalDifference > 0 ? `+${team.goalDifference}` : team.goalDifference}
                         </td>
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
-                          {team.won}
-                        </td>
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
-                          {team.drawn}
-                        </td>
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums">
-                          {team.lost}
-                        </td>
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums hidden sm:table-cell">
-                          {team.goalsFor}
-                        </td>
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm text-gray-500 tabular-nums hidden sm:table-cell">
-                          {team.goalsAgainst}
-                        </td>
-                        <td className="py-3.5 px-1.5 md:px-2 text-center text-sm font-semibold tabular-nums text-gray-700">
-                          {team.goalDifference > 0
-                            ? `+${team.goalDifference}`
-                            : team.goalDifference}
-                        </td>
-                        <td
-                          className={`py-3.5 px-3 md:px-4 text-center text-base tabular-nums ${
-                            isParoFC
-                              ? "font-black text-parofc-red"
-                              : "font-black text-dark-charcoal"
-                          }`}
-                        >
+                        <td className={`px-2 py-3 text-center font-black text-lg ${isParoFC ? "text-parofc-red" : "text-white"}`}>
                           {team.points}
                         </td>
-
-                        {/* Form */}
-                        <td className="py-3.5 px-3 md:px-4 hidden md:table-cell">
-                          <div className="flex items-center justify-center gap-1">
-                            {team.form?.map((result, i) => (
-                              <div
-                                key={i}
-                                className={`w-5 h-5 rounded-sm ${getFormColor(result)} flex items-center justify-center text-[9px] font-bold`}
-                              >
-                                {result}
-                              </div>
-                            ))}
+                        <td className="px-2 py-3">
+                          <div className="flex justify-center gap-[3px]">
+                            {team.form?.map((f, i) => <FormBadge key={i} v={f} />)}
                           </div>
                         </td>
                       </motion.tr>
@@ -451,43 +395,21 @@ export default function StandingsPage() {
               </tbody>
             </table>
           </div>
-        </div>
 
-        {/* Legend */}
-        <div className="mt-6 flex flex-wrap items-center gap-5 text-xs text-gray-400">
-          <span className="font-bold text-gray-500 uppercase tracking-wider">
-            Key
-          </span>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-sm bg-emerald-400" />
-            <span>Champion</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-sm bg-cyan-400" />
-            <span>AFC Cup Qualification</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-sm bg-rose-500" />
-            <span>Relegation</span>
-          </div>
-          <div className="w-px h-3 bg-gray-200 hidden sm:block" />
-          <div className="hidden sm:flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-sm bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white">
-              W
-            </div>
-            <span>Win</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-sm bg-gray-300 flex items-center justify-center text-[8px] font-bold text-gray-600">
-              D
-            </div>
-            <span>Draw</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-sm bg-rose-500 flex items-center justify-center text-[8px] font-bold text-white">
-              L
-            </div>
-            <span>Loss</span>
+          {/* Zone legend */}
+          <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-parofc-red" /> Champion
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-green-500" /> AFC Qualification
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-orange-400" /> Relegation Play-off
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Relegation
+            </span>
           </div>
         </div>
       </div>

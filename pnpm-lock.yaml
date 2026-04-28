@@ -44,6 +44,9 @@ importers:
       next-sanity:
         specifier: ^12.0.15
         version: 12.0.15(@emotion/is-prop-valid@1.4.0)(@sanity/client@7.14.1)(@sanity/types@5.7.0(@types/react@19.2.10))(next@16.1.5(@babel/core@7.28.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react-is@19.2.4)(react@19.2.4)(sanity@5.7.0(@emotion/is-prop-valid@1.4.0)(@noble/hashes@2.0.1)(@types/node@22.19.7)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(babel-plugin-react-compiler@1.0.0)(jiti@2.6.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.3.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(tsx@4.21.0)(typescript@5.9.3)(vitest@3.2.4(@types/node@22.19.7)(jiti@2.6.1)(jsdom@26.1.0)(tsx@4.21.0)(yaml@2.8.2))(yaml@2.8.2))(styled-components@6.3.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: ^19.0.0
         version: 19.2.4
@@ -3833,6 +3836,12 @@ packages:
       react-dom: ^19.2.3
       sanity: ^5.7.0
       styled-components: ^6.1
+
+  next-themes@0.4.6:
+    resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
 
   next@16.1.5:
     resolution: {integrity: sha512-f+wE+NSbiQgh3DSAlTaw2FwY5yGdVViAtp8TotNQj4kk4Q8Bh1sC/aL9aH+Rg1YAVn18OYXsRDT7U/079jgP7w==}
@@ -9398,6 +9407,11 @@ snapshots:
       - react-router
       - svelte
       - typescript
+
+  next-themes@0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   next@16.1.5(@babel/core@7.28.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:

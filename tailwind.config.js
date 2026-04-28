@@ -8,12 +8,16 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Plein", "system-ui", "sans-serif"],
+        sans: ["Roboto", "system-ui", "sans-serif"],
         serif: ['"Instrument Serif"', "Georgia", "serif"],
-        display: ["Excon", "system-ui", "sans-serif"],
-        heading: ['"Gotham"', "system-ui", "sans-serif"],
+        display: ["Gotham", "system-ui", "sans-serif"],
+        heading: ["Gotham", "system-ui", "sans-serif"],
       },
       fontSize: {
+        "5xs": ["7px", { lineHeight: "1.2", letterSpacing: "0.06em" }],
+        "4xs": ["8px", { lineHeight: "1.25", letterSpacing: "0.06em" }],
+        "3xs": ["9px", { lineHeight: "1.3", letterSpacing: "0.05em" }],
+        "2xs": ["10px", { lineHeight: "1.35", letterSpacing: "0.04em" }],
         xs: ["11px", { lineHeight: "1.5", letterSpacing: "0.01em" }],
         sm: ["13px", { lineHeight: "1.5", letterSpacing: "0.01em" }],
         base: ["15px", { lineHeight: "1.6", letterSpacing: "0" }],
@@ -24,30 +28,41 @@ module.exports = {
         "4xl": ["36px", { lineHeight: "1.2", letterSpacing: "-0.03em" }],
         "5xl": ["48px", { lineHeight: "1.1", letterSpacing: "-0.04em" }],
         "6xl": ["60px", { lineHeight: "1.1", letterSpacing: "-0.05em" }],
+        "hero-120": ["120px", { lineHeight: "0.95", letterSpacing: "-0.06em" }],
+        "hero-180": ["180px", { lineHeight: "0.92", letterSpacing: "-0.06em" }],
+        "hero-200": ["200px", { lineHeight: "0.92", letterSpacing: "-0.06em" }],
+        "hero-220": ["220px", { lineHeight: "0.9", letterSpacing: "-0.06em" }],
       },
       colors: {
-        // Primary & secondary (brand)
-        primary: "#ce0505",
-        secondary: "#ffad3d",
-        // Primary Colors — Paro FC Brand
+        // Primary Colors — Paro FC Brand (from brand spec)
+        primary: "#ce0505", // Paro Red
+        secondary: "#ce0505", // Paro Red (yellow replaced with red)
+        brand: {
+          red: "#ce0505",
+          yellow: "#ce0505", // kept key for compatibility; now red
+          black: "#000000",
+          white: "#ffffff",
+        },
         "paro-red": "#ce0505", // Paro Red — Primary brand & accent
-        "tiger-yellow": "#ffad3d", // Tiger Yellow — Secondary accent
+        "tiger-yellow": "#ce0505", // yellow replaced with red
+        black: "#000000",
+        white: "#ffffff",
         // Legacy aliases (mapped to new brand colors)
-        "parofc-gold": "#ffad3d", // → Tiger Yellow
+        "parofc-gold": "#ce0505", // yellow replaced with red
         "light-gold": "#EFE28D", // Light Gold / Cream
         "parofc-red": "#ce0505", // → Paro Red
         bronze: "#A66337", // Brown / Bronze
         // Neutral / Supporting Colors
-        "dark-charcoal": "#1A1A1A", // Dark Charcoal (instead of pure black)
+        "dark-charcoal": "#000000", // Brand spec black
         "medium-grey": "#5E5952", // Medium Grey
         "light-grey": "#9F9384", // Light Grey
         // Legacy support (mapping old colors to new scheme)
-        "parofc-blue": "#1A1A1A", // Map to dark charcoal for navbar/header
+        "parofc-blue": "#000000", // Map to black for navbar/header
         "dark-bg": "#4a4a4a",
       },
       backgroundImage: {
         "gradient-parofc":
-          "linear-gradient(135deg, #1A1A1A 0%, #5E5952 50%, #A66337 100%)",
+          "linear-gradient(135deg, #000000 0%, #5E5952 50%, #A66337 100%)",
       },
       animation: {
         marquee: "marquee 25s linear infinite",

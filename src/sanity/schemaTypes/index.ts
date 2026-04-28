@@ -4,11 +4,11 @@ import { match } from "./match";
 import { story } from "./story";
 import { partner } from "./partner";
 import { standing } from "./standing";
+import { standingsCompetition } from "./standingsCompetition";
 import { photo } from "./photo";
 import { trophy } from "./trophy";
 import { product } from "./product";
 import { category } from "./category";
-import { booking } from "./booking";
 import { paymentProof } from "./paymentProof";
 import { coachingStaff } from "./coachingStaff";
 import { youtubeVideo } from "./youtubeVideo";
@@ -19,12 +19,12 @@ export const schemaTypes = [
   match,
   story,
   partner,
+  standingsCompetition,
   standing,
   photo,
   trophy,
   product,
   category,
-  booking,
   paymentProof,
   coachingStaff,
   youtubeVideo,

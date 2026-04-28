@@ -7,6 +7,7 @@ import {
   Calendar03Icon,
   RefreshIcon,
   ArrowRight01Icon,
+  ArrowUpRight01Icon,
   Calendar01Icon,
 } from "@hugeicons/core-free-icons";
 import { Countdown } from "./ui/countdown";
@@ -26,7 +27,7 @@ interface Match {
   date: string;
   event: string;
   venue: string;
-  hasTickets: boolean;
+  matchUrl?: string;
 }
 
 function formatMatchDate(dateString: string) {
@@ -118,7 +119,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                         />
                       </div>
                     ) : null}
-                    <span className="text-[11px] text-white/50 uppercase tracking-widest font-semibold">
+                    <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">
                       {match.competition}
                     </span>
                   </div>
@@ -185,19 +186,32 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                   </div>
 
                   {/* CTA */}
-                  <Link href={`/matches/${match._id}`}>
-                    <Button
-                      variant="outline"
-                      className="w-full border-parofc-gold/30 bg-parofc-gold/5 hover:bg-parofc-gold hover:text-dark-charcoal text-parofc-gold transition-all duration-200 cursor-pointer font-bold text-xs uppercase tracking-wider"
-                    >
-                      Get Tickets
-                      <HugeiconsIcon
-                        icon={ArrowRight01Icon}
-                        size={14}
-                        className="ml-2"
-                      />
-                    </Button>
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    <Link href={`/matches/${match._id}`}>
+                      <Button
+                        variant="outline"
+                        className="w-full border-parofc-gold/30 bg-parofc-gold/5 hover:bg-parofc-gold hover:text-dark-charcoal text-parofc-gold transition-all duration-200 cursor-pointer font-bold text-xs uppercase tracking-wider"
+                      >
+                        Match details
+                        <HugeiconsIcon
+                          icon={ArrowRight01Icon}
+                          size={14}
+                          className="ml-2"
+                        />
+                      </Button>
+                    </Link>
+                    {match.matchUrl ? (
+                      <a
+                        href={match.matchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/15 bg-white/5 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-white/10"
+                      >
+                        Open match link
+                        <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} />
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               </motion.div>
             ))}

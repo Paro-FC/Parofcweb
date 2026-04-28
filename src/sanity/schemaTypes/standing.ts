@@ -17,15 +17,8 @@ export const standing = defineType({
     defineField({
       name: 'competition',
       title: 'Competition',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'BOB Premier League', value: 'bpl' },
-          { title: 'National Cup', value: 'cup' },
-          { title: 'AFC Qualifiers', value: 'afc' },
-        ],
-        layout: 'radio',
-      },
+      type: 'reference',
+      to: [{ type: 'standingsCompetition' }],
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -139,16 +132,12 @@ export const standing = defineType({
   preview: {
     select: {
       season: 'season',
-      competition: 'competition',
+      competitionName: 'competition->name',
+      competitionSlug: 'competition->slug.current',
     },
-    prepare({ season, competition }) {
-      const compNames: Record<string, string> = {
-        bpl: 'BOB Premier League',
-        cup: 'National Cup',
-        afc: 'AFC Qualifiers',
-      }
+    prepare({ season, competitionName, competitionSlug }) {
       return {
-        title: `${compNames[competition] || competition} - ${season}`,
+        title: `${competitionName || competitionSlug || "Competition"} - ${season}`,
         subtitle: 'Standings',
       }
     },

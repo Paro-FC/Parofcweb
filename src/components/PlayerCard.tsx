@@ -98,7 +98,7 @@ export function PlayerCard({
           {/* Player info - bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
             <div className="mb-2">
-              <p className="text-[10px] font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
+              <p className="text-2xs font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
                 {player.position}
               </p>
               <p className="text-white leading-tight">
@@ -118,7 +118,7 @@ export function PlayerCard({
                       <div className="text-lg font-black text-white leading-none tabular-nums">
                         {stat.value}
                       </div>
-                      <div className="text-[9px] font-bold text-white/40 uppercase tracking-wider mt-0.5">
+                      <div className="text-3xs font-bold text-white/40 uppercase tracking-wider mt-0.5">
                         {statLabels[key] || key}
                       </div>
                     </div>

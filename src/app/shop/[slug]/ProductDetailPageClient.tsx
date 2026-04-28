@@ -101,7 +101,7 @@ function RelatedProductCard({ product }: { product: Product }) {
         {product.badge && (
           <div className="absolute top-2 left-2">
             <span
-              className={`${badgeStyles[product.badge]} text-[9px] font-bold px-2 py-0.5 tracking-widest`}
+              className={`${badgeStyles[product.badge]} text-3xs font-bold px-2 py-0.5 tracking-widest`}
             >
               {badgeLabels[product.badge]}
             </span>
@@ -109,7 +109,7 @@ function RelatedProductCard({ product }: { product: Product }) {
         )}
         {!product.inStock && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-            <span className="bg-dark-charcoal text-white text-[9px] font-bold px-3 py-1 uppercase tracking-widest">
+            <span className="bg-dark-charcoal text-white text-3xs font-bold px-3 py-1 uppercase tracking-widest">
               Sold Out
             </span>
           </div>
@@ -117,7 +117,7 @@ function RelatedProductCard({ product }: { product: Product }) {
       </div>
       <div className="mt-3 space-y-0.5">
         {product.category?.title && (
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+          <p className="text-2xs font-bold text-gray-400 tracking-widest uppercase">
             {product.category.title}
           </p>
         )}
@@ -361,7 +361,7 @@ export default function ProductDetailPage() {
               {product.badge && (
                 <div className="absolute top-4 left-4 z-10">
                   <span
-                    className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1.5 tracking-widest`}
+                    className={`${badgeStyles[product.badge]} text-2xs font-bold px-3 py-1.5 tracking-widest`}
                   >
                     {badgeLabels[product.badge]}
                   </span>
@@ -425,7 +425,7 @@ export default function ProductDetailPage() {
             >
               {/* Category */}
               {product.category?.title && (
-                <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+                <p className="text-2xs font-bold text-gray-400 tracking-widest uppercase">
                   {product.category.title}
                 </p>
               )}

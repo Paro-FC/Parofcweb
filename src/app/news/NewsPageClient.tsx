@@ -172,14 +172,14 @@ export default function NewsPage() {
                   <div className="lg:col-span-2 flex flex-col justify-center py-2">
                     <div className="flex items-center gap-2 mb-3">
                       {featured.badge && (
-                        <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
+                        <span className="text-2xs font-bold text-parofc-red uppercase tracking-widest">
                           {featured.badge}
                         </span>
                       )}
                       {featured.badge && (
                         <span className="text-gray-300">·</span>
                       )}
-                      <span className="text-[10px] text-gray-400 font-medium">
+                      <span className="text-2xs text-gray-400 font-medium">
                         {formatDate(featured.publishedAt)}
                       </span>
                     </div>
@@ -240,12 +240,12 @@ export default function NewsPage() {
                       {/* Meta */}
                       <div className="flex items-center gap-2 mb-2">
                         {item.badge && (
-                          <span className="text-[10px] font-bold text-parofc-red uppercase tracking-widest">
+                            <span className="text-2xs font-bold text-parofc-red uppercase tracking-widest">
                             {item.badge}
                           </span>
                         )}
                         {item.badge && <span className="text-gray-300">·</span>}
-                        <span className="text-[10px] text-gray-400 font-medium">
+                        <span className="text-2xs text-gray-400 font-medium">
                           {formatDate(item.publishedAt)}
                         </span>
                       </div>

@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { unstable_cache } from "next/cache";
 import "../index.css";
-import { SanityLive } from "@/sanity/lib/live";
+import { SanityLive } from "@/sanity/lib/live-client";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { sanityFetch } from "@/sanity/lib/live";
-import {
-  PARTNERS_QUERY,
-  LATEST_TICKETS_MATCH_QUERY,
-} from "@/sanity/lib/queries";
+import { PARTNERS_QUERY } from "@/sanity/lib/queries";
+
+const getCachedPartners = unstable_cache(
+  async () => {
+    const partnersResult = await sanityFetch({ query: PARTNERS_QUERY }).catch(
+      () => ({ data: [] }),
+    );
+    return (partnersResult.data as unknown[]) || [];
+  },
+  ["layout-partners"],
+  { revalidate: 120 },
+);
 
 export const metadata: Metadata = {
   title: "Paro FC - Official Website",
@@ -25,13 +34,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Fetch partners for footer and latest match for TopNav
-  const [partnersResult, matchResult] = await Promise.all([
-    sanityFetch({ query: PARTNERS_QUERY }).catch(() => ({ data: [] })),
-    sanityFetch({ query: LATEST_TICKETS_MATCH_QUERY }).catch(() => ({
-      data: null,
-    })),
-  ]);
+  const partners = await getCachedPartners();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -39,13 +42,9 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-        <link href="https://cdn.rawgit.com/mfd/f3d96ec7f0e8f034cc22ea73b3797b59/raw/856f1dbb8d807aabceb80b6d4f94b464df461b3e/gotham.css" rel="stylesheet" />
       </head>
-      <body>
-        <ConditionalLayout
-          partners={(partnersResult.data as any) || []}
-          latestMatch={(matchResult.data as any) || null}
-        >
+      <body className="bg-[#0a0a0a]">
+        <ConditionalLayout partners={partners as any}>
           {children}
         </ConditionalLayout>
         <SanityLive />

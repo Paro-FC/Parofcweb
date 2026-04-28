@@ -60,7 +60,7 @@ export function Countdown({ targetDate }: CountdownProps) {
       <span className="text-4xl md:text-5xl font-bold text-parofc-gold">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="text-[10px] md:text-xs uppercase text-gray-600 mt-1 font-semibold">
+      <span className="text-2xs md:text-xs uppercase text-gray-600 mt-1 font-semibold">
         {label}
       </span>
     </div>

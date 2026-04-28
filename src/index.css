@@ -2,101 +2,147 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Plein Font Declarations */
+/* Roboto Font Declarations */
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-Light.otf") format("opentype");
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-LightItalic.otf") format("opentype");
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gotham Font Declarations */
+@font-face {
+  font-family: "Gotham";
+  src: url("/fonts/gotham/Gotham-Thin.otf") format("opentype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gotham";
+  src: url("/fonts/gotham/Gotham-XLight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gotham";
+  src: url("/fonts/gotham/GothamLight.ttf") format("truetype");
   font-weight: 300;
-  font-style: italic;
+  font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-Regular.otf") format("opentype");
+  font-family: "Gotham";
+  src: url("/fonts/gotham/GothamBook.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-Italic.otf") format("opentype");
+  font-family: "Gotham";
+  src: url("/fonts/gotham/GothamBookItalic.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-Medium.otf") format("opentype");
+  font-family: "Gotham";
+  src: url("/fonts/gotham/GothamMedium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-MediumItalic.otf") format("opentype");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-Bold.otf") format("opentype");
+  font-family: "Gotham";
+  src: url("/fonts/gotham/GothamBold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-BoldItalic.otf") format("opentype");
+  font-family: "Gotham";
+  src: url("/fonts/gotham/GothamBoldItalic.ttf") format("truetype");
   font-weight: 700;
   font-style: italic;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-Black.otf") format("opentype");
+  font-family: "Gotham";
+  src: url("/fonts/gotham/Gotham-Black.otf") format("opentype");
   font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Plein";
-  src: url("/fonts/Plein-BlackItalic.otf") format("opentype");
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* Excon Font Declaration (Variable) */
-@font-face {
-  font-family: "Excon";
-  src: url("/fonts/Excon-Variable.woff2") format("woff2"),
-    url("/fonts/Excon-Variable.woff") format("woff"),
-    url("/fonts/Excon-Variable.ttf") format("truetype");
-  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @layer base {
   body {
-    @apply bg-white text-dark-charcoal font-sans antialiased;
+    @apply bg-white text-black font-sans antialiased;
   }
 
   h1,

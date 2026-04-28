@@ -343,7 +343,7 @@ export default function CheckoutPage() {
           >
             {/* QR Code */}
             <div className="mb-8">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+              <p className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-3">
                 Scan to Pay
               </p>
               {paymentQrCodeUrl ? (
@@ -372,7 +372,7 @@ export default function CheckoutPage() {
 
             {/* Upload */}
             <div className="mb-8">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+              <p className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-1">
                 Upload Payment Proof
               </p>
               <p className="text-xs text-gray-400 mb-4">
@@ -502,7 +502,7 @@ export default function CheckoutPage() {
             >
               {/* Delivery Type */}
               <div>
-                <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                <h2 className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-4">
                   Delivery Type
                 </h2>
                 <div className="flex gap-2">
@@ -529,7 +529,7 @@ export default function CheckoutPage() {
                     International
                   </button>
                 </div>
-                <p className="text-[10px] text-gray-400 mt-2">
+                <p className="text-2xs text-gray-400 mt-2">
                   {checkoutType === "domestic"
                     ? "Delivery within Bhutan. Postal code not required."
                     : "International shipping. Postal code required."}
@@ -538,12 +538,12 @@ export default function CheckoutPage() {
 
               {/* Contact */}
               <div>
-                <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                <h2 className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-4">
                   Contact Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                       First Name *
                     </label>
                     <input
@@ -555,13 +555,13 @@ export default function CheckoutPage() {
                       placeholder="First name"
                     />
                     {errors.firstName && (
-                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                      <p className="text-2xs text-parofc-red font-semibold mt-1">
                         {errors.firstName}
                       </p>
                     )}
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                       Last Name *
                     </label>
                     <input
@@ -573,13 +573,13 @@ export default function CheckoutPage() {
                       placeholder="Last name"
                     />
                     {errors.lastName && (
-                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                      <p className="text-2xs text-parofc-red font-semibold mt-1">
                         {errors.lastName}
                       </p>
                     )}
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                       Email *
                     </label>
                     <input
@@ -591,13 +591,13 @@ export default function CheckoutPage() {
                       placeholder="your@email.com"
                     />
                     {errors.email && (
-                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                      <p className="text-2xs text-parofc-red font-semibold mt-1">
                         {errors.email}
                       </p>
                     )}
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                       WhatsApp No. *
                     </label>
                     <input
@@ -609,7 +609,7 @@ export default function CheckoutPage() {
                       placeholder="+975 17XXXXXX"
                     />
                     {errors.phone && (
-                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                      <p className="text-2xs text-parofc-red font-semibold mt-1">
                         {errors.phone}
                       </p>
                     )}
@@ -619,12 +619,12 @@ export default function CheckoutPage() {
 
               {/* Shipping Address */}
               <div>
-                <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                <h2 className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-4">
                   Shipping Address
                 </h2>
                 <div className="space-y-1">
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                       Address *
                     </label>
                     <input
@@ -636,14 +636,14 @@ export default function CheckoutPage() {
                       placeholder="Street address"
                     />
                     {errors.address && (
-                      <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                      <p className="text-2xs text-parofc-red font-semibold mt-1">
                         {errors.address}
                       </p>
                     )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
                     <div>
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                      <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                         City *
                       </label>
                       <input
@@ -655,13 +655,13 @@ export default function CheckoutPage() {
                         placeholder="City"
                       />
                       {errors.city && (
-                        <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                        <p className="text-2xs text-parofc-red font-semibold mt-1">
                           {errors.city}
                         </p>
                       )}
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                      <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                         Dzongkhag / State
                       </label>
                       <input
@@ -677,7 +677,7 @@ export default function CheckoutPage() {
                   {checkoutType === "international" && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
                       <div>
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                           Postal Code *
                         </label>
                         <input
@@ -689,13 +689,13 @@ export default function CheckoutPage() {
                           placeholder="Postal code"
                         />
                         {errors.zipCode && (
-                          <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                          <p className="text-2xs text-parofc-red font-semibold mt-1">
                             {errors.zipCode}
                           </p>
                         )}
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <label className="text-2xs font-bold text-gray-400 uppercase tracking-widest">
                           Country *
                         </label>
                         <input
@@ -707,7 +707,7 @@ export default function CheckoutPage() {
                           placeholder="Country"
                         />
                         {errors.country && (
-                          <p className="text-[10px] text-parofc-red font-semibold mt-1">
+                          <p className="text-2xs text-parofc-red font-semibold mt-1">
                             {errors.country}
                           </p>
                         )}
@@ -719,7 +719,7 @@ export default function CheckoutPage() {
 
               {/* Notes */}
               <div>
-                <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                <h2 className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-4">
                   Notes (Optional)
                 </h2>
                 <textarea
@@ -740,7 +740,7 @@ export default function CheckoutPage() {
                     size={14}
                     className="text-parofc-gold"
                   />
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  <span className="text-2xs font-bold text-gray-400 uppercase tracking-wider">
                     Secure Checkout
                   </span>
                 </div>
@@ -750,7 +750,7 @@ export default function CheckoutPage() {
                     size={14}
                     className="text-parofc-gold"
                   />
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  <span className="text-2xs font-bold text-gray-400 uppercase tracking-wider">
                     Fast Delivery
                   </span>
                 </div>
@@ -783,7 +783,7 @@ export default function CheckoutPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-20">
-              <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-5">
+              <h2 className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-5">
                 Order Summary
               </h2>
 
@@ -798,7 +798,7 @@ export default function CheckoutPage() {
                         fill
                         className="object-contain"
                       />
-                      <span className="absolute -top-0.5 -right-0.5 bg-dark-charcoal text-white text-[9px] w-4 h-4 flex items-center justify-center font-bold">
+                      <span className="absolute -top-0.5 -right-0.5 bg-dark-charcoal text-white text-3xs w-4 h-4 flex items-center justify-center font-bold">
                         {item.quantity}
                       </span>
                     </div>
@@ -806,7 +806,7 @@ export default function CheckoutPage() {
                       <h4 className="text-xs font-semibold text-dark-charcoal truncate">
                         {item.name}
                       </h4>
-                      <p className="text-[10px] text-gray-400">
+                      <p className="text-2xs text-gray-400">
                         Size: {item.size}
                       </p>
                       <p className="text-xs font-bold text-dark-charcoal mt-0.5">
@@ -847,7 +847,7 @@ export default function CheckoutPage() {
               {/* Payment QR */}
               {summaryPaymentQrUrl && (
                 <div className="mt-5 p-3 border border-gray-100">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                  <p className="text-2xs font-bold text-gray-400 uppercase tracking-widest mb-2">
                     Scan to Pay
                   </p>
                   <div className="flex justify-center">
@@ -863,7 +863,7 @@ export default function CheckoutPage() {
 
               {/* COD Note */}
               <div className="mt-4 p-3 bg-parofc-gold/5 border border-parofc-gold/10">
-                <p className="text-[10px] text-gray-500">
+                <p className="text-2xs text-gray-500">
                   <strong className="text-dark-charcoal">Payment:</strong> Pay
                   and upload the payment proof/screenshot in next step.
                 </p>

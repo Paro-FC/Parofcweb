@@ -244,7 +244,7 @@ export function YouTubeCarouselSection({
                           <h4 className="text-md font-black text-white uppercase tracking-wide leading-snug line-clamp-3">
                             {item.title}
                           </h4>
-                          <p className="text-[11px] text-white/70 mt-1.5 font-medium">
+                          <p className="text-xs text-white/70 mt-1.5 font-medium">
                             {formatVideoMeta(item.publishedAt)}
                           </p>
                         </div>

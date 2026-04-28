@@ -117,7 +117,7 @@ export function CartSlider() {
                         <h4 className="text-xs font-bold text-white/80 truncate leading-snug">
                           {item.name}
                         </h4>
-                        <p className="text-[10px] text-white/30 mt-0.5">
+                        <p className="text-2xs text-white/30 mt-0.5">
                           Size: {item.size}
                         </p>
                         <p className="text-xs font-bold text-parofc-gold mt-1">
@@ -187,7 +187,7 @@ export function CartSlider() {
                     {formatPrice(getSubtotal(), items[0]?.currency || "BTN")}
                   </span>
                 </div>
-                <p className="text-[10px] text-white/20">
+                <p className="text-2xs text-white/20">
                   Shipping calculated at checkout.
                 </p>
 
@@ -204,7 +204,7 @@ export function CartSlider() {
                 {/* Continue Shopping */}
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full text-center text-[10px] font-bold text-white/30 hover:text-white transition-colors cursor-pointer uppercase tracking-wider"
+                  className="w-full text-center text-2xs font-bold text-white/30 hover:text-white transition-colors cursor-pointer uppercase tracking-wider"
                 >
                   Continue Shopping
                 </button>

@@ -137,7 +137,7 @@ const ProductCard = React.memo(function ProductCard({
           {product.badge && (
             <div className="absolute top-3 left-3 z-10">
               <span
-                className={`${badgeStyles[product.badge]} text-[10px] font-bold px-3 py-1 tracking-widest`}
+                className={`${badgeStyles[product.badge]} text-2xs font-bold px-3 py-1 tracking-widest`}
               >
                 {badgeLabels[product.badge]}
               </span>
@@ -147,7 +147,7 @@ const ProductCard = React.memo(function ProductCard({
           {/* Sale percentage */}
           {product.salePrice && product.price > 0 && (
             <div className="absolute top-3 right-3 z-10">
-              <span className="bg-parofc-red text-white text-[10px] font-bold px-2 py-1">
+              <span className="bg-parofc-red text-white text-2xs font-bold px-2 py-1">
                 -
                 {Math.round(
                   ((product.price - product.salePrice) / product.price) * 100,
@@ -175,7 +175,7 @@ const ProductCard = React.memo(function ProductCard({
         {/* Info */}
         <div className="mt-3 space-y-1">
           {product.category?.title && (
-            <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+            <p className="text-2xs font-bold text-gray-400 tracking-widest uppercase">
               {product.category.title}
             </p>
           )}
@@ -327,7 +327,7 @@ export default function ShopPage() {
               {selectedCategory !== "all" && (
                 <button
                   onClick={() => setSelectedCategory("all")}
-                  className="text-[10px] font-bold text-parofc-red uppercase tracking-wider cursor-pointer hover:underline"
+                  className="text-2xs font-bold text-parofc-red uppercase tracking-wider cursor-pointer hover:underline"
                 >
                   Clear filter
                 </button>
@@ -352,7 +352,7 @@ export default function ShopPage() {
                 <div className="pb-5 grid grid-cols-1 md:grid-cols-2 gap-5">
                   {/* Category Filter */}
                   <div>
-                    <h3 className="text-[10px] font-bold text-gray-400 mb-3 tracking-widest uppercase">
+                    <h3 className="text-2xs font-bold text-gray-400 mb-3 tracking-widest uppercase">
                       Category
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -384,7 +384,7 @@ export default function ShopPage() {
 
                   {/* Sort Options */}
                   <div>
-                    <h3 className="text-[10px] font-bold text-gray-400 mb-3 tracking-widest uppercase">
+                    <h3 className="text-2xs font-bold text-gray-400 mb-3 tracking-widest uppercase">
                       Sort by
                     </h3>
                     <div className="flex flex-wrap gap-2">

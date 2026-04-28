@@ -34,7 +34,7 @@ export function PartnersSection({
   return (
     <section className="py-5 md:py-6 px-4 bg-gradient-to-b from-gray-50 border-gray-100">
       <div className="container mx-auto">
-        {/* <p className="text-[10px] font-semibold text-center text-gray-300 uppercase tracking-[0.25em] mb-4">
+        {/* <p className="text-2xs font-semibold text-center text-gray-300 uppercase tracking-[0.25em] mb-4">
           {title}
         </p> */}
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-14">

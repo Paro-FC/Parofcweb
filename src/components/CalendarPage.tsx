@@ -11,6 +11,7 @@ import {
   Calendar03Icon,
   RefreshIcon,
   ArrowRight01Icon,
+  ArrowUpRight01Icon,
   MapPinIcon,
   Clock01Icon,
 } from "@hugeicons/core-free-icons";
@@ -26,7 +27,7 @@ interface Match {
   date: string;
   event: string;
   venue: string;
-  hasTickets: boolean;
+  matchUrl?: string;
 }
 
 interface CalendarPageProps {
@@ -173,21 +174,21 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                           viewport={{ once: true }}
                           transition={{ delay: index * 0.03 }}
                         >
-                          <Link
-                            href={`/matches/${match._id}`}
-                            className="group block cursor-pointer"
-                          >
-                            <div className="border border-gray-100 hover:border-gray-200 transition-colors duration-200">
-                              <div className="flex items-stretch">
+                          <div className="flex items-stretch border border-gray-100 hover:border-gray-200 transition-colors duration-200">
+                            <Link
+                              href={`/matches/${match._id}`}
+                              className="group flex min-w-0 flex-1 cursor-pointer"
+                            >
+                              <div className="flex min-w-0 flex-1 items-stretch">
                                 {/* Date block */}
                                 <div className="w-16 md:w-20 flex-shrink-0 bg-dark-charcoal flex flex-col items-center justify-center py-4">
-                                  <span className="text-[9px] font-bold text-white/40 uppercase tracking-wider">
+                                  <span className="text-3xs font-bold text-white/40 uppercase tracking-wider">
                                     {formatMatchDay(match.date)}
                                   </span>
                                   <span className="text-2xl md:text-3xl font-black text-white leading-none tabular-nums">
                                     {formatMatchDayNum(match.date)}
                                   </span>
-                                  <span className="text-[9px] font-bold text-parofc-gold uppercase tracking-wider">
+                                  <span className="text-3xs font-bold text-parofc-gold uppercase tracking-wider">
                                     {formatMatchMonth(match.date)}
                                   </span>
                                 </div>
@@ -209,7 +210,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                         </div>
                                       ) : (
                                         <div className="w-7 h-7 md:w-8 md:h-8 bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                          <span className="text-[10px] font-black text-gray-400">
+                                          <span className="text-2xs font-black text-gray-400">
                                             {match.homeTeam.charAt(0)}
                                           </span>
                                         </div>
@@ -220,7 +221,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                     </div>
 
                                     {/* VS */}
-                                    <span className="text-[10px] font-black text-gray-300 flex-shrink-0">
+                                    <span className="text-2xs font-black text-gray-300 flex-shrink-0">
                                       VS
                                     </span>
 
@@ -240,7 +241,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                         </div>
                                       ) : (
                                         <div className="w-7 h-7 md:w-8 md:h-8 bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                          <span className="text-[10px] font-black text-gray-400">
+                                          <span className="text-2xs font-black text-gray-400">
                                             {match.awayTeam.charAt(0)}
                                           </span>
                                         </div>
@@ -264,7 +265,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                           />
                                         </div>
                                       ) : null}
-                                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate">
+                                      <span className="text-2xs font-bold text-gray-400 uppercase tracking-wider truncate">
                                         {match.competition}
                                       </span>
                                     </div>
@@ -274,7 +275,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                         size={10}
                                         className="text-gray-300 flex-shrink-0"
                                       />
-                                      <span className="text-[10px] text-gray-400">
+                                      <span className="text-2xs text-gray-400">
                                         {formatMatchTime(match.date)}
                                       </span>
                                     </div>
@@ -284,7 +285,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                         size={10}
                                         className="text-gray-300 flex-shrink-0"
                                       />
-                                      <span className="text-[10px] text-gray-400 truncate">
+                                      <span className="text-2xs text-gray-400 truncate">
                                         {match.venue}
                                       </span>
                                     </div>
@@ -298,23 +299,54 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                   />
                                 </div>
                               </div>
+                            </Link>
 
-                              {/* Mobile meta */}
-                              <div className="flex items-center gap-3 px-4 pb-3 md:hidden">
-                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                                  {match.competition}
-                                </span>
-                                <span className="text-gray-200">·</span>
-                                <span className="text-[10px] text-gray-400">
-                                  {formatMatchTime(match.date)}
-                                </span>
-                                <span className="text-gray-200">·</span>
-                                <span className="text-[10px] text-gray-400 truncate">
-                                  {match.venue}
-                                </span>
-                              </div>
+                            {match.matchUrl ? (
+                              <a
+                                href={match.matchUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hidden shrink-0 flex-col items-center justify-center gap-1 border-l border-gray-100 bg-parofc-gold/5 px-3 py-2 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-gold/15 sm:flex sm:px-4"
+                              >
+                                <HugeiconsIcon
+                                  icon={ArrowUpRight01Icon}
+                                  size={14}
+                                />
+                                Link
+                              </a>
+                            ) : null}
+                          </div>
+
+                          {/* Mobile meta */}
+                          <Link
+                            href={`/matches/${match._id}`}
+                            className="block border-x border-b border-gray-100 hover:border-gray-200 -mt-px md:hidden"
+                          >
+                            <div className="flex items-center gap-3 px-4 pb-3 pt-2 md:hidden">
+                              <span className="text-2xs font-bold text-gray-400 uppercase tracking-wider">
+                                {match.competition}
+                              </span>
+                              <span className="text-gray-200">·</span>
+                              <span className="text-2xs text-gray-400">
+                                {formatMatchTime(match.date)}
+                              </span>
+                              <span className="text-gray-200">·</span>
+                              <span className="text-2xs text-gray-400 truncate">
+                                {match.venue}
+                              </span>
                             </div>
                           </Link>
+                          {match.matchUrl ? (
+                            <a
+                              href={match.matchUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-center gap-2 border border-gray-100 border-t-0 bg-parofc-gold/5 py-2.5 text-2xs font-black uppercase tracking-wider text-parofc-red md:hidden"
+                            >
+                              <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} />
+                              Open match link
+                            </a>
+                          ) : null}
                         </motion.div>
                       );
                     })}

@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { sanityFetch } from "@/sanity/lib/live";
 import { STANDINGS_QUERY, STANDINGS_SEASONS_QUERY } from "@/sanity/lib/queries";
 import Loader from "@/components/Loader";
+import { STANDINGS_COMPETITIONS_FALLBACK } from "@/shared/standingsCompetitions";
 
 interface Team {
   id: number;
@@ -29,11 +30,7 @@ interface Team {
   form?: ("W" | "D" | "L")[];
 }
 
-const competitions = [
-  { id: "bpl", name: "BOB Premier League", short: "BPL" },
-  { id: "cup", name: "National Cup", short: "Cup" },
-  { id: "afc", name: "AFC Qualifiers", short: "AFC" },
-];
+const competitions = STANDINGS_COMPETITIONS_FALLBACK;
 
 export default function StandingsPage() {
   const [selectedCompetition, setSelectedCompetition] = useState("bpl");
@@ -273,37 +270,37 @@ export default function StandingsPage() {
             <table className="w-full">
               <thead>
                 <tr className="bg-dark-charcoal">
-                  <th className="text-left py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest w-14">
+                  <th className="text-left py-3 px-3 md:px-4 text-2xs font-bold text-white/40 uppercase tracking-widest w-14">
                     #
                   </th>
-                  <th className="text-left py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                  <th className="text-left py-3 px-3 md:px-4 text-2xs font-bold text-white/40 uppercase tracking-widest">
                     Club
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10">
                     Pl
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10">
                     W
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10">
                     D
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10">
                     L
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
                     GF
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10 hidden sm:table-cell">
                     GA
                   </th>
-                  <th className="text-center py-3 px-1.5 md:px-2 text-[10px] font-bold text-white/40 uppercase tracking-widest w-10">
+                  <th className="text-center py-3 px-1.5 md:px-2 text-2xs font-bold text-white/40 uppercase tracking-widest w-10">
                     GD
                   </th>
-                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-parofc-gold uppercase tracking-widest w-14">
+                  <th className="text-center py-3 px-3 md:px-4 text-2xs font-bold text-parofc-gold uppercase tracking-widest w-14">
                     Pts
                   </th>
-                  <th className="text-center py-3 px-3 md:px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest hidden md:table-cell">
+                  <th className="text-center py-3 px-3 md:px-4 text-2xs font-bold text-white/40 uppercase tracking-widest hidden md:table-cell">
                     Form
                   </th>
                 </tr>
@@ -381,7 +378,7 @@ export default function StandingsPage() {
                                 />
                               ) : (
                                 <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center">
-                                  <span className="text-[10px] font-black text-gray-400">
+                                  <span className="text-2xs font-black text-gray-400">
                                     {team.name.charAt(0)}
                                   </span>
                                 </div>
@@ -439,7 +436,7 @@ export default function StandingsPage() {
                             {team.form?.map((result, i) => (
                               <div
                                 key={i}
-                                className={`w-5 h-5 rounded-sm ${getFormColor(result)} flex items-center justify-center text-[9px] font-bold`}
+                                className={`w-5 h-5 rounded-sm ${getFormColor(result)} flex items-center justify-center text-3xs font-bold`}
                               >
                                 {result}
                               </div>
@@ -474,19 +471,19 @@ export default function StandingsPage() {
           </div>
           <div className="w-px h-3 bg-gray-200 hidden sm:block" />
           <div className="hidden sm:flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-sm bg-emerald-500 flex items-center justify-center text-[8px] font-bold text-white">
+            <div className="w-4 h-4 rounded-sm bg-emerald-500 flex items-center justify-center text-4xs font-bold text-white">
               W
             </div>
             <span>Win</span>
           </div>
           <div className="hidden sm:flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-sm bg-gray-300 flex items-center justify-center text-[8px] font-bold text-gray-600">
+            <div className="w-4 h-4 rounded-sm bg-gray-300 flex items-center justify-center text-4xs font-bold text-gray-600">
               D
             </div>
             <span>Draw</span>
           </div>
           <div className="hidden sm:flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-sm bg-rose-500 flex items-center justify-center text-[8px] font-bold text-white">
+            <div className="w-4 h-4 rounded-sm bg-rose-500 flex items-center justify-center text-4xs font-bold text-white">
               L
             </div>
             <span>Loss</span>

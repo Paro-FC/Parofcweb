@@ -11,19 +11,16 @@ import { CartProvider } from "@/contexts/CartContext";
 interface LayoutWrapperProps {
   children: React.ReactNode;
   partners?: any[];
-  latestMatch?: any;
 }
 
 function LayoutContent({
   children,
   partners = [],
-  latestMatch = null,
 }: LayoutWrapperProps) {
   const { isOpen, closeMenu } = useSideMenu();
 
   return (
     <>
-      {/* <TopNav latestMatch={latestMatch} /> */}
       <MainNav />
       {children}
       <Footer partners={partners} />
@@ -36,12 +33,11 @@ function LayoutContent({
 export function LayoutWrapper({
   children,
   partners = [],
-  latestMatch = null,
 }: LayoutWrapperProps) {
   return (
     <CartProvider>
       <SideMenuProvider>
-        <LayoutContent partners={partners} latestMatch={latestMatch}>
+        <LayoutContent partners={partners}>
           {children}
         </LayoutContent>
       </SideMenuProvider>

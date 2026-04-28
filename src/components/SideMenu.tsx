@@ -87,6 +87,8 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                 >
                   <Link
                     href={item.href}
+                    prefetch
+                    scroll={false}
                     onClick={onClose}
                     className="group flex items-center justify-between px-5 py-4 cursor-pointer"
                   >
