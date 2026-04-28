@@ -138,6 +138,34 @@ export default function AcademyPage() {
         <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
+      {/* Intro */}
+      <div className="container mx-auto px-4 py-10 md:py-14">
+        <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
+          Paro FC Academy
+        </p>
+        <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal uppercase tracking-tight mb-6">
+          Developing Bhutan&apos;s Future, One Generation at a Time
+        </h2>
+        <div className="space-y-4 text-base md:text-lg text-gray-700 leading-relaxed">
+          <p>
+            At Paro FC, player development begins long before the first team.
+          </p>
+          <p>
+            Our academy is built on a clear long-term pathway—designed to identify talent early,
+            nurture character, and develop technically gifted footballers who can compete at the
+            highest level.
+          </p>
+          <p>
+            From grassroots beginnings to elite youth competition, every player at Paro FC is
+            guided through a structured football journey built on discipline, learning, and
+            excellence.
+          </p>
+          <p className="font-semibold text-dark-charcoal">
+            This is where future Tigers are made.
+          </p>
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4">
@@ -182,11 +210,6 @@ export default function AcademyPage() {
               <h2 className="text-2xl md:text-3xl font-black text-dark-charcoal uppercase tracking-tight mb-3">
                 No academy content yet
               </h2>
-              <p className="text-gray-600">
-                In Studio, create an{" "}
-                <span className="font-semibold">Academy (Players)</span> document and add
-                content for Youth / Grassroot (you can upload images inside the editor).
-              </p>
             </div>
           </div>
         ) : (
