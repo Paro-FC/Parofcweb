@@ -58,7 +58,7 @@ export function Footer({ partners = [] }: FooterProps) {
   );
 
   return (
-    <footer className="border-t border-parofc-red/15 bg-[#0e0e0e]">
+    <footer className="border-t border-parofc-red/15 bg-[#0a0a0a]">
       {/* Partners sections */}
       {officialPartners.length > 0 && (
         <div className="mx-auto max-w-[1400px] px-5 pt-10">

@@ -163,7 +163,7 @@ function CountdownBlock({ value, label, showDivider = true }: { value: string; l
 }
 
 function SectionCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`rounded-lg border border-parofc-red/20 bg-[#111111] ${className}`}>{children}</div>;
+  return <div className={`rounded-lg border border-parofc-red/20 bg-[#111111] overflow-hidden ${className}`}>{children}</div>;
 }
 
 function formatDate(dateStr: string) {
@@ -219,39 +219,39 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
 
       {/* ══════ NEXT MATCH BAR ══════ */}
       {nextMatch && (
-        <section className="mx-auto max-w-[1400px] px-5 py-8">
-          <div className="rounded-lg border border-parofc-red/25 bg-[#141414] px-4 py-5 sm:px-6">
+        <section className="mx-auto max-w-[1400px] px-5 pt-5">
+          <div className="rounded-lg border border-parofc-red/20 bg-[#111111] px-4 py-5 sm:px-6">
             <div className="mb-5">
               <h2 className="text-lg font-black uppercase text-parofc-red">Next Match</h2>
               <p className="text-xs font-bold uppercase tracking-wider text-white/40">{nextMatch.competition}</p>
             </div>
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-start sm:gap-8">
+              <div className="flex items-center justify-center gap-6 sm:gap-8">
                 <div className="text-center">
                   {nextMatch.homeCrest ? (
-                    <div className="mx-auto h-16 w-16 overflow-hidden rounded-full">
+                    <div className="mx-auto h-12 w-12 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-full">
                       <Image src={nextMatch.homeCrest} alt={nextMatch.homeTeam} width={64} height={64} className="h-full w-full object-contain" />
                     </div>
                   ) : <Crest size="lg" />}
-                  <p className="mt-2 text-sm font-black uppercase tracking-wider sm:text-base">{nextMatch.homeTeam}</p>
+                  <p className="mt-2 max-w-[80px] sm:max-w-none text-xs font-black uppercase tracking-wider sm:text-base">{nextMatch.homeTeam}</p>
                 </div>
-                <div className="flex items-center gap-3 sm:flex-col sm:gap-2">
-                  <div className="h-8 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
-                  <span className="text-3xl font-black text-white sm:text-4xl">VS</span>
-                  <div className="h-8 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                  <div className="h-6 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
+                  <span className="text-2xl font-black text-white sm:text-4xl">VS</span>
+                  <div className="h-6 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
                 </div>
                 <div className="text-center">
                   {nextMatch.awayCrest ? (
-                    <div className="mx-auto h-16 w-16 overflow-hidden rounded-full">
+                    <div className="mx-auto h-12 w-12 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-full">
                       <Image src={nextMatch.awayCrest} alt={nextMatch.awayTeam} width={64} height={64} className="h-full w-full object-contain" />
                     </div>
                   ) : (
-                    <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-blue-800 text-base font-black">
+                    <div className="mx-auto grid h-12 w-12 sm:h-16 sm:w-16 shrink-0 place-items-center rounded-full bg-white/10 text-sm sm:text-base font-black">
                       {nextMatch.awayTeam.split(" ").map((w: string) => w[0]).join("").slice(0, 2)}
                     </div>
                   )}
-                  <p className="mt-2 text-sm font-black uppercase tracking-wider sm:text-base">{nextMatch.awayTeam}</p>
+                  <p className="mt-2 max-w-[80px] sm:max-w-none text-xs font-black uppercase tracking-wider sm:text-base">{nextMatch.awayTeam}</p>
                 </div>
               </div>
 
@@ -318,7 +318,7 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
       )}
 
       {/* ══════ STANDINGS + SIDEBAR ══════ */}
-      <section className="mx-auto grid max-w-[1400px] gap-5 px-5 py-8 lg:grid-cols-[1fr_360px]">
+      <section className="mx-auto grid max-w-[1400px] gap-5 px-5 pt-5 lg:grid-cols-[1fr_360px]">
         <SectionCard className="p-5">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -331,8 +331,8 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
             </div>
             <Link href="/standings" className="w-fit text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View Full Table →</Link>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] sm:min-w-[700px] border-collapse text-xs">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full min-w-[700px] border-collapse text-xs">
               <thead>
                 <tr className="border-b border-white/10 text-2xs font-bold uppercase tracking-wider text-white/40">
                   <th className="w-8 px-2 py-2.5 text-left">Pos</th>
@@ -428,8 +428,8 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
               })}
             </div>
             {paroTeam && (
-              <div className="mt-4 grid grid-cols-1 gap-3 text-center sm:grid-cols-2 sm:gap-0">
-                <div className="sm:border-r sm:border-white/10">
+              <div className="mt-4 grid grid-cols-2 gap-0 text-center">
+                <div className="border-r border-white/10">
                   <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Gap</p>
                   <div className="flex items-baseline justify-center">
                     <b className={`text-lg ${paroGap === 0 ? "text-parofc-red" : "text-white"}`}>{paroGap === 0 ? "Leading" : `-${paroGap}`}</b>
@@ -473,7 +473,7 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
 
       {/* ══════ LATEST NEWS ══════ */}
       {topNews.length > 0 && (
-        <section className="mx-auto max-w-[1400px] px-5 py-8">
+        <section className="mx-auto max-w-[1400px] px-5 pt-5">
           <SectionCard className="p-6">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-base font-black uppercase">Latest News</h2>
@@ -483,7 +483,7 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
               {topNews.map((item) => {
                 const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
                 return (
-                  <Link key={item._id} href={`/news/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#0e0e0e]">
+                  <Link key={item._id} href={`/news/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#111111]">
                     <div className="relative aspect-[2/1] overflow-hidden">
                       {imgUrl ? (
                         <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
@@ -508,7 +508,7 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
 
       {/* ══════ PARO FC TV ══════ */}
       {topVideos.length > 0 && (
-        <section className="mx-auto max-w-[1400px] px-5 py-8">
+        <section className="mx-auto max-w-[1400px] px-5 pt-5">
           <SectionCard className="p-5">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-xl font-black uppercase">Paro FC TV</h2>
@@ -539,7 +539,7 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
 
       {/* ══════ PARTNERS ══════ */}
       {mainPartners.length > 0 && (
-        <section className="mx-auto max-w-[1400px] px-5 py-8">
+        <section className="mx-auto max-w-[1400px] px-5 pt-5 pb-8">
           <SectionCard className="p-6">
             <h2 className="mb-6 text-base font-black uppercase">Our Partners</h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
