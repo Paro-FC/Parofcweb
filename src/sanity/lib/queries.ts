@@ -397,6 +397,15 @@ export const EBOOKS_QUERY = `*[_type == "ebook"] | order(_createdAt desc) {
 }`
 
 
+// Top Scorer (highest goals first)
+export const TOP_SCORER_QUERY = `*[_type == "topScorer"] | order(goals desc)[0] {
+  _id,
+  name,
+  "image": image.asset->url,
+  goals,
+  club
+}`
+
 // Standings mini - top 8 teams for sidebar
 export const STANDINGS_MINI_QUERY = `*[_type == "standing" && competition->slug.current == $competition] | order(season desc) [0] {
   _id,

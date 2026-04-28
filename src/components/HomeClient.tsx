@@ -82,6 +82,14 @@ interface YoutubeVideo {
   publishedAt?: string;
 }
 
+interface TopScorer {
+  _id: string;
+  name: string;
+  image?: string | null;
+  goals: number;
+  club: string;
+}
+
 interface HomeClientProps {
   news: NewsItem[];
   matches: Match[];
@@ -89,6 +97,7 @@ interface HomeClientProps {
   trophies: TrophyItem[];
   youtubeVideos: YoutubeVideo[];
   standings?: StandingDoc | null;
+  topScorer?: TopScorer | null;
 }
 
 function formatGD(gd: number) {
@@ -163,7 +172,7 @@ function formatDate(dateStr: string) {
 }
 
 /* ─── MAIN ─── */
-export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideos, standings }: HomeClientProps) {
+export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
   const nextMatch = matches?.[0];
   const topNews = news?.slice(0, 3) ?? [];
   const topVideos = youtubeVideos?.slice(0, 5) ?? [];
@@ -174,19 +183,34 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
   );
   const standingTeams = (liveStandings?.teams ?? []).slice().sort((a, b) => a.position - b.position);
 
-  const raceToTitle =
-    standingTeams.length > 0
-      ? standingTeams
-          .slice()
-          .sort((a, b) => b.points - a.points)
-          .slice(0, 3)
-          .map((t, idx) => ({
-            pos: idx + 1,
-            name: t.teamName,
-            pts: t.points,
-            color: idx === 0 ? "text-parofc-red" : "text-white",
-          }))
-      : [];
+  const sortedByPoints = standingTeams.length > 0
+    ? standingTeams.slice().sort((a, b) => b.points - a.points)
+    : [];
+
+  const paroTeam = sortedByPoints.find((t) =>
+    t.teamName.toLowerCase().includes("paro")
+  );
+  const paroRank = paroTeam
+    ? sortedByPoints.indexOf(paroTeam) + 1
+    : 0;
+  const leader = sortedByPoints[0] ?? null;
+  const totalTeams = sortedByPoints.length;
+  const totalRounds = totalTeams > 1 ? (totalTeams - 1) * 2 : 0;
+  const paroGamesLeft = paroTeam ? totalRounds - paroTeam.played : 0;
+  const paroGap = paroTeam && leader
+    ? leader.points - paroTeam.points
+    : 0;
+
+  const raceToTitle = sortedByPoints.slice(0, 3).map((t, idx) => {
+    const isParo = t.teamName.toLowerCase().includes("paro");
+    return {
+      pos: idx + 1,
+      name: t.teamName,
+      pts: t.points,
+      logo: t.teamLogo,
+      isParo,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -373,69 +397,77 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
         <div className="flex flex-col gap-5">
           {/* Race to the Title */}
           <SectionCard className="p-4">
-            <h3 className="mb-3 text-sm font-black uppercase tracking-wider">Race to the Title</h3>
+            <Link href="/standings" className="mb-3 text-sm font-black uppercase tracking-wider hover:text-parofc-red transition-colors block">Race to the Title</Link>
             <div className="space-y-2">
               {raceToTitle.map((t) => {
-                const isParo = t.pos === 1;
-                const barColor = isParo ? "bg-parofc-red" : "bg-white/30";
-                const barWidth = isParo ? "w-full" : t.pos === 2 ? "w-3/4" : "w-1/2";
+                const maxPts = sortedByPoints[0]?.points || 1;
+                const barPct = Math.max(20, Math.round((t.pts / maxPts) * 100));
                 return (
                   <div key={t.pos} className="flex items-center gap-3">
                     <span className="w-5 text-lg font-black text-white/30">{t.pos}</span>
-                    <div className={`flex-1 rounded-md border px-3 py-2.5 ${isParo ? "border-parofc-red/30 bg-gradient-to-r from-parofc-red/15 to-transparent" : "border-white/10"}`}>
+                    <div className={`flex-1 rounded-md border px-3 py-2.5 ${t.isParo ? "border-parofc-red/30 bg-gradient-to-r from-parofc-red/15 to-transparent" : "border-white/10"}`}>
                       <div className="flex items-center gap-2">
-                        <Crest size="sm" />
+                        {t.logo ? (
+                          <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full">
+                            <Image src={t.logo} alt={t.name} width={28} height={28} className="h-full w-full object-contain" />
+                          </div>
+                        ) : (
+                          <TeamInitialsLogo name={t.name} />
+                        )}
                         <div className="min-w-0 flex-1">
-                          <p className={`truncate text-xs font-black uppercase ${isParo ? "text-parofc-red" : ""}`}>{t.name}</p>
-                          <p className={`text-base font-black ${t.color}`}>{t.pts} <span className="text-2xs font-bold text-white/40">PTS</span></p>
+                          <p className={`truncate text-xs font-black uppercase ${t.isParo ? "text-parofc-red" : ""}`}>{t.name}</p>
+                          <p className={`text-base font-black ${t.isParo ? "text-parofc-red" : "text-white"}`}>{t.pts} <span className="text-2xs font-bold text-white/40">PTS</span></p>
                         </div>
                       </div>
                       <div className="mt-2 h-[2px] rounded-full bg-white/10">
-                        <div className={`h-full rounded-full ${barColor} ${barWidth}`} />
+                        <div className={`h-full rounded-full ${t.isParo ? "bg-parofc-red" : "bg-white/30"}`} style={{ width: `${barPct}%` }} />
                       </div>
                     </div>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-4 grid grid-cols-1 gap-3 text-center sm:grid-cols-3 sm:gap-0">
-              <div className="sm:border-r sm:border-white/10">
-                <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Gap</p>
-                <div className="flex items-baseline justify-center">
-                  <b className="text-lg text-parofc-red">+5</b>
-                  <span className="ml-0.5 text-2xs font-bold text-white/40">PTS</span>
+            {paroTeam && (
+              <div className="mt-4 grid grid-cols-1 gap-3 text-center sm:grid-cols-2 sm:gap-0">
+                <div className="sm:border-r sm:border-white/10">
+                  <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Gap</p>
+                  <div className="flex items-baseline justify-center">
+                    <b className={`text-lg ${paroGap === 0 ? "text-parofc-red" : "text-white"}`}>{paroGap === 0 ? "Leading" : `-${paroGap}`}</b>
+                    {paroGap > 0 && <span className="ml-0.5 text-2xs font-bold text-white/40">PTS</span>}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Games Left</p>
+                  <b className="block text-lg">{paroGamesLeft}</b>
                 </div>
               </div>
-              <div className="sm:border-r sm:border-white/10">
-                <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Games Left</p>
-                <b className="block text-lg">3</b>
-              </div>
-              <div>
-                <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Win Probability</p>
-                <b className="block text-lg">82%</b>
-              </div>
-            </div>
+            )}
           </SectionCard>
 
           {/* Top Scorer */}
-          <SectionCard className="relative overflow-hidden">
-            <div className="absolute right-0 top-0 h-full w-[45%] sm:w-1/2">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-transparent" />
-            </div>
-            <div className="relative z-10 p-5">
-              <h3 className="mb-4 text-base font-black uppercase tracking-wider">Top Scorer</h3>
-              <div className="flex flex-wrap items-baseline gap-2">
-                <span className="text-5xl font-black text-parofc-red sm:text-6xl">18</span>
-                <div className="h-11 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
-                <span className="text-base font-bold uppercase text-white/50">Goals</span>
+          {topScorer && (
+            <SectionCard className="relative overflow-hidden">
+              {topScorer.image && (
+                <div className="absolute right-0 top-0 h-full w-[45%] sm:w-1/2">
+                  <Image src={topScorer.image} alt={topScorer.name} fill className="object-cover object-top" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-transparent" />
+                </div>
+              )}
+              <div className="relative z-10 p-5">
+                <h3 className="mb-4 text-base font-black uppercase tracking-wider">Top Scorer</h3>
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-5xl font-black text-parofc-red sm:text-6xl">{topScorer.goals}</span>
+                  <div className="h-11 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
+                  <span className="text-base font-bold uppercase text-white/50">Goals</span>
+                </div>
+                <h4 className="mt-4 text-lg font-black uppercase sm:text-xl">{topScorer.name}</h4>
+                <p className="text-xs font-bold uppercase tracking-wider text-white/40">{topScorer.club}</p>
+                <Link href="/players" className="mt-5 flex w-fit items-center gap-2 rounded-md border border-parofc-red/30 px-5 py-2.5 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10 sm:w-fit">
+                  View All Stats <HugeiconsIcon icon={ChevronRight} size={12} primaryColor="currentColor" strokeWidth={2} />
+                </Link>
               </div>
-              <h4 className="mt-4 text-lg font-black uppercase sm:text-xl">Kinley Dorji</h4>
-              <p className="text-xs font-bold uppercase tracking-wider text-white/40">Paro FC</p>
-              <Link href="/players" className="mt-5 flex w-fit items-center gap-2 rounded-md border border-parofc-red/30 px-5 py-2.5 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10 sm:w-fit">
-                View All Stats <HugeiconsIcon icon={ChevronRight} size={12} primaryColor="currentColor" strokeWidth={2} />
-              </Link>
-            </div>
-          </SectionCard>
+            </SectionCard>
+          )}
         </div>
       </section>
 

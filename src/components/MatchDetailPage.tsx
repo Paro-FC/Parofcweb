@@ -290,7 +290,7 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-parofc-gold/40 bg-parofc-gold/10 px-8 py-3 text-xs font-black uppercase tracking-[0.2em] text-parofc-gold transition hover:bg-parofc-gold hover:text-dark-charcoal"
                   >
-                    Open match link
+                    Buy Tickets
                     <HugeiconsIcon icon={ArrowUpRight01Icon} size={16} />
                   </a>
                 </div>
