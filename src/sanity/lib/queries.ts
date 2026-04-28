@@ -368,6 +368,34 @@ export const SEARCH_PHOTOS_QUERY = `*[_type == "photo" && title match $searchTer
   "slug": slug.current
 }`;
 
+// Players — Academy content (singleton-ish: first doc wins)
+export const ACADEMY_PLAYERS_QUERY = `*[_type == "academy"] | order(_updatedAt desc)[0]{
+  _id,
+  title,
+  youth[] {
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  },
+  grassroot[] {
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  }
+}`
+
+// Ebooks
+export const EBOOKS_QUERY = `*[_type == "ebook"] | order(_createdAt desc) {
+  _id,
+  title,
+  url,
+  description
+}`
+
 
 // Standings mini - top 8 teams for sidebar
 export const STANDINGS_MINI_QUERY = `*[_type == "standing" && competition->slug.current == $competition] | order(season desc) [0] {

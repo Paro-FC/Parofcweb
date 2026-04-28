@@ -109,10 +109,11 @@ export default function PlayersPage() {
             transition={{ duration: 0.5 }}
           >
             <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
-               Team
+              Players
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              The <span className="text-parofc-gold">Squads</span>
+              The{" "}
+              <span className="text-parofc-gold">Squads</span>
             </h1>
           </motion.div>
         </div>
@@ -120,10 +121,9 @@ export default function PlayersPage() {
         <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
-      {/* Team Tabs + Position Filter — sticky */}
+      {/* Team Tabs — sticky */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4">
-          {/* Team row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-0 -mb-px">
               {(["mens", "womens"] as const).map((team) => (
@@ -131,7 +131,7 @@ export default function PlayersPage() {
                   key={team}
                   onClick={() => {
                     setActiveTeam(team);
-                    setActiveCategory("goalkeepers");
+                    // keep current section; if switching team while on coaching, keep it.
                   }}
                   className={`relative px-5 md:px-6 py-3.5 text-sm font-bold whitespace-nowrap transition-colors duration-200 uppercase tracking-wider cursor-pointer ${
                     activeTeam === team
@@ -139,10 +139,10 @@ export default function PlayersPage() {
                       : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  {team === "mens" ? "Men's Team" : "Women's Team"}
+                  {team === "mens" ? "Men's" : "Women's"}
                   {activeTeam === team && (
                     <motion.div
-                      layoutId="activeTeamTab"
+                      layoutId="activeTeamMainTab"
                       className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-gold"
                       transition={{
                         type: "spring",
@@ -155,7 +155,7 @@ export default function PlayersPage() {
               ))}
             </div>
 
-            {/* Player count */}
+            {/* Count */}
             <span className="text-xs text-gray-400 tabular-nums hidden md:block">
               {players.length} players
             </span>

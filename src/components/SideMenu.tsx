@@ -17,6 +17,8 @@ const menuItems = [
   { label: "Shop", href: "/shop" },
   { label: "Photos", href: "/photos" },
   { label: "Players", href: "/players" },
+  { label: "Academy", href: "/academy" },
+  { label: "Ebooks", href: "/ebooks" },
   { label: "News", href: "/news" },
   { label: "Calendar", href: "/calendar" },
 ];
