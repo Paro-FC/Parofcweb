@@ -190,7 +190,7 @@ export default function AcademyPage() {
             </div>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto">
+          <div>
             <div className="mb-8">
               <p className="text-xs font-bold text-parofc-gold uppercase tracking-[0.2em] mb-3">
                 {academy.title || "Academy"}
