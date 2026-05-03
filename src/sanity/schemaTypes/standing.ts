@@ -25,6 +25,9 @@ export const standing = defineType({
       name: 'teams',
       title: 'Teams',
       type: 'array',
+      options: {
+        modal: { type: 'dialog' },
+      },
       of: [
         defineArrayMember({
           type: 'object',

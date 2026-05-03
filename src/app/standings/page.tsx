@@ -373,7 +373,7 @@ export default function StandingsPage() {
                           isParo ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"
                         }`}
                       >
-                        <td className="px-2 py-3 font-black relative">
+                        <td className="px-2 py-3 font-black text-white relative">
                           <ZoneBar zone={zone} />
                           {team.position}
                         </td>
@@ -386,7 +386,7 @@ export default function StandingsPage() {
                             ) : (
                               <TeamInitialsLogo name={team.name} />
                             )}
-                            <span className={`truncate font-black uppercase ${isParo ? "text-parofc-red" : ""}`}>{team.name}</span>
+                            <span className={`truncate font-black uppercase ${isParo ? "text-parofc-red" : "text-white"}`}>{team.name}</span>
                           </div>
                         </td>
                         {[
@@ -399,7 +399,7 @@ export default function StandingsPage() {
                           formatGD(gd),
                           team.points,
                         ].map((v, i) => (
-                          <td key={i} className={`px-2 py-3 text-center font-bold ${i === 7 ? (isParo ? "text-lg text-parofc-red" : "text-lg") : "text-white/70"}`}>{v}</td>
+                          <td key={i} className={`px-2 py-3 text-center font-bold ${i === 7 ? (isParo ? "text-lg text-parofc-red" : "text-lg text-white") : "text-white/70"}`}>{v}</td>
                         ))}
                         <td className="px-2 py-3">
                           <div className="flex justify-center gap-[3px]">{team.form?.map((f, i) => <FormBadge key={i} v={f} />)}</div>
