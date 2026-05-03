@@ -15,11 +15,11 @@ interface Match {
   homeCrest?: unknown;
   awayCrest?: unknown;
   competition: string;
-  competitionLogo?: unknown;
   date: string;
   event: string;
   venue: string;
   matchUrl?: string;
+  showMatchLink?: boolean;
   status?: "upcoming" | "live" | "ht" | "ft" | "postponed" | string;
   minute?: string;
   homeScore?: number;
@@ -282,7 +282,7 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
                 </div>
               ) : null}
 
-              {match.matchUrl ? (
+              {match.matchUrl && match.showMatchLink !== false ? (
                 <div className="mt-8 flex justify-center">
                   <a
                     href={match.matchUrl}

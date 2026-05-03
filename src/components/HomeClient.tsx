@@ -16,6 +16,36 @@ import { getYoutubeIdFromUrl } from "@/lib/youtube";
 import { Hero } from "@/components/Hero";
 import { useSanityLiveQuery } from "@/sanity/lib/live-client";
 import { STANDINGS_HOME_LATEST_QUERY } from "@/sanity/lib/queries";
+import { useState, useEffect } from "react";
+
+function useCountdown(targetDate: string | undefined) {
+  const [timeLeft, setTimeLeft] = useState({ days: "--", hrs: "--", mins: "--", secs: "--" });
+
+  useEffect(() => {
+    if (!targetDate) return;
+
+    function calc() {
+      const diff = new Date(targetDate!).getTime() - Date.now();
+      if (diff <= 0) return { days: "0", hrs: "0", mins: "0", secs: "0" };
+      const days = Math.floor(diff / 86400000);
+      const hrs = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      return {
+        days: String(days),
+        hrs: String(hrs),
+        mins: String(mins),
+        secs: String(secs),
+      };
+    }
+
+    setTimeLeft(calc());
+    const id = setInterval(() => setTimeLeft(calc()), 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
+
+  return timeLeft;
+}
 
 /* ─── TYPES ─── */
 interface NewsItem {
@@ -38,6 +68,7 @@ interface Match {
   event: string;
   venue: string;
   matchUrl?: string;
+  showMatchLink?: boolean;
 }
 
 interface Partner {
@@ -116,7 +147,7 @@ function Crest({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const s = { sm: "h-7 w-7", md: "h-12 w-12", lg: "h-16 w-16" }[size];
   return (
     <div className={`${s} shrink-0 overflow-hidden rounded-full`}>
-      <Image src="/assets/logo.webp" alt="Paro FC" width={64} height={64} className="h-full w-full object-contain" />
+      <Image src="/assets/paro.png" alt="Paro FC" width={64} height={64} className="h-full w-full object-contain" />
     </div>
   );
 }
@@ -174,6 +205,7 @@ function formatDate(dateStr: string) {
 /* ─── MAIN ─── */
 export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
   const nextMatch = matches?.[0];
+  const countdown = useCountdown(nextMatch?.date);
   const topNews = news?.slice(0, 3) ?? [];
   const topVideos = youtubeVideos?.slice(0, 5) ?? [];
   const liveStandings = useSanityLiveQuery<StandingDoc | null>(
@@ -288,19 +320,19 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
               <div className="flex flex-col gap-3 sm:items-end">
                 <div className="grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-0">
                   <div className="rounded-md border border-white/10 bg-white/[0.03] sm:rounded-none sm:border-0 sm:bg-transparent">
-                    <CountdownBlock value="--" label="Days" />
+                    <CountdownBlock value={countdown.days} label="Days" />
                   </div>
                   <div className="rounded-md border border-white/10 bg-white/[0.03] sm:rounded-none sm:border-0 sm:bg-transparent">
-                    <CountdownBlock value="--" label="Hrs" />
+                    <CountdownBlock value={countdown.hrs} label="Hrs" />
                   </div>
                   <div className="rounded-md border border-white/10 bg-white/[0.03] sm:rounded-none sm:border-0 sm:bg-transparent">
-                    <CountdownBlock value="--" label="Mins" />
+                    <CountdownBlock value={countdown.mins} label="Mins" />
                   </div>
                   <div className="rounded-md border border-white/10 bg-white/[0.03] sm:rounded-none sm:border-0 sm:bg-transparent">
-                    <CountdownBlock value="--" label="Secs" showDivider={false} />
+                    <CountdownBlock value={countdown.secs} label="Secs" showDivider={false} />
                   </div>
                 </div>
-                {nextMatch.matchUrl ? (
+                {nextMatch.matchUrl && nextMatch.showMatchLink !== false ? (
                   <a
                     href={nextMatch.matchUrl}
                     target="_blank"
@@ -387,11 +419,11 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
+          {/* <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-green-500" /> AFC Qualification</span>
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-orange-400" /> Relegation Play-off</span>
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Relegation</span>
-          </div>
+          </div> */}
         </SectionCard>
 
         <div className="flex flex-col gap-5">

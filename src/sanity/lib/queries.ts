@@ -118,19 +118,19 @@ export const COACHING_STAFF_QUERY = `*[_type == "coachingStaff"] | order(order a
   "image": image.asset->url
 }`;
 
-// Matches queries
-export const MATCHES_QUERY = `*[_type == "match"] | order(date asc) [0...3] {
+// Matches queries — only upcoming/live matches (date >= now)
+export const MATCHES_QUERY = `*[_type == "match" && date >= now()] | order(date asc) [0...3] {
   _id,
   homeTeam,
   awayTeam,
   "homeCrest": homeCrest.asset->url,
   "awayCrest": awayCrest.asset->url,
-  competition,
-  "competitionLogo": competitionLogo.asset->url,
+  "competition": competition->name,
   date,
   event,
   venue,
-  matchUrl
+  matchUrl,
+  showMatchLink
 }`;
 
 // All matches query for calendar page
@@ -150,17 +150,12 @@ export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
       url
     }
   },
-  competition,
-  competitionLogo {
-    asset-> {
-      _id,
-      url
-    }
-  },
+  "competition": competition->name,
   date,
   event,
   venue,
-  matchUrl
+  matchUrl,
+  showMatchLink
 }`;
 
 // Single match query
@@ -180,17 +175,12 @@ export const MATCH_QUERY = `*[_type == "match" && _id == $id][0] {
       url
     }
   },
-  competition,
-  competitionLogo {
-    asset-> {
-      _id,
-      url
-    }
-  },
+  "competition": competition->name,
   date,
   event,
   venue,
   matchUrl,
+  showMatchLink,
   status,
   minute,
   homeScore,

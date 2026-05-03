@@ -132,13 +132,11 @@ export const standing = defineType({
   preview: {
     select: {
       season: 'season',
-      competitionName: 'competition->name',
-      competitionSlug: 'competition->slug.current',
     },
-    prepare({ season, competitionName, competitionSlug }) {
+    prepare({ season }) {
       return {
-        title: `${competitionName || competitionSlug || "Competition"} - ${season}`,
-        subtitle: 'Standings',
+        title: season || 'New Standing',
+        subtitle: 'Standing',
       }
     },
   },

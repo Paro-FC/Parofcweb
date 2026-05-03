@@ -286,11 +286,11 @@ export default function ParoFCRedWebsite() {
             </table>
           </div>
           {/* Zone legend */}
-          <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
+          {/* <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-green-500" /> AFC Qualification</span>
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-orange-400" /> Relegation Play-off</span>
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Relegation</span>
-          </div>
+          </div> */}
         </SectionCard>
 
         {/* Sidebar */}

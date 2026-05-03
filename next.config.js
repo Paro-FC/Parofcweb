@@ -9,6 +9,7 @@ const nextConfig = {
   // Image optimization
   images: {
     formats: ["image/webp", "image/avif"],
+    qualities: [100, 75],
     remotePatterns: [
       {
         protocol: "https",

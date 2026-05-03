@@ -23,9 +23,9 @@ export const metadata: Metadata = {
   description:
     "Official home of Paro FC: news, fixtures, squad, tickets, and the club shop.",
   icons: {
-    icon: "/assets/logo.webp",
-    apple: "/assets/logo.webp",
-    shortcut: "/assets/logo.webp",
+    icon: "/assets/paro.png",
+    apple: "/assets/paro.png",
+    shortcut: "/assets/paro.png",
   },
 };
 

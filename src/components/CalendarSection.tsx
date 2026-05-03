@@ -23,11 +23,11 @@ interface Match {
   homeCrest?: string | null;
   awayCrest?: string | null;
   competition: string;
-  competitionLogo?: string | null;
   date: string;
   event: string;
   venue: string;
   matchUrl?: string;
+  showMatchLink?: boolean;
 }
 
 function formatMatchDate(dateString: string) {
@@ -108,17 +108,6 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                 <div className="p-6">
                   {/* Competition */}
                   <div className="flex items-center gap-2 mb-6">
-                    {match.competitionLogo &&
-                    match.competitionLogo.startsWith("http") ? (
-                      <div className="relative w-5 h-5">
-                        <Image
-                          src={match.competitionLogo}
-                          alt={match.competition}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    ) : null}
                     <span className="text-xs text-white/50 uppercase tracking-widest font-semibold">
                       {match.competition}
                     </span>
@@ -200,7 +189,7 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
                         />
                       </Button>
                     </Link>
-                    {match.matchUrl ? (
+                    {match.matchUrl && match.showMatchLink !== false ? (
                       <a
                         href={match.matchUrl}
                         target="_blank"

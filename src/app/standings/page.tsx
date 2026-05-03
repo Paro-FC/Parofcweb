@@ -40,14 +40,39 @@ function FormBadge({ v }: { v: "W" | "D" | "L" }) {
   );
 }
 
-function ZoneBar({ position, totalTeams }: { position: number; totalTeams: number }) {
-  let color = "";
-  if (position === 1) color = "bg-parofc-red";
-  else if (position <= 2) color = "bg-green-500";
-  else if (position >= totalTeams - 1) color = "bg-red-500";
-  else if (position === totalTeams - 2) color = "bg-orange-400";
-  if (!color) return null;
-  return <div className={`absolute left-0 top-0 h-full w-[3px] ${color}`} />;
+function zoneFromPosition(position: number) {
+  if (position === 1) return "green";
+  if (position === 8) return "orange";
+  if (position >= 9) return "red";
+  return null;
+}
+
+function ZoneBar({ zone }: { zone: string | null }) {
+  if (!zone) return null;
+  const c = zone === "green" ? "bg-green-500" : zone === "orange" ? "bg-orange-400" : "bg-red-500";
+  return <div className={`absolute left-0 top-0 h-full w-[3px] ${c}`} />;
+}
+
+function TeamInitialsLogo({ name }: { name: string }) {
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/5 ring-1 ring-white/10">
+      <span className="text-3xs font-black uppercase tracking-wide text-white/40">
+        {initials || "—"}
+      </span>
+    </div>
+  );
+}
+
+function formatGD(gd: number) {
+  return gd > 0 ? `+${gd}` : `${gd}`;
 }
 
 export default function StandingsPage() {
@@ -296,14 +321,19 @@ export default function StandingsPage() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full min-w-[700px] border-collapse text-xs">
               <thead>
                 <tr className="border-b border-white/10 text-2xs font-bold uppercase tracking-wider text-white/40">
-                  <th className="w-8 px-2 py-2.5 text-left">Pos</th>
-                  <th className="px-2 py-2.5 text-left">Club</th>
+                  <th className="w-8 px-2 py-2.5 text-left text-white">Pos</th>
+                  <th className="px-2 py-2.5 text-left text-white">Club</th>
                   {["P", "W", "D", "L", "GF", "GA", "GD", "Pts"].map((h) => (
-                    <th key={h} className="px-2 py-2.5 text-center">{h}</th>
+                    <th
+                      key={h}
+                      className={`px-2 py-2.5 text-center ${h === "Pts" ? "text-white" : ""}`}
+                    >
+                      {h}
+                    </th>
                   ))}
                   <th className="px-2 py-2.5 text-center">Form</th>
                 </tr>
@@ -331,64 +361,50 @@ export default function StandingsPage() {
                     </td>
                   </tr>
                 ) : (
-                  teams.map((team, index) => {
-                    const isParoFC = team.name.toLowerCase().includes("paro");
+                  teams.map((team) => {
+                    const isParo = team.name === "Paro FC";
+                    const zone = zoneFromPosition(team.position);
+                    const gd = team.goalDifference;
 
                     return (
-                      <motion.tr
+                      <tr
                         key={team.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.03, duration: 0.3 }}
                         className={`relative border-b border-white/5 transition ${
-                          isParoFC ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"
+                          isParo ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"
                         }`}
                       >
-                        <td className="px-2 py-3 font-black text-white relative">
-                          <ZoneBar position={team.position} totalTeams={teams.length} />
+                        <td className="px-2 py-3 font-black relative">
+                          <ZoneBar zone={zone} />
                           {team.position}
                         </td>
                         <td className="px-2 py-3">
-                          <div className="flex items-center gap-2">
-                            <div className="relative w-7 h-7 flex-shrink-0">
-                              {team.logo ? (
-                                <Image
-                                  src={team.logo}
-                                  alt={team.name}
-                                  fill
-                                  className="object-contain"
-                                />
-                              ) : (
-                                <div className="w-7 h-7 bg-white/10 rounded-full flex items-center justify-center">
-                                  <span className="text-2xs font-black text-white/40">
-                                    {team.name.charAt(0)}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                            <span className={`font-black uppercase ${isParoFC ? "text-parofc-red" : "text-white"}`}>
-                              {team.name}
-                            </span>
+                          <div className="flex min-w-0 items-center gap-2">
+                            {team.logo ? (
+                              <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full">
+                                <Image src={team.logo} alt={team.name} width={28} height={28} className="h-full w-full object-contain" />
+                              </div>
+                            ) : (
+                              <TeamInitialsLogo name={team.name} />
+                            )}
+                            <span className={`truncate font-black uppercase ${isParo ? "text-parofc-red" : ""}`}>{team.name}</span>
                           </div>
                         </td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.played}</td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.won}</td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.drawn}</td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.lost}</td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.goalsFor}</td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">{team.goalsAgainst}</td>
-                        <td className="px-2 py-3 text-center font-bold text-white/70">
-                          {team.goalDifference > 0 ? `+${team.goalDifference}` : team.goalDifference}
-                        </td>
-                        <td className={`px-2 py-3 text-center font-black text-lg ${isParoFC ? "text-parofc-red" : "text-white"}`}>
-                          {team.points}
-                        </td>
+                        {[
+                          team.played,
+                          team.won,
+                          team.drawn,
+                          team.lost,
+                          team.goalsFor,
+                          team.goalsAgainst,
+                          formatGD(gd),
+                          team.points,
+                        ].map((v, i) => (
+                          <td key={i} className={`px-2 py-3 text-center font-bold ${i === 7 ? (isParo ? "text-lg text-parofc-red" : "text-lg") : "text-white/70"}`}>{v}</td>
+                        ))}
                         <td className="px-2 py-3">
-                          <div className="flex justify-center gap-[3px]">
-                            {team.form?.map((f, i) => <FormBadge key={i} v={f} />)}
-                          </div>
+                          <div className="flex justify-center gap-[3px]">{team.form?.map((f, i) => <FormBadge key={i} v={f} />)}</div>
                         </td>
-                      </motion.tr>
+                      </tr>
                     );
                   })
                 )}
@@ -397,7 +413,7 @@ export default function StandingsPage() {
           </div>
 
           {/* Zone legend */}
-          <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
+          {/* <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
             <span className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-parofc-red" /> Champion
             </span>
@@ -410,7 +426,7 @@ export default function StandingsPage() {
             <span className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Relegation
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -320,7 +320,7 @@ export function CalendarSyncModal({
 
             <div className="flex-shrink-0">
               <Image
-                src="/assets/logo.webp"
+                src="/assets/paro.png"
                 alt="Paro FC Logo"
                 width={40}
                 height={40}

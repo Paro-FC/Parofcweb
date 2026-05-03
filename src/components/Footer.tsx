@@ -80,7 +80,7 @@ export function Footer({ partners = [] }: FooterProps) {
         <div>
           <Link href="/" className="flex items-center gap-3">
             <Image
-              src="/assets/logo.webp"
+              src="/assets/paro.png"
               alt="Paro FC"
               width={48}
               height={48}

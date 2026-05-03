@@ -23,11 +23,11 @@ interface Match {
   homeCrest?: unknown;
   awayCrest?: unknown;
   competition: string;
-  competitionLogo?: unknown;
   date: string;
   event: string;
   venue: string;
   matchUrl?: string;
+  showMatchLink?: boolean;
 }
 
 interface CalendarPageProps {
@@ -164,8 +164,6 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                     {monthMatches.map((match, index) => {
                       const homeUrl = getImageUrl(match.homeCrest);
                       const awayUrl = getImageUrl(match.awayCrest);
-                      const compUrl = getImageUrl(match.competitionLogo);
-
                       return (
                         <motion.div
                           key={match._id}
@@ -255,16 +253,6 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                   {/* Meta */}
                                   <div className="hidden md:flex flex-col gap-1 flex-shrink-0 w-40">
                                     <div className="flex items-center gap-1.5">
-                                      {compUrl ? (
-                                        <div className="relative w-3.5 h-3.5 flex-shrink-0">
-                                          <Image
-                                            src={compUrl}
-                                            alt={match.competition}
-                                            fill
-                                            className="object-contain"
-                                          />
-                                        </div>
-                                      ) : null}
                                       <span className="text-2xs font-bold text-gray-400 uppercase tracking-wider truncate">
                                         {match.competition}
                                       </span>
@@ -301,7 +289,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                               </div>
                             </Link>
 
-                            {match.matchUrl ? (
+                            {match.matchUrl && match.showMatchLink !== false ? (
                               <a
                                 href={match.matchUrl}
                                 target="_blank"
@@ -312,7 +300,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                   icon={ArrowUpRight01Icon}
                                   size={14}
                                 />
-                                Link
+                                Buy Tickets
                               </a>
                             ) : null}
                           </div>
@@ -336,7 +324,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                               </span>
                             </div>
                           </Link>
-                          {match.matchUrl ? (
+                          {match.matchUrl && match.showMatchLink !== false ? (
                             <a
                               href={match.matchUrl}
                               target="_blank"
@@ -344,7 +332,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                               className="flex items-center justify-center gap-2 border border-gray-100 border-t-0 bg-parofc-gold/5 py-2.5 text-2xs font-black uppercase tracking-wider text-parofc-red md:hidden"
                             >
                               <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} />
-                              Open match link
+                              Buy Tickets
                             </a>
                           ) : null}
                         </motion.div>

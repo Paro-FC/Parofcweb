@@ -36,22 +36,8 @@ export const match = defineType({
     defineField({
       name: 'competition',
       title: 'Competition',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Liga Premier', value: 'Liga Premier' },
-          { title: 'Copa Nacional', value: 'Copa Nacional' },
-          { title: 'AFC Cup', value: 'AFC Cup' },
-          { title: 'Friendly', value: 'Friendly' },
-        ],
-      },
-    }),
-    defineField({
-      name: 'competitionLogo',
-      title: 'Competition Logo',
-      type: 'image',
-      options: { hotspot: true },
-      description: 'Upload the competition logo',
+      type: 'reference',
+      to: [{ type: 'standingsCompetition' }],
     }),
     defineField({
       name: 'date',
@@ -83,6 +69,14 @@ export const match = defineType({
       description:
         'External URL for this match (stream, recap, tickets, league page, etc.). Shown as a button on the match page.',
       validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+    }),
+    defineField({
+      name: 'showMatchLink',
+      title: 'Show match link',
+      type: 'boolean',
+      initialValue: true,
+      description: 'Toggle off to hide the match link button on the website.',
+      hidden: ({ document }) => !document?.matchUrl,
     }),
     defineField({
       name: 'status',
@@ -127,18 +121,17 @@ export const match = defineType({
       homeTeam: 'homeTeam',
       awayTeam: 'awayTeam',
       date: 'date',
-      competition: 'competition',
       homeCrest: 'homeCrest',
       homeScore: 'homeScore',
       awayScore: 'awayScore',
       status: 'status',
     },
-    prepare({ homeTeam, awayTeam, date, competition, homeCrest, homeScore, awayScore, status }) {
+    prepare({ homeTeam, awayTeam, date, homeCrest, homeScore, awayScore, status }) {
       const formattedDate = date ? new Date(date).toLocaleDateString() : 'TBD'
       const score = status && status !== 'upcoming' ? ` (${homeScore ?? 0} - ${awayScore ?? 0})` : ''
       return {
         title: `${homeTeam} vs ${awayTeam}${score}`,
-        subtitle: `${competition} - ${formattedDate}`,
+        subtitle: formattedDate,
         media: homeCrest,
       }
     },

@@ -39,7 +39,7 @@
 //         <div className="flex items-center justify-between px-4 h-16">
 //           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
 //             <Image
-//               src="/assets/logo.webp"
+//               src="/assets/paro.png"
 //               alt="Paro FC"
 //               width={128}
 //               height={128}
@@ -88,7 +88,7 @@
 //         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-5 py-3">
 //           <Link href="/" className="flex items-center gap-3">
 //             <Image
-//               src="/assets/logo.webp"
+//               src="/assets/paro.png"
 //               alt="Paro FC"
 //               width={128}
 //               height={128}
@@ -211,7 +211,7 @@ export function MainNav() {
         <div className="flex items-center justify-between px-4 h-16">
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/assets/logo.webp"
+              src="/assets/paro.png"
               alt="Paro FC"
               width={128}
               height={128}
@@ -261,7 +261,7 @@ export function MainNav() {
           <div className="flex items-center gap-8">
             <Link href="/" className="flex-shrink-0">
               <Image
-                src="/assets/logo.webp"
+                src="/assets/paro.png"
                 alt="Paro FC"
                 width={128}
                 height={128}

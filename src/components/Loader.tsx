@@ -8,7 +8,7 @@ export default function Loader({ fullScreen = false }: { fullScreen?: boolean })
       <div className="flex flex-col items-center">
         <div className="animate-pulse">
           <img
-            src="/assets/logo.webp"
+            src="/assets/paro.png"
             alt="Paro FC"
             width={80}
             height={80}
