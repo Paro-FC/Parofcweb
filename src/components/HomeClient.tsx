@@ -220,7 +220,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
     ? standingTeams.slice().sort((a, b) => b.points - a.points)
     : [];
 
-  const raceToTitle = sortedByPoints.slice(0, 4).map((t, idx) => {
+  const raceToTitle = sortedByPoints.slice(0, 5).map((t, idx) => {
     const isParo = t.teamName.toLowerCase().includes("paro");
     return {
       pos: idx + 1,
@@ -466,9 +466,6 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
                 </div>
                 <h4 className="mt-4 text-lg font-black uppercase sm:text-xl">{topScorer.name}</h4>
                 <p className="text-xs font-bold uppercase tracking-wider text-white/40">{topScorer.club}</p>
-                <Link href="/players" className="mt-5 flex w-fit items-center gap-2 rounded-md border border-parofc-red/30 px-5 py-2.5 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10 sm:w-fit">
-                  View All Stats <HugeiconsIcon icon={ChevronRight} size={12} primaryColor="currentColor" strokeWidth={2} />
-                </Link>
               </div>
             </SectionCard>
           )}
