@@ -3,7 +3,7 @@
 import { createClient } from "@sanity/client";
 import type { QueryParams } from "@sanity/client";
 import { SANITY_FALLBACKS } from "@/lib/constants";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function getLiveSanityConfig() {
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || SANITY_FALLBACKS.PROJECT_ID;
@@ -20,42 +20,42 @@ const liveClient = createClient(getLiveSanityConfig());
 
 export function useSanityLiveQuery<T>(query: string, params: QueryParams, initialData: T) {
   const [data, setData] = useState<T>(initialData);
-  const paramsKey = useMemo(() => JSON.stringify(params ?? {}), [params]);
-  const mountedRef = useRef(false);
+
+  // Always-current refs so the effect never captures stale values
+  const paramsRef = useRef(params);
+  paramsRef.current = params;
+
+  const paramsKey = JSON.stringify(params ?? {});
 
   useEffect(() => {
-    mountedRef.current = true;
+    let active = true;
 
+    // Initial fetch with current params
     liveClient
-      .fetch<T>(query, params)
-      .then((res) => {
-        if (mountedRef.current) setData(res);
-      })
-      .catch(() => {
-        // keep initialData on failure
-      });
+      .fetch<T>(query, paramsRef.current)
+      .then((res) => { if (active) setData(res); })
+      .catch(() => {});
 
+    // Live subscription — re-fetches on any matching document change
     const sub = liveClient
-      .listen(query, params, { includeResult: false, visibility: "query" })
+      .listen(query, paramsRef.current, { includeResult: false, visibility: "query" })
       .subscribe({
         next: async () => {
           try {
-            const res = await liveClient.fetch<T>(query, params);
-            if (mountedRef.current) setData(res);
-          } catch {
-            // ignore transient errors
-          }
+            const res = await liveClient.fetch<T>(query, paramsRef.current);
+            if (active) setData(res);
+          } catch {}
         },
-        error: () => {
-          // ignore stream errors
-        },
+        error: () => {},
       });
 
     return () => {
-      mountedRef.current = false;
+      active = false;
       sub.unsubscribe();
     };
-  }, [query, paramsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  // paramsKey is the stable string representation of params — re-run when it changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, paramsKey]);
 
   return data;
 }
@@ -64,4 +64,3 @@ export function useSanityLiveQuery<T>(query: string, params: QueryParams, initia
 export function SanityLive() {
   return null;
 }
-

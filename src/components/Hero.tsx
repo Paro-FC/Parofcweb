@@ -91,9 +91,10 @@ export function Hero({ news }: HeroProps) {
     <section className="relative w-full overflow-hidden min-h-[calc(100dvh-4rem-1px)] md:min-h-[calc(100dvh-5rem-1px)] h-[calc(100dvh-4rem-1px)] md:h-[calc(100dvh-5rem-1px)]">
       {newsItem.image ? (
         <Image
-          src={urlFor(newsItem.image).width(1920).height(1080).url()}
+          src={urlFor(newsItem.image).width(2560).quality(90).auto("format").url()}
           alt={newsItem.title}
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
@@ -102,6 +103,7 @@ export function Hero({ news }: HeroProps) {
           src="/assets/Timezones K Benhavn.webp"
           alt="Hero Background"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />

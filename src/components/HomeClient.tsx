@@ -15,6 +15,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { getYoutubeIdFromUrl } from "@/lib/youtube";
 import { Hero } from "@/components/Hero";
 import { useSanityLiveQuery } from "@/sanity/lib/live-client";
+import { LiveStandingsTable, sortTeamsByPoints } from "@/components/LiveStandingsTable";
 import { STANDINGS_HOME_LATEST_QUERY } from "@/sanity/lib/queries";
 import { useState, useEffect } from "react";
 
@@ -132,17 +133,6 @@ interface HomeClientProps {
   topScorer?: TopScorer | null;
 }
 
-function formatGD(gd: number) {
-  return gd > 0 ? `+${gd}` : `${gd}`;
-}
-
-function zoneFromPosition(position: number) {
-  if (position === 1) return "green";
-  if (position === 8) return "orange";
-  if (position >= 9) return "red";
-  return null;
-}
-
 /* ─── SMALL COMPONENTS ─── */
 function Crest({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const s = { sm: "h-7 w-7", md: "h-12 w-12", lg: "h-16 w-16" }[size];
@@ -171,16 +161,6 @@ function TeamInitialsLogo({ name }: { name: string }) {
   );
 }
 
-function FormBadge({ v }: { v: string }) {
-  const c = v === "W" ? "bg-green-500" : v === "D" ? "bg-yellow-500" : "bg-red-600";
-  return <span className={`grid h-[18px] w-[18px] place-items-center rounded-[4px] text-3xs font-black text-white ${c}`}>{v}</span>;
-}
-
-function ZoneBar({ zone }: { zone: string | null }) {
-  if (!zone) return null;
-  const c = zone === "green" ? "bg-green-500" : zone === "orange" ? "bg-orange-400" : "bg-red-500";
-  return <div className={`absolute left-0 top-0 h-full w-[3px] ${c}`} />;
-}
 
 function CountdownBlock({ value, label, showDivider = true }: { value: string; label: string; showDivider?: boolean }) {
   return (
@@ -214,11 +194,8 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
     {},
     standings ?? null
   );
-  const standingTeams = (liveStandings?.teams ?? []).slice().sort((a, b) => a.position - b.position);
-
-  const sortedByPoints = standingTeams.length > 0
-    ? standingTeams.slice().sort((a, b) => b.points - a.points)
-    : [];
+  const standingTeams = sortTeamsByPoints(liveStandings?.teams ?? []);
+  const sortedByPoints = standingTeams;
 
   const raceToTitle = sortedByPoints.slice(0, 5).map((t, idx) => {
     const isParo = t.teamName.toLowerCase().includes("paro");
@@ -351,60 +328,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
             <Link href="/standings" className="w-fit text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View Full Table →</Link>
           </div>
           <div className="overflow-x-auto scrollbar-hide">
-            <table className="w-full min-w-[700px] border-collapse text-xs">
-              <thead>
-                <tr className="border-b border-white/10 text-2xs font-bold uppercase tracking-wider text-white/40">
-                  <th className="w-8 px-2 py-2.5 text-left">Pos</th>
-                  <th className="px-2 py-2.5 text-left">Club</th>
-                  {["P", "W", "D", "L", "GF", "GA", "GD", "Pts"].map((h) => (
-                    <th key={h} className="px-2 py-2.5 text-center">{h}</th>
-                  ))}
-                  <th className="px-2 py-2.5 text-center">Form</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(standingTeams.length > 0 ? standingTeams : []).map((team) => {
-                  const isParo = team.teamName === "Paro FC";
-                  const zone = zoneFromPosition(team.position);
-                  const gd = team.goalsFor - team.goalsAgainst;
-                  return (
-                    <tr key={team.teamName} className={`relative border-b border-white/5 transition ${isParo ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"}`}>
-                      <td className="px-2 py-3 font-black relative">
-                        <ZoneBar zone={zone} />
-                        {team.position}
-                      </td>
-                      <td className="px-2 py-3">
-                        <div className="flex min-w-0 items-center gap-2">
-                          {team.teamLogo ? (
-                            <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full">
-                              <Image src={team.teamLogo} alt={team.teamName} width={28} height={28} className="h-full w-full object-contain" />
-                            </div>
-                          ) : (
-                            <TeamInitialsLogo name={team.teamName} />
-                          )}
-                          <span className={`truncate font-black uppercase ${isParo ? "text-parofc-red" : ""}`}>{team.teamName}</span>
-                        </div>
-                      </td>
-                      {[
-                        team.played,
-                        team.won,
-                        team.drawn,
-                        team.lost,
-                        team.goalsFor,
-                        team.goalsAgainst,
-                        formatGD(gd),
-                        team.points,
-                      ].map((v, i) => (
-                        <td key={i} className={`px-2 py-3 text-center font-bold ${i === 7 ? (isParo ? "text-lg text-parofc-red" : "text-lg") : "text-white/70"}`}>{v}</td>
-                      ))}
-                      <td className="px-2 py-3">
-                        <div className="flex justify-center gap-[3px]">{(team.form ?? []).map((f, i) => <FormBadge key={i} v={f} />)}</div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <LiveStandingsTable teams={standingTeams} />
           </div>
           {/* <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-green-500" /> AFC Qualification</span>

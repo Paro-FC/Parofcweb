@@ -149,21 +149,29 @@ export default function StandingsPage() {
     setLoading(true);
     const doc = liveStandingDoc as any;
     if (doc?.teams) {
-      const teamsData = doc.teams.map((team: any, index: number) => ({
-        id: index + 1,
-        position: team.position,
-        name: team.teamName,
-        logo: team.teamLogo,
-        played: team.played,
-        won: team.won,
-        drawn: team.drawn,
-        lost: team.lost,
-        goalsFor: team.goalsFor,
-        goalsAgainst: team.goalsAgainst,
-        goalDifference: team.goalsFor - team.goalsAgainst,
-        points: team.points,
-        form: (team.form || []) as ("W" | "D" | "L")[],
-      }));
+      const teamsData = doc.teams
+        .slice()
+        .sort(
+          (a: any, b: any) =>
+            Number(b.points) - Number(a.points) ||
+            (Number(b.goalsFor) - Number(b.goalsAgainst)) -
+              (Number(a.goalsFor) - Number(a.goalsAgainst)),
+        )
+        .map((team: any, index: number) => ({
+          id: index + 1,
+          position: index + 1,
+          name: team.teamName,
+          logo: team.teamLogo,
+          played: team.played,
+          won: team.won,
+          drawn: team.drawn,
+          lost: team.lost,
+          goalsFor: team.goalsFor,
+          goalsAgainst: team.goalsAgainst,
+          goalDifference: team.goalsFor - team.goalsAgainst,
+          points: team.points,
+          form: (team.form || []) as ("W" | "D" | "L")[],
+        }));
       setTeams(teamsData);
     } else {
       setTeams([]);
