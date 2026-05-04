@@ -52,25 +52,14 @@ const socialLinks = [
 ];
 
 export function Footer({ partners = [] }: FooterProps) {
-  const officialPartners = partners.filter((p) => p.category === "official");
-  const otherPartners = partners.filter(
-    (p) => !p.category || (p.category !== "main" && p.category !== "official"),
-  );
+  const subPartners = partners.filter((p) => p.category === "sub");
 
   return (
     <footer className="border-t border-parofc-red/15 bg-[#0a0a0a]">
       {/* Partners sections */}
-      {officialPartners.length > 0 && (
+      {subPartners.length > 0 && (
         <div className="mx-auto max-w-[1400px] px-5 pt-10">
-          <PartnersSection
-            partners={officialPartners}
-            title="Official Partners"
-          />
-        </div>
-      )}
-      {otherPartners.length > 0 && (
-        <div className="mx-auto max-w-[1400px] px-5 pt-6">
-          <PartnersSection partners={otherPartners} title="Partners" />
+          <PartnersSection partners={subPartners} title="Sub Partners" />
         </div>
       )}
 

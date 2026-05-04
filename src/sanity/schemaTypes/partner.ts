@@ -37,10 +37,7 @@ export const partner = defineType({
       options: {
         list: [
           { title: 'Main Partner', value: 'main' },
-          { title: 'Official Partner', value: 'official' },
-          { title: 'Regional Partner', value: 'regional' },
-          { title: 'Media Partner', value: 'media' },
-          { title: 'Technology Partner', value: 'technology' },
+          { title: 'Sub Partner', value: 'sub' },
         ],
       },
     }),
