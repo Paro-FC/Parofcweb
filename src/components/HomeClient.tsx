@@ -125,6 +125,7 @@ interface HomeClientProps {
   news: NewsItem[];
   matches: Match[];
   mainPartners: Partner[];
+  subPartners: Partner[];
   trophies: TrophyItem[];
   youtubeVideos: YoutubeVideo[];
   standings?: StandingDoc | null;
@@ -203,7 +204,7 @@ function formatDate(dateStr: string) {
 }
 
 /* ─── MAIN ─── */
-export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
+export function HomeClient({ news, matches, mainPartners, subPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
   const nextMatch = matches?.[0];
   const countdown = useCountdown(nextMatch?.date);
   const topNews = news?.slice(0, 3) ?? [];
@@ -576,6 +577,40 @@ export function HomeClient({ news, matches, mainPartners, trophies, youtubeVideo
             <h2 className="mb-6 text-base font-black uppercase">Our Partners</h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {mainPartners.map((p) => (
+                <a
+                  key={p._id}
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-center rounded-md border border-white/10 bg-white/[0.03] backdrop-blur-md px-4 py-7 md:py-9 transition hover:border-white/20"
+                >
+                  <div className="relative flex h-16 md:h-20 w-full items-center justify-center">
+                    {p.logo ? (
+                      <Image
+                        src={p.logo}
+                        alt={p.name}
+                        width={220}
+                        height={110}
+                        className="relative z-10 h-14 md:h-16 w-auto object-contain"
+                      />
+                    ) : (
+                      <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">Logo</span>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </SectionCard>
+        </section>
+      )}
+
+      {/* ══════ SUB PARTNERS ══════ */}
+      {subPartners.length > 0 && (
+        <section className="mx-auto max-w-[1400px] px-5 pb-8">
+          <SectionCard className="p-6">
+            <h2 className="mb-6 text-base font-black uppercase">Sub Partners</h2>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+              {subPartners.map((p) => (
                 <a
                   key={p._id}
                   href={p.url}

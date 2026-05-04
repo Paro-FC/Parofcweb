@@ -222,6 +222,15 @@ export const MAIN_PARTNERS_QUERY = `*[_type == "partner" && isActive == true && 
   category
 }`;
 
+// Sub partners query (for homepage)
+export const SUB_PARTNERS_QUERY = `*[_type == "partner" && isActive == true && category == "sub"] | order(order asc, name asc) {
+  _id,
+  name,
+  "logo": logo.asset->url,
+  url,
+  category
+}`;
+
 // Standings queries
 export const STANDINGS_QUERY = `*[_type == "standing" && competition->slug.current == $competition && season == $season][0] {
   _id,
