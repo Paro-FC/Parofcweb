@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { unstable_cache } from "next/cache";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../index.css";
 import { SanityLive } from "@/sanity/lib/live-client";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
@@ -60,6 +61,7 @@ export default async function RootLayout({
           src="http://localhost:8080/js/pa-19zkOjsnH4gqiklTplcwP.js"
           strategy="afterInteractive"
         />
+        <SpeedInsights />
       </body>
     </html>
   );
