@@ -11,7 +11,28 @@ import {
   COACHING_STAFF_QUERY,
 } from "@/sanity/lib/queries";
 import { PlayerCard, type PlayerCardPlayer } from "@/components/PlayerCard";
-import Loader from "@/components/Loader";
+
+function PlayerCardSkeleton() {
+  return (
+    <div className="relative w-full aspect-[3/4] overflow-hidden bg-gray-100">
+      <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <div className="mb-2 h-2.5 w-16 rounded bg-gray-200" />
+        <div className="h-4 w-32 rounded bg-gray-200" />
+      </div>
+    </div>
+  );
+}
+
+function PlayersGridSkeleton({ count = 8 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
+      {Array.from({ length: count }).map((_, i) => (
+        <PlayerCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
 
 interface Player extends PlayerCardPlayer {
   team?: string;
@@ -200,7 +221,7 @@ export default function PlayersPage() {
       {/* Content */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         {loading ? (
-          <Loader />
+          <PlayersGridSkeleton />
         ) : activeCategory === "coaching" ? (
           /* Coaching Staff */
           <AnimatePresence mode="wait">

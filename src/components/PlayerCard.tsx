@@ -74,7 +74,7 @@ export function PlayerCard({
               src={imageSrc}
               alt={`${player.firstName} ${player.lastName || player.firstName}`}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
               priority={index < 4}
             />
           ) : (
