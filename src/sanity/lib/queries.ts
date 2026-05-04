@@ -119,7 +119,7 @@ export const COACHING_STAFF_QUERY = `*[_type == "coachingStaff"] | order(order a
 }`;
 
 // Matches queries — only upcoming/live matches (date >= now)
-export const MATCHES_QUERY = `*[_type == "match" && date >= now()] | order(date asc) [0...3] {
+export const MATCHES_QUERY = `*[_type == "match" && date >= now() && hideMatch != true] | order(date asc) [0...3] {
   _id,
   homeTeam,
   awayTeam,
@@ -134,7 +134,7 @@ export const MATCHES_QUERY = `*[_type == "match" && date >= now()] | order(date 
 }`;
 
 // All matches query for calendar page
-export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
+export const ALL_MATCHES_QUERY = `*[_type == "match" && hideMatch != true] | order(date asc) {
   _id,
   homeTeam,
   awayTeam,

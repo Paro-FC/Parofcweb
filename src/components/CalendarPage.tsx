@@ -11,7 +11,6 @@ import {
   Calendar03Icon,
   RefreshIcon,
   ArrowRight01Icon,
-  ArrowUpRight01Icon,
   MapPinIcon,
   Clock01Icon,
 } from "@hugeicons/core-free-icons";
@@ -288,21 +287,6 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                                 </div>
                               </div>
                             </Link>
-
-                            {match.matchUrl && match.showMatchLink !== false ? (
-                              <a
-                                href={match.matchUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hidden shrink-0 flex-col items-center justify-center gap-1 border-l border-gray-100 bg-parofc-gold/5 px-3 py-2 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-gold/15 sm:flex sm:px-4"
-                              >
-                                <HugeiconsIcon
-                                  icon={ArrowUpRight01Icon}
-                                  size={14}
-                                />
-                                Buy Tickets
-                              </a>
-                            ) : null}
                           </div>
 
                           {/* Mobile meta */}
@@ -324,17 +308,6 @@ export function CalendarPage({ matches }: CalendarPageProps) {
                               </span>
                             </div>
                           </Link>
-                          {match.matchUrl && match.showMatchLink !== false ? (
-                            <a
-                              href={match.matchUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center justify-center gap-2 border border-gray-100 border-t-0 bg-parofc-gold/5 py-2.5 text-2xs font-black uppercase tracking-wider text-parofc-red md:hidden"
-                            >
-                              <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} />
-                              Buy Tickets
-                            </a>
-                          ) : null}
                         </motion.div>
                       );
                     })}

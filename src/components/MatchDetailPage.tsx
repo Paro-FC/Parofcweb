@@ -304,7 +304,7 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
 
       {/* Floating Close Button */}
       <Link
-        href="/"
+        href="/calendar"
         className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
       >
         <HugeiconsIcon icon={Cancel01Icon} size={24} />

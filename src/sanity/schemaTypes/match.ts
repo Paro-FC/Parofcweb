@@ -102,6 +102,13 @@ export const match = defineType({
       hidden: ({ document }) => document?.status !== 'live',
     }),
     defineField({
+      name: 'hideMatch',
+      title: 'Hide match',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Toggle on to hide this match from the homepage and calendar listings (e.g., once the match is over).',
+    }),
+    defineField({
       name: 'homeScore',
       title: 'Home Score',
       type: 'number',
