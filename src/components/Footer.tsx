@@ -55,6 +55,39 @@ export function Footer(_: FooterProps) {
     <footer className="border-t border-parofc-red/15 bg-[#0a0a0a]">
       {/* Footer columns */}
       <div className="mx-auto grid max-w-[1400px] gap-8 px-5 py-10 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_1.2fr]">
+        {/* Brand */}
+        <div>
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/assets/paro.png"
+              alt="Paro FC"
+              width={48}
+              height={48}
+              className="object-contain"
+            />
+            <div>
+              <b className="text-xl text-parofc-red">PARO FC</b>
+            </div>
+          </Link>
+          <p className="mt-3 text-xs leading-relaxed text-white/40">
+            Pride of Paro. Pride of Bhutan.
+            <br />
+            Together, we build a legacy that inspires generations.
+          </p>
+          <div className="mt-4 flex gap-3">
+            {socialLinks.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                aria-label={s.label}
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/15 text-white/50 transition hover:border-parofc-red/40 hover:text-parofc-red"
+              >
+                <HugeiconsIcon icon={s.icon} size={16} />
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* Quick Links */}
         <div>
           <b className="text-2xs font-black uppercase tracking-wider text-parofc-red">
