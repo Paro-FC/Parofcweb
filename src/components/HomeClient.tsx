@@ -220,21 +220,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
     ? standingTeams.slice().sort((a, b) => b.points - a.points)
     : [];
 
-  const paroTeam = sortedByPoints.find((t) =>
-    t.teamName.toLowerCase().includes("paro")
-  );
-  const paroRank = paroTeam
-    ? sortedByPoints.indexOf(paroTeam) + 1
-    : 0;
-  const leader = sortedByPoints[0] ?? null;
-  const totalTeams = sortedByPoints.length;
-  const totalRounds = totalTeams > 1 ? (totalTeams - 1) * 2 : 0;
-  const paroGamesLeft = paroTeam ? totalRounds - paroTeam.played : 0;
-  const paroGap = paroTeam && leader
-    ? leader.points - paroTeam.points
-    : 0;
-
-  const raceToTitle = sortedByPoints.slice(0, 3).map((t, idx) => {
+  const raceToTitle = sortedByPoints.slice(0, 4).map((t, idx) => {
     const isParo = t.teamName.toLowerCase().includes("paro");
     return {
       pos: idx + 1,
@@ -460,21 +446,6 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
                 );
               })}
             </div>
-            {paroTeam && (
-              <div className="mt-4 grid grid-cols-2 gap-0 text-center">
-                <div className="border-r border-white/10">
-                  <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Gap</p>
-                  <div className="flex items-baseline justify-center">
-                    <b className={`text-lg ${paroGap === 0 ? "text-parofc-red" : "text-white"}`}>{paroGap === 0 ? "Leading" : `-${paroGap}`}</b>
-                    {paroGap > 0 && <span className="ml-0.5 text-2xs font-bold text-white/40">PTS</span>}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-3xs font-bold uppercase tracking-wider text-white/40">Games Left</p>
-                  <b className="block text-lg">{paroGamesLeft}</b>
-                </div>
-              </div>
-            )}
           </SectionCard>
 
           {/* Top Scorer */}
