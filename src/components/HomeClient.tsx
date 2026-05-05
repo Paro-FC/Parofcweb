@@ -104,6 +104,8 @@ interface StandingDoc {
   _id: string;
   season: string;
   competition: string;
+  competitionName?: string;
+  competitionShort?: string;
   teams: StandingTeam[];
 }
 
@@ -319,10 +321,10 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-xl font-black uppercase">
-                Live Standings <span className="flex items-center gap-1 text-xs font-bold text-red-500"><span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" /> LIVE</span>
+                Men&apos;s Live Standings <span className="flex items-center gap-1 text-xs font-bold text-red-500"><span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" /> LIVE</span>
               </h2>
               <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
-                Bhutan Premier League {liveStandings?.season ? liveStandings.season : "—"}
+                {liveStandings?.competitionName || "Bhutan Premier League"} {liveStandings?.season ? liveStandings.season : "—"}
               </p>
             </div>
             <Link href="/standings" className="w-fit text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View Full Table →</Link>
@@ -437,7 +439,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
           <SectionCard className="p-5">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-xl font-black uppercase">Paro FC TV</h2>
-              <a className="rounded-lg border border-parofc-red/30 px-4 py-2 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10" href="#">View All Videos →</a>
+              <Link href="/tv" className="rounded-lg border border-parofc-red/30 px-4 py-2 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10">View All Videos →</Link>
             </div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {topVideos.map((v) => {

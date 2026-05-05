@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { HugeiconsIcon } from '@hugeicons/react';
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Facebook01Icon,
   YoutubeIcon,
   InstagramIcon,
   TiktokIcon,
-} from '@hugeicons/core-free-icons';
-import Image from 'next/image';
-import Link from 'next/link';
+} from "@hugeicons/core-free-icons";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Partner {
   _id: string;
@@ -23,31 +23,38 @@ interface FooterProps {
 }
 
 const quickLinks = [
-  { href: '/', label: 'Home' },
-  { href: '#', label: 'Club' },
-  { href: '/players', label: 'Team' },
-  { href: '/matches', label: 'Match Center' },
-  { href: '#', label: 'Paro FC TV' },
+  { href: "/", label: "Home" },
+  { href: "/players", label: "Team" },
+  { href: "/matches", label: "Match Center" },
 ];
 
 const ticketLinks = [
-  { href: '#', label: 'Season Pass' },
-  { href: '#', label: 'Membership' },
-  { href: '/shop', label: 'Shop' },
+  { href: "/calendar", label: "Buy Tickets" },
+  { href: "/shop", label: "Shop" },
 ];
 
 const academyLinks = [
-  { href: '#', label: 'Youth Teams' },
-  { href: '#', label: 'Coaching Philosophy' },
-  { href: '#', label: 'Trials' },
-  { href: '#', label: 'Grassroots' },
+  { href: "/academy", label: "Youth Teams" },
+  { href: "/academy", label: "Grassroots" },
 ];
 
 const socialLinks = [
-  { icon: Facebook01Icon, label: 'Facebook', href: '#' },
-  { icon: InstagramIcon, label: 'Instagram', href: '#' },
-  { icon: YoutubeIcon, label: 'YouTube', href: '#' },
-  { icon: TiktokIcon, label: 'TikTok', href: '#' },
+  {
+    icon: Facebook01Icon,
+    label: "Facebook",
+    href: "https://www.facebook.com/parofc",
+  },
+  {
+    icon: InstagramIcon,
+    label: "Instagram",
+    href: "https://www.instagram.com/parofc",
+  },
+  {
+    icon: YoutubeIcon,
+    label: "YouTube",
+    href: "https://www.youtube.com/parofc",
+  },
+  { icon: TiktokIcon, label: "TikTok", href: "https://www.tiktok.com/parofc" },
 ];
 
 export function Footer(_: FooterProps) {
@@ -180,20 +187,10 @@ export function Footer(_: FooterProps) {
       <div className="border-t border-white/5">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-4 px-5 py-4 text-2xs text-white/25">
           <span>© 2025 Paro Football Club. All Rights Reserved.</span>
-          <div className="flex gap-5">
-            <a href="#" className="hover:text-white/50">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-white/50">
-              Terms & Conditions
-            </a>
-            <a href="#" className="hover:text-white/50">
-              Media Enquiries
-            </a>
-          </div>
+          <div className="flex gap-5"></div>
           <span
             className="text-sm italic text-parofc-red/40"
-            style={{ fontFamily: 'cursive' }}
+            style={{ fontFamily: "cursive" }}
           >
             pride of paro
           </span>

@@ -15,6 +15,7 @@ const menuItems = [
   { label: "Home", href: "/" },
   { label: "Standings", href: "/standings" },
   { label: "Shop", href: "/shop" },
+  { label: "TV", href: "/tv" },
   { label: "Photos", href: "/photos" },
   { label: "Players", href: "/players" },
   { label: "Academy", href: "/academy" },

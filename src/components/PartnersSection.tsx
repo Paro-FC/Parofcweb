@@ -51,15 +51,15 @@ export function PartnersSection({
                 href={partner.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block opacity-40 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                className="block opacity-80 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
               >
-                <div className="relative w-16 h-16 md:w-20 md:h-20 p-2 flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300">
+                <div className="relative w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 p-2 flex items-center justify-center transition-all duration-300">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
                     fill
                     className="object-contain p-1"
-                    sizes="(max-width: 768px) 64px, 80px"
+                    sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, 160px"
                   />
                 </div>
               </Link>

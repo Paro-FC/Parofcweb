@@ -193,7 +193,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="text-hero-120 md:text-hero-180 lg:text-hero-220 font-black text-white/[0.04] leading-none absolute -left-4 -top-8 lg:top-0 select-none pointer-events-none">
+                <span className="text-hero-120 md:text-hero-180 lg:text-hero-220 font-black text-white/[0.04] leading-none absolute -left-4 top-0 md:-top-8 lg:top-0 select-none pointer-events-none">
                   {player.number}
                 </span>
               </motion.div>
@@ -291,10 +291,16 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
               >
                 {player.image ? (
                   <Image
-                    src={urlFor(player.image).width(900).height(1200).url()}
+                    src={urlFor(player.image)
+                      .width(900)
+                      .height(1200)
+                      .fit("max")
+                      .auto("format")
+                      .url()}
                     alt={`${player.firstName} ${player.lastName}`}
                     fill
                     className="object-contain object-bottom"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
                     priority
                   />
                 ) : (

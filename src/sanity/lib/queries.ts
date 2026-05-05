@@ -279,8 +279,8 @@ export const STANDINGS_LATEST_QUERY = `*[_type == "standing" && competition->slu
   }
 }`;
 
-// Latest standings overall (homepage default)
-export const STANDINGS_HOME_LATEST_QUERY = `*[_type == "standing"] | order(_updatedAt desc)[0] {
+// Latest men's standings (homepage default)
+export const STANDINGS_HOME_LATEST_QUERY = `*[_type == "standing" && competition->team == "men"] | order(_updatedAt desc)[0] {
   _id,
   season,
   "competition": competition->slug.current,
