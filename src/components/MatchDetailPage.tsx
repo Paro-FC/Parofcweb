@@ -52,10 +52,11 @@ function formatMatchDate(dateString: string) {
     day: days[date.getDay()],
     date: date.getDate(),
     month: months[date.getMonth()],
-    time: date.toLocaleTimeString("en-US", {
+    time: date.toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
+      timeZone: "Asia/Thimphu",
     }),
   };
 }
@@ -93,10 +94,11 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
     day: "numeric",
     year: "numeric",
   });
-  const time24 = matchDate.toLocaleTimeString("en-US", {
+  const time24 = matchDate.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+    timeZone: "Asia/Thimphu",
   });
 
   function crestUrl(crest: unknown) {
@@ -304,7 +306,7 @@ export function MatchDetailPage({ match }: MatchDetailPageProps) {
 
       {/* Floating Close Button */}
       <Link
-        href="/calendar"
+        href="/fixtures-results"
         className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
       >
         <HugeiconsIcon icon={Cancel01Icon} size={24} />

@@ -20,7 +20,7 @@ const menuItems = [
   { label: "Academy", href: "/academy" },
   { label: "Ebooks", href: "/ebooks" },
   { label: "News", href: "/news" },
-  { label: "Calendar", href: "/calendar" },
+  { label: "Fixtures&Results", href: "/fixtures-results" },
 ];
 
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {

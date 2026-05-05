@@ -163,7 +163,7 @@ function BookingSuccessContent() {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                href="/calendar"
+                href="/fixtures-results"
                 className="flex-1 h-12 bg-parofc-gold text-dark-charcoal hover:bg-parofc-gold/90 font-semibold rounded-md inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-parofc-gold focus:ring-offset-2"
               >
                 <HugeiconsIcon

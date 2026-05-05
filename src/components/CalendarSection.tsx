@@ -38,7 +38,7 @@ function formatMatchDate(dateString: string) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "UTC",
+    timeZone: "Asia/Thimphu",
   });
 }
 
@@ -237,10 +237,10 @@ export function CalendarSection({ matches }: { matches?: Match[] }) {
           {/* See full calendar link */}
           <div className="flex justify-center mt-8">
             <Link
-              href="/calendar"
+              href="/fixtures-results"
               className="inline-flex items-center gap-2 text-sm font-bold text-dark-charcoal hover:text-parofc-red transition-colors duration-200 uppercase tracking-wider cursor-pointer"
             >
-              See Full Calendar
+              See Full Fixtures&Results
               <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
             </Link>
           </div>

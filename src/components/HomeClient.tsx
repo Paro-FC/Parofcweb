@@ -265,7 +265,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
                 <div className="flex items-center justify-between py-2 sm:flex-col sm:justify-center sm:px-7">
                   <HugeiconsIcon icon={Clock} size={32} primaryColor="currentColor" className="text-white/50 sm:mb-2" strokeWidth={1.8} />
                   <div className="text-right sm:text-center">
-                    <p className="text-sm font-black uppercase sm:text-base">{new Date(nextMatch.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })}</p>
+                    <p className="text-sm font-black uppercase sm:text-base">{new Date(nextMatch.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Thimphu" })}</p>
                     <p className="text-2xs font-bold uppercase tracking-wider text-white/40">Kick Off</p>
                   </div>
                 </div>

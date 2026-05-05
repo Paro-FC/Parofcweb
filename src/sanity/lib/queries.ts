@@ -133,8 +133,8 @@ export const MATCHES_QUERY = `*[_type == "match" && date >= now() && hideMatch !
   showMatchLink
 }`;
 
-// All matches query for calendar page
-export const ALL_MATCHES_QUERY = `*[_type == "match" && hideMatch != true] | order(date asc) {
+// All matches query for calendar page (shows hidden matches too — hideMatch only affects the homepage widget)
+export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
   _id,
   homeTeam,
   awayTeam,
@@ -155,7 +155,10 @@ export const ALL_MATCHES_QUERY = `*[_type == "match" && hideMatch != true] | ord
   event,
   venue,
   matchUrl,
-  showMatchLink
+  showMatchLink,
+  status,
+  homeScore,
+  awayScore
 }`;
 
 // Single match query
