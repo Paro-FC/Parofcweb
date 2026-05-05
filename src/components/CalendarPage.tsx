@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { urlFor } from '@/sanity/lib/image';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Calendar03Icon,
@@ -13,6 +13,8 @@ import {
   Clock01Icon,
 } from '@hugeicons/core-free-icons';
 
+type TeamFilter = 'men' | 'women';
+
 interface Match {
   _id: string;
   homeTeam: string;
@@ -20,6 +22,7 @@ interface Match {
   homeCrest?: unknown;
   awayCrest?: unknown;
   competition: string;
+  competitionTeam?: TeamFilter;
   date: string;
   event: string;
   venue: string;
@@ -276,11 +279,19 @@ function MatchRows({
 }
 
 export function CalendarPage({ matches }: CalendarPageProps) {
+  const [selectedTeam, setSelectedTeam] = useState<TeamFilter>('men');
+
+  const filteredMatches = useMemo(
+    () =>
+      matches.filter((m) => (m.competitionTeam ?? 'men') === selectedTeam),
+    [matches, selectedTeam],
+  );
+
   const { upcomingByMonth, finishedByMonth } = useMemo(() => {
     const now = Date.now();
     const upcoming: Match[] = [];
     const finished: Match[] = [];
-    matches.forEach((m) => {
+    filteredMatches.forEach((m) => {
       if (new Date(m.date).getTime() >= now) upcoming.push(m);
       else finished.push(m);
     });
@@ -290,10 +301,14 @@ export function CalendarPage({ matches }: CalendarPageProps) {
       upcomingByMonth: groupMatchesByMonth(upcoming),
       finishedByMonth: groupMatchesByMonth(finished),
     };
-  }, [matches]);
+  }, [filteredMatches]);
 
   const hasUpcoming = Object.keys(upcomingByMonth).length > 0;
   const hasFinished = Object.keys(finishedByMonth).length > 0;
+  const tabs: { id: TeamFilter; label: string; short: string }[] = [
+    { id: 'men', label: "Men's", short: "Men's" },
+    { id: 'women', label: "Women's", short: "Women's" },
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -328,9 +343,38 @@ export function CalendarPage({ matches }: CalendarPageProps) {
         <div className="h-1 bg-gradient-to-r from-parofc-red via-parofc-gold to-bronze" />
       </div>
 
+      {/* Team Tabs */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-0 overflow-x-auto -mb-px">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelectedTeam(t.id)}
+                className={`relative px-5 md:px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors duration-200 uppercase tracking-wider cursor-pointer ${
+                  selectedTeam === t.id
+                    ? 'text-dark-charcoal'
+                    : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                <span className="hidden md:inline">{t.label}</span>
+                <span className="md:hidden">{t.short}</span>
+                {selectedTeam === t.id && (
+                  <motion.div
+                    layoutId="fixturesActiveTab"
+                    className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-red"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Matches */}
       <div className="container mx-auto px-4 py-8 md:py-12">
-        {matches.length === 0 ? (
+        {filteredMatches.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
             <HugeiconsIcon
               icon={Calendar03Icon}
@@ -338,7 +382,7 @@ export function CalendarPage({ matches }: CalendarPageProps) {
               className="text-gray-200 mb-3"
             />
             <span className="text-sm text-gray-400 font-medium">
-              No matches scheduled
+              No {selectedTeam === 'women' ? "women's" : "men's"} matches scheduled
             </span>
           </div>
         ) : (

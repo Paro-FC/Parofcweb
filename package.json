@@ -9,6 +9,7 @@
     "lint": "next lint",
     "prepare": "husky",
     "sanity:unset-match-fields": "node scripts/unset-match-orphan-fields.mjs",
+    "sanity:backfill-competition-team": "node scripts/backfill-competition-team.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./src/sanity/schemaTypes";
+import { structure } from "./src/sanity/structure";
 
 export default defineConfig({
   name: "parofc-studio",
@@ -11,7 +12,7 @@ export default defineConfig({
 
   basePath: "/studio",
 
-  plugins: [structureTool()],
+  plugins: [structureTool({ structure })],
 
   schema: {
     types: schemaTypes,

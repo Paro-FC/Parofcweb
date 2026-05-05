@@ -21,7 +21,6 @@ import {
   SEARCH_PHOTOS_QUERY,
 } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
-import { STANDINGS_COMPETITIONS_FALLBACK } from "@/shared/standingsCompetitions";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -59,7 +58,7 @@ interface PhotoResult {
 
 const recentSearches = ["Paro FC vs Thimphu", "Latest news", "Match schedule"];
 const trendingSearches = [
-  STANDINGS_COMPETITIONS_FALLBACK[0]?.name ?? "BOB Premier League",
+  "BOB Premier League",
   "Goals",
   "Transfer news",
   "Match highlights",

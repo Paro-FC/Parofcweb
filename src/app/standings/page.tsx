@@ -11,9 +11,19 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { sanityFetch } from "@/sanity/lib/live";
 import { useSanityLiveQuery } from "@/sanity/lib/live-client";
-import { STANDINGS_COMPETITIONS_QUERY, STANDINGS_QUERY, STANDINGS_SEASONS_QUERY } from "@/sanity/lib/queries";
+import {
+  STANDINGS_COMPETITIONS_QUERY,
+  STANDINGS_QUERY,
+  STANDINGS_SEASONS_QUERY,
+} from "@/sanity/lib/queries";
 import Loader from "@/components/Loader";
-import { STANDINGS_COMPETITIONS_FALLBACK } from "@/shared/standingsCompetitions";
+
+interface Competition {
+  id: string;
+  name: string;
+  short: string;
+  order?: number;
+}
 
 interface Team {
   id: number;
@@ -32,24 +42,26 @@ interface Team {
 }
 
 function FormBadge({ v }: { v: "W" | "D" | "L" }) {
-  const c = v === "W" ? "bg-green-500" : v === "D" ? "bg-yellow-500" : "bg-red-600";
+  const c =
+    v === "W" ? "bg-green-500" : v === "D" ? "bg-yellow-500" : "bg-red-600";
   return (
-    <span className={`grid h-[18px] w-[18px] place-items-center rounded-[4px] text-3xs font-black text-white ${c}`}>
+    <span
+      className={`grid h-[18px] w-[18px] place-items-center rounded-[4px] text-3xs font-black text-white ${c}`}
+    >
       {v}
     </span>
   );
 }
 
-function zoneFromPosition(position: number) {
+function zoneFromPosition(position: number, total: number) {
   if (position === 1) return "green";
-  if (position === 8) return "orange";
-  if (position >= 9) return "red";
+  if (total >= 4 && position > total - 3) return "red";
   return null;
 }
 
 function ZoneBar({ zone }: { zone: string | null }) {
   if (!zone) return null;
-  const c = zone === "green" ? "bg-green-500" : zone === "orange" ? "bg-orange-400" : "bg-red-500";
+  const c = zone === "green" ? "bg-green-500" : "bg-red-500";
   return <div className={`absolute left-0 top-0 h-full w-[3px] ${c}`} />;
 }
 
@@ -76,29 +88,24 @@ function formatGD(gd: number) {
 }
 
 export default function StandingsPage() {
-  const [selectedCompetition, setSelectedCompetition] = useState("bpl");
+  const [selectedCompetition, setSelectedCompetition] = useState<string>("");
   const [selectedSeason, setSelectedSeason] = useState<string>("");
   const [showSeasonDropdown, setShowSeasonDropdown] = useState(false);
   const [teams, setTeams] = useState<Team[]>([]);
   const [seasons, setSeasons] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Live: available competitions for tabs (fallback to static list if empty)
-  const liveCompetitions = useSanityLiveQuery<
-    { id: string; name: string; short: string; order?: number }[]
-  >(
+  const liveCompetitions = useSanityLiveQuery<Competition[]>(
     STANDINGS_COMPETITIONS_QUERY,
     {},
-    []
+    [],
   );
 
-  const competitions = useMemo(() => {
-    const fromStudio = (liveCompetitions || []).filter((c) => c?.id);
-    if (fromStudio.length) return fromStudio;
-    return STANDINGS_COMPETITIONS_FALLBACK;
-  }, [liveCompetitions]);
+  const competitions = useMemo(
+    () => (liveCompetitions || []).filter((c) => c?.id),
+    [liveCompetitions],
+  );
 
-  // Keep selectedCompetition valid when Sanity competitions change
   useEffect(() => {
     if (competitions.length === 0) return;
     if (!competitions.some((c) => c.id === selectedCompetition)) {
@@ -107,57 +114,72 @@ export default function StandingsPage() {
   }, [competitions, selectedCompetition]);
 
   useEffect(() => {
-    const fetchStandings = async () => {
-      setLoading(true);
+    if (!selectedCompetition) return;
+    const fetchSeasons = async () => {
       try {
-        const seasonsResult = await sanityFetch<any[]>({
+        const seasonsResult = await sanityFetch<{ season: string }[]>({
           query: STANDINGS_SEASONS_QUERY,
           params: { competition: selectedCompetition },
-        }).catch(() => ({ data: [] }));
+        }).catch(() => ({ data: [] as { season: string }[] }));
 
-        if (seasonsResult.data && Array.isArray(seasonsResult.data)) {
+        const data = seasonsResult.data;
+        if (Array.isArray(data)) {
           const uniqueSeasons = Array.from(
-            new Set(
-              seasonsResult.data.map((s: any) => s.season).filter(Boolean),
-            ),
+            new Set(data.map((s) => s.season).filter(Boolean)),
           ).sort((a, b) => b.localeCompare(a)) as string[];
-          if (uniqueSeasons.length > 0) {
-            setSeasons(uniqueSeasons);
-            setSelectedSeason((prev) => (prev && uniqueSeasons.includes(prev) ? prev : uniqueSeasons[0]));
-          }
+          setSeasons(uniqueSeasons);
+          setSelectedSeason((prev) =>
+            prev && uniqueSeasons.includes(prev)
+              ? prev
+              : uniqueSeasons[0] || "",
+          );
         }
-
       } catch (error) {
-        console.error("Error fetching standings:", error);
-      } finally {
-        // loading for table is handled by live query below once season exists
+        console.error("Error fetching seasons:", error);
       }
     };
 
-    fetchStandings();
+    fetchSeasons();
   }, [selectedCompetition]);
 
-  // Live standings doc (depends on chosen competition + season)
-  const liveStandingDoc = useSanityLiveQuery<any>(
+  const liveStandingDoc = useSanityLiveQuery<{
+    teams?: {
+      teamName: string;
+      teamLogo?: string;
+      played: number;
+      won: number;
+      drawn: number;
+      lost: number;
+      goalsFor: number;
+      goalsAgainst: number;
+      points: number;
+      form?: ("W" | "D" | "L")[];
+    }[];
+  } | null>(
     STANDINGS_QUERY,
     { competition: selectedCompetition, season: selectedSeason || "" },
-    null
+    null,
   );
 
   useEffect(() => {
-    if (!selectedSeason) return;
+    if (!selectedSeason) {
+      setTeams([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-    const doc = liveStandingDoc as any;
+    const doc = liveStandingDoc;
     if (doc?.teams) {
       const teamsData = doc.teams
         .slice()
         .sort(
-          (a: any, b: any) =>
+          (a, b) =>
             Number(b.points) - Number(a.points) ||
-            (Number(b.goalsFor) - Number(b.goalsAgainst)) -
+            Number(b.goalsFor) -
+              Number(b.goalsAgainst) -
               (Number(a.goalsFor) - Number(a.goalsAgainst)),
         )
-        .map((team: any, index: number) => ({
+        .map((team, index) => ({
           id: index + 1,
           position: index + 1,
           name: team.teamName,
@@ -180,8 +202,7 @@ export default function StandingsPage() {
   }, [liveStandingDoc, selectedSeason]);
 
   const selectedCompName =
-    competitions.find((c) => c.id === selectedCompetition)?.name ||
-    "BOB Premier League";
+    competitions.find((c) => c.id === selectedCompetition)?.name || "";
 
   return (
     <div className="min-h-screen bg-white">
@@ -205,7 +226,7 @@ export default function StandingsPage() {
               Standings
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              League <span className="text-parofc-gold">Tables</span>
+              League <span className="text-parofc-red">Tables</span>
             </h1>
           </motion.div>
         </div>
@@ -233,7 +254,7 @@ export default function StandingsPage() {
                   {selectedCompetition === comp.id && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-gold"
+                      className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-red"
                       transition={{
                         type: "spring",
                         stiffness: 400,
@@ -246,54 +267,56 @@ export default function StandingsPage() {
             </div>
 
             {/* Season Selector */}
-            <div className="relative">
-              <button
-                onClick={() => setShowSeasonDropdown(!showSeasonDropdown)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-dark-charcoal hover:text-parofc-red transition-colors duration-200 cursor-pointer"
-              >
-                <span>{selectedSeason}</span>
-                <HugeiconsIcon
-                  icon={ArrowDown01Icon}
-                  size={14}
-                  className={`transition-transform duration-200 ${showSeasonDropdown ? "rotate-180" : ""}`}
-                />
-              </button>
+            {seasons.length > 0 && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowSeasonDropdown(!showSeasonDropdown)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-dark-charcoal hover:text-parofc-red transition-colors duration-200 cursor-pointer"
+                >
+                  <span>{selectedSeason}</span>
+                  <HugeiconsIcon
+                    icon={ArrowDown01Icon}
+                    size={14}
+                    className={`transition-transform duration-200 ${showSeasonDropdown ? "rotate-180" : ""}`}
+                  />
+                </button>
 
-              <AnimatePresence>
-                {showSeasonDropdown && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setShowSeasonDropdown(false)}
-                    />
-                    <motion.div
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-20 overflow-hidden min-w-[100px]"
-                    >
-                      {seasons.map((season) => (
-                        <button
-                          key={season}
-                          onClick={() => {
-                            setSelectedSeason(season);
-                            setShowSeasonDropdown(false);
-                          }}
-                          className={`w-full px-4 py-2.5 text-sm text-left transition-colors duration-150 cursor-pointer ${
-                            selectedSeason === season
-                              ? "bg-dark-charcoal text-white font-bold"
-                              : "text-gray-600 font-medium hover:bg-gray-50"
-                          }`}
-                        >
-                          {season}
-                        </button>
-                      ))}
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
+                <AnimatePresence>
+                  {showSeasonDropdown && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowSeasonDropdown(false)}
+                      />
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-20 overflow-hidden min-w-[100px]"
+                      >
+                        {seasons.map((season) => (
+                          <button
+                            key={season}
+                            onClick={() => {
+                              setSelectedSeason(season);
+                              setShowSeasonDropdown(false);
+                            }}
+                            className={`w-full px-4 py-2.5 text-sm text-left transition-colors duration-150 cursor-pointer ${
+                              selectedSeason === season
+                                ? "bg-dark-charcoal text-white font-bold"
+                                : "text-gray-600 font-medium hover:bg-gray-50"
+                            }`}
+                          >
+                            {season}
+                          </button>
+                        ))}
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -313,14 +336,15 @@ export default function StandingsPage() {
           </h2>
         </div>
 
-        {/* Table — dark card matching homepage */}
+        {/* Table — dark card */}
         <div className="rounded-lg border border-parofc-red/20 bg-[#111111] p-5">
           <div className="mb-4 flex items-end justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-xl font-black uppercase text-white">
                 Live Standings
                 <span className="flex items-center gap-1 text-xs font-bold text-red-500">
-                  <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" /> LIVE
+                  <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" />{" "}
+                  LIVE
                 </span>
               </h2>
               <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
@@ -371,14 +395,16 @@ export default function StandingsPage() {
                 ) : (
                   teams.map((team) => {
                     const isParo = team.name === "Paro FC";
-                    const zone = zoneFromPosition(team.position);
+                    const zone = zoneFromPosition(team.position, teams.length);
                     const gd = team.goalDifference;
 
                     return (
                       <tr
                         key={team.id}
                         className={`relative border-b border-white/5 transition ${
-                          isParo ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"
+                          isParo
+                            ? "bg-parofc-red/10"
+                            : "hover:bg-white/[0.03]"
                         }`}
                       >
                         <td className="px-2 py-3 font-black text-white relative">
@@ -389,12 +415,22 @@ export default function StandingsPage() {
                           <div className="flex min-w-0 items-center gap-2">
                             {team.logo ? (
                               <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full">
-                                <Image src={team.logo} alt={team.name} width={28} height={28} className="h-full w-full object-contain" />
+                                <Image
+                                  src={team.logo}
+                                  alt={team.name}
+                                  width={28}
+                                  height={28}
+                                  className="h-full w-full object-contain"
+                                />
                               </div>
                             ) : (
                               <TeamInitialsLogo name={team.name} />
                             )}
-                            <span className={`truncate font-black uppercase ${isParo ? "text-parofc-red" : "text-white"}`}>{team.name}</span>
+                            <span
+                              className={`truncate font-black uppercase ${isParo ? "text-parofc-red" : "text-white"}`}
+                            >
+                              {team.name}
+                            </span>
                           </div>
                         </td>
                         {[
@@ -407,10 +443,19 @@ export default function StandingsPage() {
                           formatGD(gd),
                           team.points,
                         ].map((v, i) => (
-                          <td key={i} className={`px-2 py-3 text-center font-bold ${i === 7 ? (isParo ? "text-lg text-parofc-red" : "text-lg text-white") : "text-white/70"}`}>{v}</td>
+                          <td
+                            key={i}
+                            className={`px-2 py-3 text-center font-bold ${i === 7 ? (isParo ? "text-lg text-parofc-red" : "text-lg text-white") : "text-white/70"}`}
+                          >
+                            {v}
+                          </td>
                         ))}
                         <td className="px-2 py-3">
-                          <div className="flex justify-center gap-[3px]">{team.form?.map((f, i) => <FormBadge key={i} v={f} />)}</div>
+                          <div className="flex justify-center gap-[3px]">
+                            {team.form?.map((f, i) => (
+                              <FormBadge key={i} v={f} />
+                            ))}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -419,22 +464,6 @@ export default function StandingsPage() {
               </tbody>
             </table>
           </div>
-
-          {/* Zone legend */}
-          {/* <div className="mt-4 flex flex-wrap gap-5 text-2xs font-bold uppercase tracking-wider text-white/40">
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-parofc-red" /> Champion
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-green-500" /> AFC Qualification
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-orange-400" /> Relegation Play-off
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Relegation
-            </span>
-          </div> */}
         </div>
       </div>
     </div>

@@ -151,6 +151,7 @@ export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
     }
   },
   "competition": competition->name,
+  "competitionTeam": competition->team,
   date,
   event,
   venue,

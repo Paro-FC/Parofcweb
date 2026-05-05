@@ -14,6 +14,21 @@ export const standingsCompetition = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "team",
+      title: "Team",
+      type: "string",
+      options: {
+        list: [
+          { title: "Men's", value: "men" },
+          { title: "Women's", value: "women" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "men",
+      validation: (rule) => rule.required(),
+      description: "Which squad this competition belongs to. Drives separation in the Studio sidebar and on the website.",
+    }),
+    defineField({
       name: "short",
       title: "Short label",
       type: "string",
@@ -50,11 +65,13 @@ export const standingsCompetition = defineType({
       subtitle: "short",
       order: "order",
       active: "isActive",
+      team: "team",
     },
-    prepare({ title, subtitle, order, active }) {
+    prepare({ title, subtitle, order, active, team }) {
+      const teamLabel = team === "women" ? "Women's" : "Men's";
       return {
         title,
-        subtitle: `${subtitle || ""} • order ${order}${active === false ? " • inactive" : ""}`,
+        subtitle: `${teamLabel} • ${subtitle || ""} • order ${order}${active === false ? " • inactive" : ""}`,
       };
     },
   },
