@@ -171,7 +171,7 @@ const leftLinks = [
   { href: "/standings", label: "Standings", icon: ArrowUpRight01Icon },
   {
     href: "/fixtures-results",
-    label: "Fixtures&Results",
+    label: "Fixtures & Results",
     icon: ArrowUpRight01Icon,
   },
   { href: "/shop", label: "Shop", icon: ArrowUpRight01Icon },
