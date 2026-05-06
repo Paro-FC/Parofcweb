@@ -310,7 +310,8 @@ export const STANDINGS_COMPETITIONS_QUERY = `*[_type == "standingsCompetition" &
   "id": slug.current,
   name,
   short,
-  order
+  order,
+  "logo": logo.asset->url
 }`;
 
 // Photos queries

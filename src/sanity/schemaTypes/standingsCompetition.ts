@@ -36,6 +36,13 @@ export const standingsCompetition = defineType({
       description: "Used on mobile tabs (e.g. BPL, Cup, AFC).",
     }),
     defineField({
+      name: "logo",
+      title: "Logo",
+      type: "image",
+      options: { hotspot: true },
+      description: "Competition logo shown next to the title on the standings page.",
+    }),
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",

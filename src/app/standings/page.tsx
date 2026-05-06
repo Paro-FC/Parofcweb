@@ -23,6 +23,7 @@ interface Competition {
   name: string;
   short: string;
   order?: number;
+  logo?: string;
 }
 
 interface Team {
@@ -201,8 +202,9 @@ export default function StandingsPage() {
     setLoading(false);
   }, [liveStandingDoc, selectedSeason]);
 
-  const selectedCompName =
-    competitions.find((c) => c.id === selectedCompetition)?.name || "";
+  const selectedComp = competitions.find((c) => c.id === selectedCompetition);
+  const selectedCompName = selectedComp?.name || "";
+  const selectedCompLogo = selectedComp?.logo;
 
   return (
     <div className="min-h-screen bg-white">
@@ -325,11 +327,21 @@ export default function StandingsPage() {
       <div className="container mx-auto px-4 py-8 md:py-12">
         {/* Table Title */}
         <div className="flex items-center gap-3 mb-6">
-          <HugeiconsIcon
-            icon={Shield01Icon}
-            size={20}
-            className="text-parofc-gold"
-          />
+          {selectedCompLogo ? (
+            <Image
+              src={selectedCompLogo}
+              alt={selectedCompName}
+              width={28}
+              height={28}
+              className="h-7 w-7 object-contain"
+            />
+          ) : (
+            <HugeiconsIcon
+              icon={Shield01Icon}
+              size={20}
+              className="text-parofc-gold"
+            />
+          )}
           <h2 className="text-lg font-bold text-dark-charcoal">
             {selectedCompName}{" "}
             <span className="text-gray-400 font-medium">{selectedSeason}</span>
