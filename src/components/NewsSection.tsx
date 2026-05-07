@@ -88,16 +88,19 @@ export function NewsSection({ news }: { news?: NewsItem[] }) {
                 href={`/news/${featured.slug}`}
                 className="group block relative overflow-hidden rounded-2xl cursor-pointer"
               >
-                <div className="relative w-full aspect-[16/10] bg-gray-100">
+                <div className="relative w-full bg-gray-100">
                   {featured.image ? (
                     <Image
-                      src={urlFor(featured.image).width(800).height(500).url()}
+                      src={urlFor(featured.image).width(800).url()}
                       alt={featured.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 1024px) 100vw, 60vw"
+                      style={{ width: "100%", height: "auto" }}
+                      className="transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red" />
+                    <div className="aspect-[16/10] bg-gradient-to-br from-dark-charcoal to-parofc-red" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 

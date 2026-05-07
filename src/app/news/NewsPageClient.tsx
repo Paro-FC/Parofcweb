@@ -151,20 +151,20 @@ export default function NewsPage() {
                   className="group grid grid-cols-1 lg:grid-cols-5 gap-5 cursor-pointer"
                 >
                   {/* Image — 3 cols */}
-                  <div className="lg:col-span-3 relative aspect-[16/10] overflow-hidden bg-gray-50">
+                  <div className="lg:col-span-3 overflow-hidden bg-gray-50">
                     {featured.image ? (
                       <Image
-                        src={urlFor(featured.image)
-                          .width(900)
-                          .height(563)
-                          .url()}
+                        src={urlFor(featured.image).width(900).url()}
                         alt={featured.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        width={0}
+                        height={0}
+                        sizes="(max-width: 768px) 100vw, 60vw"
+                        style={{ width: "100%", height: "auto" }}
+                        className="transition-transform duration-500 group-hover:scale-105"
                         priority
                       />
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red" />
+                      <div className="aspect-[16/10] bg-gradient-to-br from-dark-charcoal to-parofc-red" />
                     )}
                   </div>
 
@@ -221,19 +221,19 @@ export default function NewsPage() {
                       className="group block cursor-pointer"
                     >
                       {/* Image */}
-                      <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 mb-3">
+                      <div className="overflow-hidden bg-gray-50 mb-3">
                         {item.image ? (
                           <Image
-                            src={urlFor(item.image)
-                              .width(500)
-                              .height(313)
-                              .url()}
+                            src={urlFor(item.image).width(500).url()}
                             alt={item.title}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            width={0}
+                            height={0}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            style={{ width: "100%", height: "auto" }}
+                            className="transition-transform duration-500 group-hover:scale-105"
                           />
                         ) : (
-                          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" />
+                          <div className="aspect-[16/10] bg-gradient-to-br from-gray-200 to-gray-300" />
                         )}
                       </div>
 

@@ -47,12 +47,14 @@ const portableTextComponents: PortableTextComponents = {
       if (!value?.asset) return null;
       return (
         <figure className="my-8">
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+          <div className="w-full rounded-lg overflow-hidden">
             <Image
-              src={urlFor(value).width(1200).height(675).url()}
+              src={urlFor(value).width(1200).url()}
               alt={value.alt || "Article image"}
-              fill
-              className="object-cover"
+              width={0}
+              height={0}
+              sizes="(max-width: 768px) 100vw, 800px"
+              style={{ width: "100%", height: "auto" }}
             />
           </div>
           {value.caption && (
@@ -219,18 +221,20 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh]"
+        className="relative w-full"
       >
         {article.image ? (
           <Image
-            src={urlFor(article.image).width(1920).height(1080).url()}
+            src={urlFor(article.image).width(1920).url()}
             alt={article.title}
-            fill
-            className="object-cover"
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{ width: "100%", height: "auto" }}
             priority
           />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-parofc-blue to-parofc-red" />
+          <div className="aspect-[16/9] bg-gradient-to-br from-parofc-blue to-parofc-red" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
