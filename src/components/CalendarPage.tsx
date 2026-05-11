@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { urlFor } from '@/sanity/lib/image';
 import { useMemo, useState } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { useSanityLiveQuery } from '@/sanity/lib/live-client';
+import { ALL_MATCHES_QUERY } from '@/sanity/lib/queries';
 import {
   Calendar03Icon,
   ArrowRight01Icon,
@@ -278,7 +280,8 @@ function MatchRows({
   );
 }
 
-export function CalendarPage({ matches }: CalendarPageProps) {
+export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
+  const matches = useSanityLiveQuery<Match[]>(ALL_MATCHES_QUERY, {}, initialMatches);
   const [selectedTeam, setSelectedTeam] = useState<TeamFilter>('men');
 
   const filteredMatches = useMemo(
