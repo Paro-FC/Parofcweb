@@ -41,18 +41,22 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="bg-[#0a0a0a]">
         <ConditionalLayout partners={partners as any}>
           {children}
         </ConditionalLayout>
         <SanityLive />
-        <Script
-          src="https://cdn.jotfor.ms/agent/embedjs/019c65f6986573f7bac29fc192091672fdef/embed.js"
-          strategy="afterInteractive"
-        />
+        <script src="https://cdn.jotfor.ms/agent/embedjs/019d5da1c22a70e1931d32d9348400ca8fc1/embed.js?autoOpenChatIn=1"></script>
         {/* Privacy-friendly analytics by Plausible */}
         <Script id="plausible-init" strategy="afterInteractive">
           {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init();`}

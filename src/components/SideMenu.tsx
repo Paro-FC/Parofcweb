@@ -14,14 +14,14 @@ interface SideMenuProps {
 const menuItems = [
   { label: "Home", href: "/" },
   { label: "Standings", href: "/standings" },
+  { label: "Fixtures & Results", href: "/fixtures-results" },
   { label: "Shop", href: "/shop" },
   { label: "TV", href: "/tv" },
   { label: "Photos", href: "/photos" },
   { label: "Players", href: "/players" },
   { label: "Academy", href: "/academy" },
-  { label: "Ebooks", href: "/ebooks" },
   { label: "News", href: "/news" },
-  { label: "Fixtures&Results", href: "/fixtures-results" },
+  { label: "Ebooks", href: "/ebooks" },
 ];
 
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {
