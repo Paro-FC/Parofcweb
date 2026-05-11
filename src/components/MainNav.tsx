@@ -181,8 +181,8 @@ const rightLinks = [
   { href: "/photos", label: "Photos", icon: ArrowUpRight01Icon },
   { href: "/players", label: "The Squads", icon: ArrowUpRight01Icon },
   { href: "/academy", label: "Academy", icon: ArrowUpRight01Icon },
-  { href: "/ebooks", label: "Ebooks", icon: ArrowUpRight01Icon },
   { href: "/news", label: "News", icon: ArrowUpRight01Icon },
+  { href: "/ebooks", label: "Ebooks", icon: ArrowUpRight01Icon },
 ];
 
 export function MainNav() {
