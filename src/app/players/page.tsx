@@ -159,9 +159,9 @@ export default function PlayersPage() {
             </div>
 
             {/* Count */}
-            <span className="text-xs text-gray-400 tabular-nums hidden md:block">
+            {/* <span className="text-xs text-gray-400 tabular-nums hidden md:block">
               {players.length} players
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
