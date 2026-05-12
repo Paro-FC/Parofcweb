@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { UserGroupIcon } from "@hugeicons/core-free-icons";
 import { sanityFetch } from "@/sanity/lib/live";
+import { urlFor } from "@/sanity/lib/image";
 import {
   PLAYERS_BY_TEAM_QUERY,
   COACHING_STAFF_QUERY,
@@ -21,7 +22,7 @@ interface CoachingStaff {
   _id: string;
   name: string;
   role: string;
-  image?: string | null;
+  image?: unknown | null;
 }
 
 type PositionCategory =
@@ -71,7 +72,10 @@ export default function PlayersPage() {
   useEffect(() => {
     const fetchCoachingStaff = async () => {
       try {
-        const result = await sanityFetch({ query: COACHING_STAFF_QUERY });
+        const result = await sanityFetch({
+          query: COACHING_STAFF_QUERY,
+          params: { team: activeTeam },
+        });
         setCoachingStaff((result.data as CoachingStaff[]) || []);
       } catch (error) {
         console.error("Error fetching coaching staff:", error);
@@ -79,7 +83,7 @@ export default function PlayersPage() {
       }
     };
     fetchCoachingStaff();
-  }, []);
+  }, [activeTeam]);
 
   const grouped: Record<string, Player[]> = {
     goalkeepers: players.filter((p) => p.position === "Goalkeeper"),
@@ -112,8 +116,7 @@ export default function PlayersPage() {
               Players
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              The{" "}
-              <span className="text-parofc-gold">Squads</span>
+              The <span className="text-parofc-gold">Squads</span>
             </h1>
           </motion.div>
         </div>
@@ -233,10 +236,15 @@ export default function PlayersPage() {
                       <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
                         {staff.image ? (
                           <Image
-                            src={staff.image}
+                            src={urlFor(staff.image)
+                              .width(600)
+                              .height(900)
+                              .fit("max")
+                              .auto("format")
+                              .url()}
                             alt={staff.name}
                             fill
-                            className="object-cover"
+                            className="object-cover object-top"
                           />
                         ) : (
                           <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red flex items-center justify-center">

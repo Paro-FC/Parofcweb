@@ -111,11 +111,11 @@ export const RELATED_PLAYERS_QUERY = `*[_type == "player" && (slug.current != $s
 }`;
 
 // Coaching staff query
-export const COACHING_STAFF_QUERY = `*[_type == "coachingStaff"] | order(order asc, name asc) {
+export const COACHING_STAFF_QUERY = `*[_type == "coachingStaff" && (team == $team || team == "both")] | order(order asc, name asc) {
   _id,
   name,
   role,
-  "image": image.asset->url
+  image
 }`;
 
 // Matches queries — only upcoming/live matches (date >= now)

@@ -30,6 +30,21 @@ export const coachingStaff = defineType({
       description: 'Optional photo for staff card',
     }),
     defineField({
+      name: 'team',
+      title: 'Team',
+      type: 'string',
+      options: {
+        list: [
+          { title: "Men's Team", value: 'mens' },
+          { title: "Women's Team", value: 'womens' },
+          { title: 'Both Teams', value: 'both' },
+        ],
+        layout: 'radio',
+      },
+      description: 'Which team this staff member belongs to',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: 'order',
       title: 'Display order',
       type: 'number',
