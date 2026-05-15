@@ -1,12 +1,12 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Facebook01Icon,
-  YoutubeIcon,
   InstagramIcon,
   TiktokIcon,
+  YoutubeIcon,
 } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -186,7 +186,10 @@ export function Footer(_: FooterProps) {
       {/* Bottom bar */}
       <div className="border-t border-white/5">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-4 px-5 py-4 text-2xs text-white/25">
-          <span>© 2025 Paro Football Club. All Rights Reserved.</span>
+          <span>
+            © {new Date().getFullYear()} Paro Football Club. All Rights
+            Reserved.
+          </span>
           <div className="flex gap-5"></div>
           <span
             className="text-sm italic text-parofc-red/40"
