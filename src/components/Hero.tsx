@@ -16,7 +16,7 @@ interface NewsItem {
 }
 
 interface HeroProps {
-  news?: NewsItem[];
+  blogs?: NewsItem[];
 }
 
 const fallbackNews: NewsItem = {
@@ -37,8 +37,8 @@ function formatDate(dateString: string) {
   });
 }
 
-export function Hero({ news }: HeroProps) {
-  const newsItem = news && news.length > 0 ? news[0] : fallbackNews;
+export function Hero({ blogs }: HeroProps) {
+  const newsItem = blogs && blogs.length > 0 ? blogs[0] : fallbackNews;
 
   const formattedDate = useMemo(() => {
     return formatDate(newsItem.publishedAt);
@@ -114,7 +114,7 @@ export function Hero({ news }: HeroProps) {
 
       {newsItem.slug ? (
         <Link
-          href={`/news/${newsItem.slug}`}
+          href={`/blog/${newsItem.slug}`}
           className="absolute inset-0 flex cursor-pointer"
         >
           {content}

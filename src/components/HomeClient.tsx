@@ -216,7 +216,7 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* ══════ HERO ══════ */}
-      <Hero news={news} />
+      <Hero blogs={blogs} />
 
       {/* ══════ NEXT MATCH BAR ══════ */}
       {nextMatch && (

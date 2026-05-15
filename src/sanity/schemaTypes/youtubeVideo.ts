@@ -46,7 +46,8 @@ export const youtubeVideo = defineType({
       name: "publishedAt",
       title: "Published at",
       type: "datetime",
-      description: "Optional. Used for relative time on the card (e.g. “3d”).",
+      initialValue: () => new Date().toISOString(),
+      description: "Controls the order videos appear on the homepage - latest first.",
     }),
   ],
   preview: {

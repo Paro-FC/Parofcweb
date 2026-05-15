@@ -1,5 +1,5 @@
 // YouTube homepage carousel
-export const YOUTUBE_VIDEOS_QUERY = `*[_type == "youtubeVideo"] | order(publishedAt desc, _createdAt desc) {
+export const YOUTUBE_VIDEOS_QUERY = `*[_type == "youtubeVideo"] | order(coalesce(publishedAt, _createdAt) desc) [0...5] {
   _id,
   title,
   youtubeUrl,
