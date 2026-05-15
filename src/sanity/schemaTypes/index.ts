@@ -1,4 +1,5 @@
 import { news } from "./news";
+import { blog } from "./blog";
 import { player } from "./player";
 import { match } from "./match";
 import { story } from "./story";
@@ -18,6 +19,7 @@ import { topScorer } from "./topScorer";
 
 export const schemaTypes = [
   news,
+  blog,
   player,
   match,
   story,

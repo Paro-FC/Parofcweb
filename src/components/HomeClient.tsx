@@ -33,10 +33,10 @@ function useCountdown(targetDate: string | undefined) {
       const mins = Math.floor((diff % 3600000) / 60000);
       const secs = Math.floor((diff % 60000) / 1000);
       return {
-        days: String(days),
-        hrs: String(hrs),
-        mins: String(mins),
-        secs: String(secs),
+        days: String(days).padStart(2, "0"),
+        hrs: String(hrs).padStart(2, "0"),
+        mins: String(mins).padStart(2, "0"),
+        secs: String(secs).padStart(2, "0"),
       };
     }
 
@@ -53,7 +53,7 @@ interface NewsItem {
   _id: string;
   image: any;
   title: string;
-  badge?: string;
+  externalUrl?: string;
   publishedAt: string;
   slug: string;
 }
@@ -70,6 +70,7 @@ interface Match {
   venue: string;
   matchUrl?: string;
   showMatchLink?: boolean;
+  ticketUrl?: string;
 }
 
 interface Partner {
@@ -126,6 +127,7 @@ interface TopScorer {
 
 interface HomeClientProps {
   news: NewsItem[];
+  blogs: NewsItem[];
   matches: Match[];
   mainPartners: Partner[];
   subPartners: Partner[];
@@ -186,10 +188,11 @@ function formatDate(dateStr: string) {
 }
 
 /* ─── MAIN ─── */
-export function HomeClient({ news, matches, mainPartners, subPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
+export function HomeClient({ news, blogs, matches, mainPartners, subPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
   const nextMatch = matches?.[0];
   const countdown = useCountdown(nextMatch?.date);
   const topNews = news?.slice(0, 3) ?? [];
+  const topBlogs = blogs?.slice(0, 3) ?? [];
   const topVideos = youtubeVideos?.slice(0, 5) ?? [];
   const liveStandings = useSanityLiveQuery<StandingDoc | null>(
     STANDINGS_HOME_LATEST_QUERY,
@@ -283,7 +286,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
 
               <div className="hidden h-28 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent lg:block" />
 
-              <div className="flex flex-col gap-3 sm:items-end">
+              <div className="flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-0">
                   <div className="rounded-md border border-white/10 bg-white/[0.03] sm:rounded-none sm:border-0 sm:bg-transparent">
                     <CountdownBlock value={countdown.days} label="Days" />
@@ -298,12 +301,23 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
                     <CountdownBlock value={countdown.secs} label="Secs" showDivider={false} />
                   </div>
                 </div>
+                {nextMatch.ticketUrl && (
+                  <a
+                    href={nextMatch.ticketUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-red/50 bg-parofc-red px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/80"
+                  >
+                    Buy Tickets
+                    <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} primaryColor="currentColor" strokeWidth={1.9} />
+                  </a>
+                )}
                 {nextMatch.matchUrl && nextMatch.showMatchLink !== false ? (
                   <a
                     href={nextMatch.matchUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-gold/35 bg-parofc-gold/10 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-parofc-gold transition hover:bg-parofc-gold hover:text-[#0a0a0a] sm:w-auto"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-gold/35 bg-parofc-gold/10 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-parofc-gold transition hover:bg-parofc-gold hover:text-[#0a0a0a]"
                   >
                     Open match link
                     <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} primaryColor="currentColor" strokeWidth={1.9} />
@@ -398,6 +412,41 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
         </div>
       </section>
 
+      {/* ══════ LATEST BLOG ══════ */}
+      {topBlogs.length > 0 && (
+        <section className="mx-auto max-w-[1400px] px-5 pt-5">
+          <SectionCard className="p-6">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-base font-black uppercase">Latest Blog</h2>
+              <Link href="/blog" className="text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View All Posts →</Link>
+            </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              {topBlogs.map((item) => {
+                const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
+                return (
+                  <Link key={item._id} href={`/blog/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#111111]">
+                    <div className="relative aspect-[2/1] overflow-hidden">
+                      {imgUrl ? (
+                        <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="h-full w-full bg-gradient-to-br from-[#ce0505]/30 to-[#1a0a00]" />
+                      )}
+                    </div>
+                    <div className="p-5">
+                      <p className="text-2xs font-bold uppercase tracking-wider text-white/40">{formatDate(item.publishedAt)}</p>
+                      <h3 className="mt-2 text-lg font-black leading-snug">{item.title}</h3>
+                      <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-parofc-red">
+                        Read More <HugeiconsIcon icon={ChevronRight} size={14} primaryColor="currentColor" strokeWidth={2} />
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </SectionCard>
+        </section>
+      )}
+
       {/* ══════ LATEST NEWS ══════ */}
       {topNews.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-5 pt-5">
@@ -410,7 +459,7 @@ export function HomeClient({ news, matches, mainPartners, subPartners, trophies,
               {topNews.map((item) => {
                 const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
                 return (
-                  <Link key={item._id} href={`/news/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#111111]">
+                  <Link key={item._id} href={item.externalUrl ?? `/news/${item.slug}`} {...(item.externalUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#111111]">
                     <div className="relative aspect-[2/1] overflow-hidden">
                       {imgUrl ? (
                         <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />

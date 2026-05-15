@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { sanityFetch } from "@/sanity/lib/live"
-import { NEWS_ARTICLE_QUERY, RELATED_NEWS_QUERY } from "@/sanity/lib/queries"
-import { NewsArticle } from "@/components/NewsArticle"
+import { BLOG_ARTICLE_QUERY, RELATED_BLOG_QUERY } from "@/sanity/lib/queries"
+import { BlogArticle } from "@/components/BlogArticle"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -12,20 +12,20 @@ interface Article {
   title: string
   slug: string
   image: unknown
+  badge: string
   publishedAt: string
   description: string
-  externalUrl?: string
   body?: unknown[]
   author?: string
   readTime?: number
 }
 
-export default async function NewsPage({ params }: Props) {
+export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  
+
   const [articleResult, relatedResult] = await Promise.all([
-    sanityFetch({ query: NEWS_ARTICLE_QUERY, params: { slug } }).catch(() => ({ data: null })),
-    sanityFetch({ query: RELATED_NEWS_QUERY, params: { slug } }).catch(() => ({ data: [] })),
+    sanityFetch({ query: BLOG_ARTICLE_QUERY, params: { slug } }).catch(() => ({ data: null })),
+    sanityFetch({ query: RELATED_BLOG_QUERY, params: { slug } }).catch(() => ({ data: [] })),
   ])
 
   const article = articleResult.data as Article | null
@@ -35,10 +35,9 @@ export default async function NewsPage({ params }: Props) {
   }
 
   return (
-    <NewsArticle 
-      article={article} 
-      relatedNews={(relatedResult.data as any[]) || []} 
+    <BlogArticle
+      article={article}
+      relatedPosts={(relatedResult.data as any[]) || []}
     />
   )
 }
-

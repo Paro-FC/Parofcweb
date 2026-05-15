@@ -21,6 +21,7 @@ const menuItems = [
   { label: "Players", href: "/players" },
   { label: "Academy", href: "/academy" },
   { label: "News", href: "/news" },
+  { label: "Blog", href: "/blog" },
   { label: "Ebooks", href: "/ebooks" },
 ];
 

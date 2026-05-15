@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../index.css";
 import { SanityLive } from "@/sanity/lib/live-client";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
+import { ChatbotScript } from "@/components/ChatbotScript";
 import { sanityFetch } from "@/sanity/lib/live";
 import { PARTNERS_QUERY } from "@/sanity/lib/queries";
 
@@ -56,7 +57,7 @@ export default async function RootLayout({
           {children}
         </ConditionalLayout>
         <SanityLive />
-        <script src="https://cdn.jotfor.ms/agent/embedjs/019d5da1c22a70e1931d32d9348400ca8fc1/embed.js?autoOpenChatIn=1"></script>
+        <ChatbotScript />
         {/* Privacy-friendly analytics by Plausible */}
         <Script id="plausible-init" strategy="afterInteractive">
           {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init();`}

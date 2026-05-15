@@ -63,6 +63,13 @@ export const match = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'ticketUrl',
+      title: 'Ticket link',
+      type: 'url',
+      description: 'Link to purchase tickets for this match. Shows a "Buy Tickets" button on the homepage next match section.',
+      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+    }),
+    defineField({
       name: 'matchUrl',
       title: 'Match link',
       type: 'url',

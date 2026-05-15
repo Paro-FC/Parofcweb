@@ -1,6 +1,7 @@
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   NEWS_QUERY,
+  BLOG_QUERY,
   MATCHES_QUERY,
   MAIN_PARTNERS_QUERY,
   SUB_PARTNERS_QUERY,
@@ -14,6 +15,7 @@ import { HomeClient } from "@/components/HomeClient";
 export default async function Home() {
   const [
     newsResult,
+    blogResult,
     matchesResult,
     mainPartnersResult,
     subPartnersResult,
@@ -23,6 +25,7 @@ export default async function Home() {
     topScorerResult,
   ] = await Promise.all([
     sanityFetch({ query: NEWS_QUERY }).catch(() => ({ data: [] })),
+    sanityFetch({ query: BLOG_QUERY }).catch(() => ({ data: [] })),
     sanityFetch({ query: MATCHES_QUERY }).catch(() => ({ data: [] })),
     sanityFetch({ query: MAIN_PARTNERS_QUERY }).catch(() => ({ data: [] })),
     sanityFetch({ query: SUB_PARTNERS_QUERY }).catch(() => ({ data: [] })),
@@ -37,6 +40,7 @@ export default async function Home() {
   return (
     <HomeClient
       news={(newsResult.data as any) ?? []}
+      blogs={(blogResult.data as any) ?? []}
       matches={(matchesResult.data as any) ?? []}
       mainPartners={(mainPartnersResult.data as any) ?? []}
       subPartners={(subPartnersResult.data as any) ?? []}

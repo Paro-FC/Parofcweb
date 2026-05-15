@@ -12,13 +12,54 @@ export const NEWS_QUERY = `*[_type == "news"] | order(publishedAt desc) {
   title,
   "slug": slug.current,
   image,
+  publishedAt,
+  description,
+  externalUrl
+}`;
+
+// Single news article query
+export const NEWS_ARTICLE_QUERY = `*[_type == "news" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  image,
+  publishedAt,
+  description,
+  externalUrl,
+  body[] {
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  },
+  author,
+  readTime
+}`;
+
+// Related news query
+export const RELATED_NEWS_QUERY = `*[_type == "news" && slug.current != $slug] | order(publishedAt desc) [0...4] {
+  _id,
+  title,
+  "slug": slug.current,
+  image,
+  publishedAt,
+  description,
+  externalUrl
+}`;
+
+// Blog queries
+export const BLOG_QUERY = `*[_type == "blog"] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  image,
   badge,
   publishedAt,
   description
 }`;
 
-// Single news article query
-export const NEWS_ARTICLE_QUERY = `*[_type == "news" && slug.current == $slug][0] {
+export const BLOG_ARTICLE_QUERY = `*[_type == "blog" && slug.current == $slug][0] {
   _id,
   title,
   "slug": slug.current,
@@ -37,8 +78,7 @@ export const NEWS_ARTICLE_QUERY = `*[_type == "news" && slug.current == $slug][0
   readTime
 }`;
 
-// Related news query
-export const RELATED_NEWS_QUERY = `*[_type == "news" && slug.current != $slug] | order(publishedAt desc) [0...4] {
+export const RELATED_BLOG_QUERY = `*[_type == "blog" && slug.current != $slug] | order(publishedAt desc) [0...4] {
   _id,
   title,
   "slug": slug.current,
@@ -118,8 +158,8 @@ export const COACHING_STAFF_QUERY = `*[_type == "coachingStaff" && (team == $tea
   image
 }`;
 
-// Matches queries — only upcoming/live matches (date >= now)
-export const MATCHES_QUERY = `*[_type == "match" && date >= now() && hideMatch != true] | order(date asc) [0...3] {
+// Matches queries — only upcoming/live men's matches (date >= now)
+export const MATCHES_QUERY = `*[_type == "match" && date >= now() && hideMatch != true && competition->team == "men"] | order(date asc) [0...3] {
   _id,
   homeTeam,
   awayTeam,
@@ -130,7 +170,8 @@ export const MATCHES_QUERY = `*[_type == "match" && date >= now() && hideMatch !
   event,
   venue,
   matchUrl,
-  showMatchLink
+  showMatchLink,
+  ticketUrl
 }`;
 
 // All matches query for calendar page (shows hidden matches too — hideMatch only affects the homepage widget)

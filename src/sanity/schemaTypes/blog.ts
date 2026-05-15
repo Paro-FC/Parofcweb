@@ -1,11 +1,11 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
-import { DocumentTextIcon } from '@sanity/icons'
+import { EditIcon } from '@sanity/icons'
 
-export const news = defineType({
-  name: 'news',
-  title: 'News',
+export const blog = defineType({
+  name: 'blog',
+  title: 'Blog',
   type: 'document',
-  icon: DocumentTextIcon,
+  icon: EditIcon,
   fields: [
     defineField({
       name: 'title',
@@ -32,11 +32,20 @@ export const news = defineType({
       },
     }),
     defineField({
-      name: 'externalUrl',
-      title: 'External Link',
-      type: 'url',
-      description: 'If set, this article links to an external page instead of showing a body.',
-      validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+      name: 'badge',
+      title: 'Badge',
+      type: 'string',
+      description: 'Category badge (e.g., FIRST TEAM, CLUB, TRANSFERS)',
+      options: {
+        list: [
+          { title: 'First Team', value: 'FIRST TEAM' },
+          { title: 'Club', value: 'CLUB' },
+          { title: 'Transfers', value: 'TRANSFERS' },
+          { title: 'Foundation', value: 'FOUNDATION' },
+          { title: 'Academy', value: 'ACADEMY' },
+          { title: 'Women', value: 'WOMEN' },
+        ],
+      },
     }),
     defineField({
       name: 'publishedAt',
@@ -49,13 +58,12 @@ export const news = defineType({
       title: 'Summary',
       type: 'text',
       rows: 3,
-      description: 'Brief summary shown in article cards and meta description',
+      description: 'Brief summary shown in blog cards and meta description',
     }),
     defineField({
       name: 'body',
       title: 'Body',
       type: 'array',
-      hidden: ({ document }) => !!document?.externalUrl,
       of: [
         defineArrayMember({
           type: 'block',
