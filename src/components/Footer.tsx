@@ -72,14 +72,11 @@ export function Footer(_: FooterProps) {
               height={48}
               className="object-contain"
             />
-            <div>
-              <b className="text-xl text-parofc-red">PARO FC</b>
-            </div>
           </Link>
-          <p className="mt-3 text-xs leading-relaxed text-white/40">
-            Pride of Paro. Pride of Bhutan.
+          <p className="mt-3 text-xs leading-relaxed text-parofc-red">
+            PARO FC
             <br />
-            Together, we build a legacy that inspires generations.
+            Live Your Dreams
           </p>
           <div className="mt-4 flex gap-3">
             {socialLinks.map((s) => (
