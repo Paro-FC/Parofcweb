@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { urlFor } from "@/sanity/lib/image";
 import { ArrowUpRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image";
 import { Countdown } from "./ui/countdown";
 
 interface Match {

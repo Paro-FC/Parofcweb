@@ -1,21 +1,23 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { urlFor } from '@/sanity/lib/image';
-import { useMemo, useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { useSanityLiveQuery } from '@/sanity/lib/live-client';
-import { ALL_MATCHES_QUERY } from '@/sanity/lib/queries';
+import { urlFor } from "@/sanity/lib/image";
+import { useSanityLiveQuery } from "@/sanity/lib/live-client";
+import { ALL_MATCHES_QUERY } from "@/sanity/lib/queries";
 import {
-  Calendar03Icon,
   ArrowRight01Icon,
-  MapPinIcon,
+  Calendar03Icon,
+  Cancel01Icon,
   Clock01Icon,
-} from '@hugeicons/core-free-icons';
+  MapPinIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
-type TeamFilter = 'men' | 'women';
+type TeamFilter = "men" | "women";
 
 interface Match {
   _id: string;
@@ -30,7 +32,7 @@ interface Match {
   venue: string;
   matchUrl?: string;
   showMatchLink?: boolean;
-  status?: 'upcoming' | 'live' | 'ht' | 'ft' | 'postponed';
+  status?: "upcoming" | "live" | "ht" | "ft" | "postponed";
   homeScore?: number | null;
   awayScore?: number | null;
 }
@@ -41,36 +43,36 @@ interface CalendarPageProps {
 
 function formatMatchDay(dateString: string) {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+  return date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
 }
 
 function formatMatchDayNum(dateString: string) {
   const date = new Date(dateString);
-  return date.getDate().toString().padStart(2, '0');
+  return date.getDate().toString().padStart(2, "0");
 }
 
 function formatMatchTime(dateString: string) {
   const date = new Date(dateString);
-  return date.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
+  return date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
-    timeZone: 'Asia/Thimphu',
+    timeZone: "Asia/Thimphu",
   });
 }
 
 function formatMatchMonth(dateString: string) {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+  return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
 }
 
 function groupMatchesByMonth(matches: Match[]) {
   const grouped: { [key: string]: Match[] } = {};
   matches.forEach((match) => {
     const date = new Date(match.date);
-    const monthKey = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
+    const monthKey = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
     });
     if (!grouped[monthKey]) grouped[monthKey] = [];
     grouped[monthKey].push(match);
@@ -80,7 +82,7 @@ function groupMatchesByMonth(matches: Match[]) {
 
 function getImageUrl(image: unknown): string | null {
   if (!image) return null;
-  if (typeof image === 'string') return image;
+  if (typeof image === "string") return image;
   try {
     return urlFor(image).width(128).height(128).url();
   } catch {
@@ -281,12 +283,16 @@ function MatchRows({
 }
 
 export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
-  const matches = useSanityLiveQuery<Match[]>(ALL_MATCHES_QUERY, {}, initialMatches);
-  const [selectedTeam, setSelectedTeam] = useState<TeamFilter>('men');
+  const router = useRouter();
+  const matches = useSanityLiveQuery<Match[]>(
+    ALL_MATCHES_QUERY,
+    {},
+    initialMatches,
+  );
+  const [selectedTeam, setSelectedTeam] = useState<TeamFilter>("men");
 
   const filteredMatches = useMemo(
-    () =>
-      matches.filter((m) => (m.competitionTeam ?? 'men') === selectedTeam),
+    () => matches.filter((m) => (m.competitionTeam ?? "men") === selectedTeam),
     [matches, selectedTeam],
   );
 
@@ -309,8 +315,8 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
   const hasUpcoming = Object.keys(upcomingByMonth).length > 0;
   const hasFinished = Object.keys(finishedByMonth).length > 0;
   const tabs: { id: TeamFilter; label: string; short: string }[] = [
-    { id: 'men', label: "Men's", short: "Men's" },
-    { id: 'women', label: "Women's", short: "Women's" },
+    { id: "men", label: "Men's", short: "Men's" },
+    { id: "women", label: "Women's", short: "Women's" },
   ];
 
   return (
@@ -321,7 +327,7 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
           className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)',
+              "repeating-linear-gradient(45deg, transparent, transparent 20px, white 20px, white 21px)",
           }}
         />
 
@@ -339,7 +345,6 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
                 Fixtures <span className="text-parofc-gold">&amp; Results</span>
               </h1>
             </motion.div>
-
           </div>
         </div>
 
@@ -356,8 +361,8 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
                 onClick={() => setSelectedTeam(t.id)}
                 className={`relative px-5 md:px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors duration-200 uppercase tracking-wider cursor-pointer ${
                   selectedTeam === t.id
-                    ? 'text-dark-charcoal'
-                    : 'text-gray-400 hover:text-gray-600'
+                    ? "text-dark-charcoal"
+                    : "text-gray-400 hover:text-gray-600"
                 }`}
               >
                 <span className="hidden md:inline">{t.label}</span>
@@ -366,7 +371,7 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
                   <motion.div
                     layoutId="fixturesActiveTab"
                     className="absolute bottom-0 left-0 right-0 h-[3px] bg-parofc-red"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
               </button>
@@ -385,7 +390,8 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
               className="text-gray-200 mb-3"
             />
             <span className="text-sm text-gray-400 font-medium">
-              No {selectedTeam === 'women' ? "women's" : "men's"} matches scheduled
+              No {selectedTeam === "women" ? "women's" : "men's"} matches
+              scheduled
             </span>
           </div>
         ) : (
@@ -409,7 +415,12 @@ export function CalendarPage({ matches: initialMatches }: CalendarPageProps) {
           </div>
         )}
       </div>
-
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
+      </button>
     </div>
   );
 }

@@ -1,15 +1,16 @@
 "use client";
 
+import Loader from "@/components/Loader";
+import { urlFor } from "@/sanity/lib/image";
+import { sanityFetch } from "@/sanity/lib/live";
+import { NEWS_QUERY } from "@/sanity/lib/queries";
+import { Cancel01Icon, NewsIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { NewsIcon } from "@hugeicons/core-free-icons";
-import { sanityFetch } from "@/sanity/lib/live";
-import { NEWS_QUERY } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
-import Loader from "@/components/Loader";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface NewsItem {
   _id: string;
@@ -57,6 +58,7 @@ function formatDate(dateString: string) {
 }
 
 export default function NewsPage() {
+  const router = useRouter();
   const [newsItems, setNewsItems] = useState<NewsItem[]>(fallbackNews);
   const [loading, setLoading] = useState(true);
 
@@ -267,6 +269,13 @@ export default function NewsPage() {
           </div>
         )}
       </div>
+      {/* Floating close button */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
+      </button>
     </div>
   );
 }

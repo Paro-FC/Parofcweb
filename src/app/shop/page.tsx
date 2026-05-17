@@ -1,20 +1,22 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  SlidersHorizontalIcon,
-  ArrowDown01Icon,
-  ShoppingBag01Icon,
-} from "@hugeicons/core-free-icons";
+import Loader from "@/components/Loader";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { PRODUCTS_QUERY, CATEGORIES_QUERY } from "@/sanity/lib/queries";
-import Loader from "@/components/Loader";
+import { CATEGORIES_QUERY, PRODUCTS_QUERY } from "@/sanity/lib/queries";
+import {
+  ArrowDown01Icon,
+  Cancel01Icon,
+  ShoppingBag01Icon,
+  SlidersHorizontalIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import type { SanityImageSource } from "@sanity/image-url";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface Category {
   _id: string;
@@ -203,6 +205,7 @@ const ProductCard = React.memo(function ProductCard({
 });
 
 export default function ShopPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -448,6 +451,13 @@ export default function ShopPage() {
           </div>
         )}
       </div>
+      {/* Floating close button */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
+      </button>
     </div>
   );
 }

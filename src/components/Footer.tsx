@@ -25,11 +25,14 @@ interface FooterProps {
 const quickLinks = [
   { href: "/", label: "Home" },
   { href: "/players", label: "Team" },
-  { href: "/matches", label: "Match Center" },
+  { href: "/standings", label: "Standings" },
+  { href: "/news", label: "News" },
+  { href: "/blogs", label: "Blogs" },
+  { href: "/photos", label: "Photos" },
 ];
 
 const ticketLinks = [
-  { href: "/calendar", label: "Buy Tickets" },
+  { href: "/fixtures-results", label: "Fixtures & results" },
   { href: "/shop", label: "Shop" },
 ];
 

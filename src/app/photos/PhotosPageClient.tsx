@@ -1,14 +1,13 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Camera01Icon,
-} from "@hugeicons/core-free-icons";
+import Loader from "@/components/Loader";
 import { sanityFetch } from "@/sanity/lib/live";
 import { PHOTOS_QUERY } from "@/sanity/lib/queries";
-import Loader from "@/components/Loader";
+import { Camera01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Photo {
   _id: string;
@@ -37,6 +36,7 @@ function getTimeAgo(dateString: string) {
 }
 
 export default function PhotosPage() {
+  const router = useRouter();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -190,6 +190,14 @@ export default function PhotosPage() {
           </div>
         )}
       </div>
+
+      {/* Floating close button */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-dark-charcoal border border-white/15 text-white/60 shadow-lg hover:text-white hover:border-white/40 transition"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={20} />
+      </button>
     </div>
   );
 }

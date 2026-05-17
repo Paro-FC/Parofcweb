@@ -1,18 +1,19 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { UserGroupIcon } from "@hugeicons/core-free-icons";
-import { sanityFetch } from "@/sanity/lib/live";
-import { urlFor } from "@/sanity/lib/image";
-import {
-  PLAYERS_BY_TEAM_QUERY,
-  COACHING_STAFF_QUERY,
-} from "@/sanity/lib/queries";
-import { PlayerCard, type PlayerCardPlayer } from "@/components/PlayerCard";
 import Loader from "@/components/Loader";
+import { PlayerCard, type PlayerCardPlayer } from "@/components/PlayerCard";
+import { urlFor } from "@/sanity/lib/image";
+import { sanityFetch } from "@/sanity/lib/live";
+import {
+  COACHING_STAFF_QUERY,
+  PLAYERS_BY_TEAM_QUERY,
+} from "@/sanity/lib/queries";
+import { Cancel01Icon, UserGroupIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface Player extends PlayerCardPlayer {
   team?: string;
@@ -42,6 +43,7 @@ const positionCategories: { id: PositionCategory; label: string }[] = [
 ];
 
 export default function PlayersPage() {
+  const router = useRouter();
   const [activeTeam, setActiveTeam] = useState<TeamType>("mens");
   const [activeCategory, setActiveCategory] =
     useState<PositionCategory>("goalkeepers");
@@ -343,6 +345,12 @@ export default function PlayersPage() {
         `,
         }}
       />
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
+      </button>
     </div>
   );
 }

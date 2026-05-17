@@ -11,11 +11,13 @@ import {
 import {
   ArrowDown01Icon,
   Award01Icon,
+  Cancel01Icon,
   Shield01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 interface Competition {
@@ -89,6 +91,7 @@ function formatGD(gd: number) {
 }
 
 export default function StandingsPage() {
+  const router = useRouter();
   const [selectedCompetition, setSelectedCompetition] = useState<string>("");
   const [selectedSeason, setSelectedSeason] = useState<string>("");
   const [showSeasonDropdown, setShowSeasonDropdown] = useState(false);
@@ -476,6 +479,12 @@ export default function StandingsPage() {
           </div>
         </div>
       </div>
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
+      </button>
     </div>
   );
 }

@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import Loader from "@/components/Loader";
+import { urlFor } from "@/sanity/lib/image";
 import { sanityFetch } from "@/sanity/lib/live";
 import { ACADEMY_PLAYERS_QUERY } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
-import Loader from "@/components/Loader";
+import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 type AcademyTab = "youth" | "grassroot";
 
@@ -19,6 +22,7 @@ type AcademyDoc = {
 };
 
 export default function AcademyPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [academy, setAcademy] = useState<AcademyDoc | null>(null);
   const [tab, setTab] = useState<AcademyTab>("youth");
@@ -96,7 +100,9 @@ export default function AcademyPage() {
             {children}
           </a>
         ),
-        strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+        strong: ({ children }) => (
+          <strong className="font-bold">{children}</strong>
+        ),
         em: ({ children }) => <em className="italic">{children}</em>,
       },
     }),
@@ -127,10 +133,7 @@ export default function AcademyPage() {
               Academy
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              Youth &{" "}
-              <span className="text-parofc-gold">
-                Grassroot
-              </span>
+              Youth & <span className="text-parofc-gold">Grassroot</span>
             </h1>
           </motion.div>
         </div>
@@ -151,14 +154,14 @@ export default function AcademyPage() {
             At Paro FC, player development begins long before the first team.
           </p>
           <p>
-            Our academy is built on a clear long-term pathway—designed to identify talent early,
-            nurture character, and develop technically gifted footballers who can compete at the
-            highest level.
+            Our academy is built on a clear long-term pathway—designed to
+            identify talent early, nurture character, and develop technically
+            gifted footballers who can compete at the highest level.
           </p>
           <p>
-            From grassroots beginnings to elite youth competition, every player at Paro FC is
-            guided through a structured football journey built on discipline, learning, and
-            excellence.
+            From grassroots beginnings to elite youth competition, every player
+            at Paro FC is guided through a structured football journey built on
+            discipline, learning, and excellence.
           </p>
           <p className="font-semibold text-dark-charcoal">
             This is where future Tigers are made.
@@ -170,10 +173,12 @@ export default function AcademyPage() {
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-0 overflow-x-auto -mb-px scrollbar-hide">
-            {([
-              { id: "youth", label: "Youth" },
-              { id: "grassroot", label: "Grassroot" },
-            ] as const).map((t) => (
+            {(
+              [
+                { id: "youth", label: "Youth" },
+                { id: "grassroot", label: "Grassroot" },
+              ] as const
+            ).map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
@@ -238,7 +243,12 @@ export default function AcademyPage() {
         `,
         }}
       />
+      <button
+        onClick={() => router.push("/")}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-14 h-14 bg-gray-900 hover:bg-gray-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+      >
+        <HugeiconsIcon icon={Cancel01Icon} size={24} />
+      </button>
     </div>
   );
 }
-
