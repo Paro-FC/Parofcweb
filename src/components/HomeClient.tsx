@@ -525,16 +525,16 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                   href={p.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center rounded-md border border-white/10 bg-white/[0.03] backdrop-blur-md px-4 py-7 md:py-9 transition hover:border-white/20"
+                  className="group flex items-center justify-center rounded-md border border-white/10 bg-white/[0.03] backdrop-blur-md px-4 py-4 md:py-6 transition hover:border-white/20"
                 >
-                  <div className="relative flex h-16 md:h-20 w-full items-center justify-center">
+                  <div className="relative flex h-24 md:h-32 w-full items-center justify-center">
                     {p.logo ? (
                       <Image
                         src={p.logo}
                         alt={p.name}
                         width={220}
                         height={110}
-                        className="relative z-10 h-14 md:h-16 w-auto object-contain"
+                        className="relative z-10 h-20 md:h-28 w-auto object-contain"
                       />
                     ) : (
                       <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">Logo</span>
@@ -559,16 +559,16 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                   href={p.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center rounded-md border border-white/10 bg-white/[0.03] backdrop-blur-md px-4 py-7 md:py-9 transition hover:border-white/20"
+                  className="group flex items-center justify-center rounded-md border border-white/10 bg-white/[0.03] backdrop-blur-md px-4 py-4 md:py-6 transition hover:border-white/20"
                 >
-                  <div className="relative flex h-16 md:h-20 w-full items-center justify-center">
+                  <div className="relative flex h-24 md:h-32 w-full items-center justify-center">
                     {p.logo ? (
                       <Image
                         src={p.logo}
                         alt={p.name}
                         width={220}
                         height={110}
-                        className="relative z-10 h-14 md:h-16 w-auto object-contain"
+                        className="relative z-10 h-20 md:h-28 w-auto object-contain"
                       />
                     ) : (
                       <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">Logo</span>

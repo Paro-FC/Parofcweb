@@ -53,13 +53,13 @@ export function PartnersSection({
                 rel="noopener noreferrer"
                 className="block opacity-80 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
               >
-                <div className="relative w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 p-2 flex items-center justify-center transition-all duration-300">
+                <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 p-2 flex items-center justify-center transition-all duration-300">
                   <Image
                     src={partner.logo}
                     alt={partner.name}
                     fill
                     className="object-contain p-1"
-                    sizes="(max-width: 768px) 112px, (max-width: 1024px) 144px, 160px"
+                    sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 288px"
                   />
                 </div>
               </Link>
