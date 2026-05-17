@@ -1,14 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  ArrowDown01Icon,
-  Award01Icon,
-  Shield01Icon,
-} from "@hugeicons/core-free-icons";
-import { motion, AnimatePresence } from "framer-motion";
+import Loader from "@/components/Loader";
 import { sanityFetch } from "@/sanity/lib/live";
 import { useSanityLiveQuery } from "@/sanity/lib/live-client";
 import {
@@ -16,7 +8,15 @@ import {
   STANDINGS_QUERY,
   STANDINGS_SEASONS_QUERY,
 } from "@/sanity/lib/queries";
-import Loader from "@/components/Loader";
+import {
+  ArrowDown01Icon,
+  Award01Icon,
+  Shield01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 
 interface Competition {
   id: string;
@@ -228,7 +228,7 @@ export default function StandingsPage() {
               Standings
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-none">
-              League <span className="text-parofc-red">Tables</span>
+              League <span className="text-parofc-gold">Tables</span>
             </h1>
           </motion.div>
         </div>
@@ -349,7 +349,7 @@ export default function StandingsPage() {
         </div>
 
         {/* Table — dark card */}
-        <div className="rounded-lg border border-parofc-red/20 bg-[#111111] p-5">
+        <div className="rounded-lg border border-parofc-red/20 bg-card-dark p-5">
           <div className="mb-4 flex items-end justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-xl font-black uppercase text-white">
@@ -414,9 +414,7 @@ export default function StandingsPage() {
                       <tr
                         key={team.id}
                         className={`relative border-b border-white/5 transition ${
-                          isParo
-                            ? "bg-parofc-red/10"
-                            : "hover:bg-white/[0.03]"
+                          isParo ? "bg-parofc-red/10" : "hover:bg-white/[0.03]"
                         }`}
                       >
                         <td className="px-2 py-3 font-black text-white relative">

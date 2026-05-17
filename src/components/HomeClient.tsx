@@ -179,7 +179,7 @@ function CountdownBlock({ value, label, showDivider = true }: { value: string; l
 }
 
 function SectionCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`rounded-lg border border-parofc-red/20 bg-[#111111] overflow-hidden ${className}`}>{children}</div>;
+  return <div className={`rounded-lg border border-parofc-red/20 bg-card-dark overflow-hidden ${className}`}>{children}</div>;
 }
 
 function formatDate(dateStr: string) {
@@ -214,14 +214,14 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
   });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-near-black text-white">
       {/* ══════ HERO ══════ */}
       <Hero blogs={blogs} />
 
       {/* ══════ NEXT MATCH BAR ══════ */}
       {nextMatch && (
         <section className="mx-auto max-w-[1400px] px-5 pt-5">
-          <div className="rounded-lg border border-parofc-red/20 bg-[#111111] px-4 py-5 sm:px-6">
+          <div className="rounded-lg border border-parofc-red/20 bg-card-dark px-4 py-5 sm:px-6">
             <div className="mb-5">
               <h2 className="text-lg font-black uppercase text-parofc-red">Next Match</h2>
               <p className="text-xs font-bold uppercase tracking-wider text-white/40">{nextMatch.competition}</p>
@@ -317,7 +317,7 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                     href={nextMatch.matchUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-gold/35 bg-parofc-gold/10 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-parofc-gold transition hover:bg-parofc-gold hover:text-[#0a0a0a]"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-gold/35 bg-parofc-gold/10 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-parofc-gold transition hover:bg-parofc-gold hover:text-dark-charcoal"
                   >
                     Open match link
                     <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} primaryColor="currentColor" strokeWidth={1.9} />
@@ -394,7 +394,7 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
               {topScorer.image && (
                 <div className="absolute right-0 top-0 h-full w-[45%] sm:w-1/2">
                   <Image src={topScorer.image} alt={topScorer.name} fill className="object-cover object-top" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-card-dark via-card-dark/80 to-transparent" />
                 </div>
               )}
               <div className="relative z-10 p-5">
@@ -424,12 +424,12 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
               {topBlogs.map((item) => {
                 const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
                 return (
-                  <Link key={item._id} href={`/blog/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#111111]">
+                  <Link key={item._id} href={`/blog/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-card-dark">
                     <div className="relative aspect-[2/1] overflow-hidden">
                       {imgUrl ? (
                         <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
                       ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-[#ce0505]/30 to-[#1a0a00]" />
+                        <div className="h-full w-full bg-gradient-to-br from-parofc-red/30 to-near-black" />
                       )}
                     </div>
                     <div className="p-5">
@@ -459,12 +459,12 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
               {topNews.map((item) => {
                 const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
                 return (
-                  <Link key={item._id} href={item.externalUrl ?? `/news/${item.slug}`} {...(item.externalUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-[#111111]">
+                  <Link key={item._id} href={item.externalUrl ?? `/news/${item.slug}`} {...(item.externalUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-card-dark">
                     <div className="relative aspect-[2/1] overflow-hidden">
                       {imgUrl ? (
                         <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
                       ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-[#ce0505]/30 to-[#1a0a00]" />
+                        <div className="h-full w-full bg-gradient-to-br from-parofc-red/30 to-near-black" />
                       )}
                     </div>
                     <div className="p-5">
@@ -496,7 +496,7 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                 const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
                 return (
                   <a key={v._id} href={v.youtubeUrl} target="_blank" rel="noopener noreferrer" className="group cursor-pointer">
-                    <div className="relative aspect-video overflow-hidden rounded-md bg-gradient-to-br from-[#ce0505]/30 to-[#1a0a00]">
+                    <div className="relative aspect-video overflow-hidden rounded-md bg-gradient-to-br from-parofc-red/30 to-near-black">
                       {thumb && <Image src={thumb} alt={v.title} fill className="object-cover opacity-70" />}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="grid h-10 w-10 place-items-center rounded-full bg-white/20 backdrop-blur-sm transition group-hover:bg-parofc-red/80">

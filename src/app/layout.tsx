@@ -52,7 +52,7 @@ export default async function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#0a0a0a]">
+      <body className="bg-near-black">
         <ConditionalLayout partners={partners as any}>
           {children}
         </ConditionalLayout>

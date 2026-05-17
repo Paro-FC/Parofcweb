@@ -59,7 +59,7 @@ const socialLinks = [
 
 export function Footer(_: FooterProps) {
   return (
-    <footer className="border-t border-parofc-red/15 bg-[#0a0a0a]">
+    <footer className="border-t border-parofc-red/15 bg-near-black">
       {/* Footer columns */}
       <div className="mx-auto grid max-w-[1400px] gap-8 px-5 py-10 md:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_1.2fr]">
         {/* Brand */}
@@ -174,7 +174,7 @@ export function Footer(_: FooterProps) {
             className="mt-3 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs text-white placeholder:text-white/30 focus:border-parofc-red/40 focus:outline-none"
             placeholder="Enter your email"
           />
-          <button className="mt-2 w-full rounded-lg bg-[#ce0505] py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-[#e00606]">
+          <button className="mt-2 w-full rounded-lg bg-parofc-red py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/85">
             Subscribe
           </button>
         </div>

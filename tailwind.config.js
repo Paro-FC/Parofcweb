@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Roboto", "system-ui", "sans-serif"],
-        serif: ['"Instrument Serif"', "Georgia", "serif"],
+        sans: ["Gotham", "system-ui", "sans-serif"],
+        serif: ["Gotham", "system-ui", "sans-serif"],
         display: ["Gotham", "system-ui", "sans-serif"],
         heading: ["Gotham", "system-ui", "sans-serif"],
       },
@@ -47,17 +47,20 @@ module.exports = {
         "tiger-yellow": "#ce0505", // yellow replaced with red
         black: "#000000",
         white: "#ffffff",
-        // Legacy aliases (mapped to new brand colors)
-        "parofc-gold": "#ce0505", // yellow replaced with red
-        "light-gold": "#EFE28D", // Light Gold / Cream
-        "parofc-red": "#ce0505", // → Paro Red
-        bronze: "#A66337", // Brown / Bronze
-        // Neutral / Supporting Colors
-        "dark-charcoal": "#000000", // Brand spec black
-        "medium-grey": "#5E5952", // Medium Grey
-        "light-grey": "#9F9384", // Light Grey
-        // Legacy support (mapping old colors to new scheme)
-        "parofc-blue": "#000000", // Map to black for navbar/header
+        // Core brand palette
+        "parofc-red": "#ce0505",   // Paro Red — primary accent
+        "parofc-gold": "#C9A84C",  // Luxury Gold — secondary accent
+        "light-gold": "#EFE28D",   // Pale Gold — nav hover highlights
+        bronze: "#A66337",         // Bronze — gradient endpoint
+        // Backgrounds
+        "dark-charcoal": "#000000", // Pure black — nav, hero sections
+        "near-black": "#0a0a0a",    // Page background
+        "card-dark": "#111111",     // Card / section background
+        // Supporting neutrals
+        "medium-grey": "#5E5952",
+        "light-grey": "#9F9384",
+        // Legacy aliases
+        "parofc-blue": "#000000",
         "dark-bg": "#4a4a4a",
       },
       backgroundImage: {
