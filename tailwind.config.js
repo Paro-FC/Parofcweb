@@ -8,10 +8,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Gotham", "system-ui", "sans-serif"],
-        serif: ["Gotham", "system-ui", "sans-serif"],
-        display: ["Gotham", "system-ui", "sans-serif"],
-        heading: ["Gotham", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        serif: ["Satoshi", "system-ui", "sans-serif"],
+        display: ["Inter", "system-ui", "sans-serif"],
+        heading: ["Satoshi", "system-ui", "sans-serif"],
       },
       fontSize: {
         "5xs": ["7px", { lineHeight: "1.2", letterSpacing: "0.06em" }],
