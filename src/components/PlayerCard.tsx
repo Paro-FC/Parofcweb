@@ -1,9 +1,9 @@
 "use client";
 
+import { urlFor } from "@/sanity/lib/image";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image";
 
 interface PlayerStats {
   appearances?: { value: number; season: string };
@@ -74,7 +74,7 @@ export function PlayerCard({
               src={imageSrc}
               alt={`${player.firstName} ${player.lastName || player.firstName}`}
               fill
-              className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              className="object-cover object-top transition-transform duration-500 "
               priority={index < 4}
             />
           ) : (

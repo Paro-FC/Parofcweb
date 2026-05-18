@@ -1,19 +1,20 @@
 "use client";
 
+import { PlayerCard } from "@/components/PlayerCard";
+import { isShareUserCanceled } from "@/lib/share";
+import { urlFor } from "@/sanity/lib/image";
+import {
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  Cancel01Icon,
+  ChampionIcon,
+  Share01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Cancel01Icon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  Share01Icon,
-  ChampionIcon,
-} from "@hugeicons/core-free-icons";
-import { urlFor } from "@/sanity/lib/image";
-import { isShareUserCanceled } from "@/lib/share";
-import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { useState } from "react";
 
 interface PlayerStats {
@@ -282,7 +283,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
             </div>
 
             {/* Right: Player image */}
-            <div className="relative order-1 lg:order-2 flex items-end justify-center">
+            <div className="relative order-1 lg:order-2 flex items-start justify-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -293,13 +294,13 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
                   <Image
                     src={urlFor(player.image)
                       .width(900)
-                      .height(1200)
+                      .height(1800)
                       .fit("max")
                       .auto("format")
                       .url()}
                     alt={`${player.firstName} ${player.lastName}`}
                     fill
-                    className="object-contain object-bottom"
+                    className="object-contain object-top"
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     priority
                   />
@@ -511,51 +512,7 @@ export function PlayerPage({ player, relatedPlayers }: PlayerPageProps) {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
               {relatedPlayers.map((rp, index) => (
-                <motion.div
-                  key={rp._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.04, duration: 0.3 }}
-                >
-                  <Link
-                    href={`/players/${rp.slug}`}
-                    className="block group cursor-pointer"
-                  >
-                    <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
-                      {rp.image ? (
-                        <Image
-                          src={urlFor(rp.image).width(400).height(533).url()}
-                          alt={`${rp.firstName} ${rp.lastName}`}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 bg-gradient-to-br from-dark-charcoal to-parofc-red flex items-center justify-center">
-                          <span className="text-5xl font-black text-white/10">
-                            {rp.number}
-                          </span>
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                      <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-                        <p className="text-3xs font-bold text-parofc-gold uppercase tracking-widest mb-0.5">
-                          #{rp.number}
-                        </p>
-                        <p className="text-white leading-tight">
-                          <span className="text-xs font-normal">
-                            {rp.firstName}{" "}
-                          </span>
-                          <span className="text-sm md:text-base font-black uppercase">
-                            {rp.lastName || rp.firstName}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
+                <PlayerCard key={rp._id} player={rp} index={index} />
               ))}
             </div>
           </div>

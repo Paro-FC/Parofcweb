@@ -86,7 +86,7 @@ export default function NewsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-near-black">
       {/* Hero Header */}
       <div className="relative bg-dark-charcoal overflow-hidden">
         <div
@@ -147,7 +147,7 @@ export default function NewsPage() {
                   {...(item.externalUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="group block cursor-pointer"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 mb-3">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-white/5 mb-3">
                     {item.image ? (
                       <Image
                         src={urlFor(item.image).width(500).height(313).url()}
@@ -165,12 +165,12 @@ export default function NewsPage() {
                     {formatDate(item.publishedAt)}
                   </span>
 
-                  <h3 className="text-base font-bold text-dark-charcoal leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
+                  <h3 className="text-base font-bold text-white leading-snug line-clamp-2 group-hover:text-parofc-red transition-colors duration-200">
                     {item.title}{item.externalUrl && " ↗"}
                   </h3>
 
                   {item.description && (
-                    <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 mt-1.5">
+                    <p className="text-xs text-white/40 leading-relaxed line-clamp-2 mt-1.5">
                       {item.description}
                     </p>
                   )}

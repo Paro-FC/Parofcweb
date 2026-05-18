@@ -9,6 +9,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 interface Partner {
   _id: string;
@@ -61,6 +62,34 @@ const socialLinks = [
 ];
 
 export function Footer(_: FooterProps) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleSubscribe = async () => {
+    if (!email) return;
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus("success");
+        setMessage("You're subscribed!");
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage(data.error || "Something went wrong.");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Something went wrong.");
+    }
+  };
+
   return (
     <footer className="border-t border-parofc-red/15 bg-near-black">
       {/* Footer columns */}
@@ -174,11 +203,25 @@ export function Footer(_: FooterProps) {
             Subscribe for the latest news, updates and exclusive offers.
           </p>
           <input
+            type="email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
+            onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
             className="mt-3 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs text-white placeholder:text-white/30 focus:border-parofc-red/40 focus:outline-none"
             placeholder="Enter your email"
+            disabled={status === "loading" || status === "success"}
           />
-          <button className="mt-2 w-full rounded-lg bg-parofc-red py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/85">
-            Subscribe
+          {message && (
+            <p className={`mt-1.5 text-2xs ${status === "success" ? "text-green-400" : "text-red-400"}`}>
+              {message}
+            </p>
+          )}
+          <button
+            onClick={handleSubscribe}
+            disabled={status === "loading" || status === "success"}
+            className="mt-2 w-full rounded-lg bg-parofc-red py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/85 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {status === "loading" ? "Subscribing..." : status === "success" ? "Subscribed!" : "Subscribe"}
           </button>
         </div>
       </div>

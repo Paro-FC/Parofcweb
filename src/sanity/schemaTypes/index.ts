@@ -16,6 +16,7 @@ import { youtubeVideo } from "./youtubeVideo";
 import { academy } from "./academy";
 import { ebook } from "./ebook";
 import { topScorer } from "./topScorer";
+import { subscriber } from "./subscriber";
 
 export const schemaTypes = [
   news,
@@ -36,4 +37,5 @@ export const schemaTypes = [
   academy,
   ebook,
   topScorer,
+  subscriber,
 ];
