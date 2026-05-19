@@ -1,32 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { useCart } from "@/contexts/CartContext";
+import { useSideMenu } from "@/contexts/SideMenuContext";
 import {
-  Search01Icon,
-  Menu01Icon,
-  ShoppingBag01Icon,
   ArrowUpRight01Icon,
+  Menu01Icon,
+  Search01Icon,
+  ShoppingBag01Icon,
 } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { SearchModal } from "./SearchModal";
-import { useSideMenu } from "@/contexts/SideMenuContext";
-import { useCart } from "@/contexts/CartContext";
 
 const leftLinks = [
   { href: "/standings", label: "Standings" },
   { href: "/fixtures-results", label: "Fixtures" },
   { href: "/players", label: "Squad" },
   { href: "/academy", label: "Academy" },
+  { href: "/photos", label: "Photos" },
 ];
 
 const rightLinks = [
   { href: "/news", label: "News" },
-  { href: "/photos", label: "Photos" },
   { href: "/blog", label: "Blog" },
   { href: "/shop", label: "Shop" },
+  { href: "/ebooks", label: "Ebooks" },
 ];
 
 export function MainNav() {
