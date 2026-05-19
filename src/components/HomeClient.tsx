@@ -1,26 +1,34 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Hero } from "@/components/Hero";
 import {
+  LiveStandingsTable,
+  sortTeamsByPoints,
+} from "@/components/LiveStandingsTable";
+import { getYoutubeIdFromUrl } from "@/lib/youtube";
+import { urlFor } from "@/sanity/lib/image";
+import { useSanityLiveQuery } from "@/sanity/lib/live-client";
+import { STANDINGS_HOME_LATEST_QUERY } from "@/sanity/lib/queries";
+import {
+  ArrowUpRight01Icon,
   Calendar,
+  ChevronRight,
   Clock,
   MapPin,
-  ChevronRight,
   Play,
-  ArrowUpRight01Icon,
 } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { urlFor } from "@/sanity/lib/image";
-import { getYoutubeIdFromUrl } from "@/lib/youtube";
-import { Hero } from "@/components/Hero";
-import { useSanityLiveQuery } from "@/sanity/lib/live-client";
-import { LiveStandingsTable, sortTeamsByPoints } from "@/components/LiveStandingsTable";
-import { STANDINGS_HOME_LATEST_QUERY } from "@/sanity/lib/queries";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function useCountdown(targetDate: string | undefined) {
-  const [timeLeft, setTimeLeft] = useState({ days: "--", hrs: "--", mins: "--", secs: "--" });
+  const [timeLeft, setTimeLeft] = useState({
+    days: "--",
+    hrs: "--",
+    mins: "--",
+    secs: "--",
+  });
 
   useEffect(() => {
     if (!targetDate) return;
@@ -142,7 +150,13 @@ function Crest({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const s = { sm: "h-7 w-7", md: "h-12 w-12", lg: "h-16 w-16" }[size];
   return (
     <div className={`${s} shrink-0 overflow-hidden rounded-full`}>
-      <Image src="/assets/paro.png" alt="Paro FC" width={64} height={64} className="h-full w-full object-contain" />
+      <Image
+        src="/assets/paro.png"
+        alt="Paro FC"
+        width={64}
+        height={64}
+        className="h-full w-full object-contain"
+      />
     </div>
   );
 }
@@ -165,30 +179,71 @@ function TeamInitialsLogo({ name }: { name: string }) {
   );
 }
 
-
-function CountdownBlock({ value, label, showDivider = true }: { value: string; label: string; showDivider?: boolean }) {
+function CountdownBlock({
+  value,
+  label,
+  showDivider = true,
+}: {
+  value: string;
+  label: string;
+  showDivider?: boolean;
+}) {
   return (
     <div className="flex items-stretch">
       <div className="px-3 py-1 text-center sm:px-4">
-        <div className="text-3xl font-black tabular-nums text-parofc-red sm:text-4xl">{value}</div>
-        <p className="text-3xs font-bold uppercase tracking-wider text-white/40 sm:text-2xs">{label}</p>
+        <div className="text-3xl font-black tabular-nums text-parofc-red sm:text-4xl">
+          {value}
+        </div>
+        <p className="text-3xs font-bold uppercase tracking-wider text-white/40 sm:text-2xs">
+          {label}
+        </p>
       </div>
-      {showDivider && <div className="my-4 hidden w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent sm:block" />}
+      {showDivider && (
+        <div className="my-4 hidden w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent sm:block" />
+      )}
     </div>
   );
 }
 
-function SectionCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`rounded-lg border border-parofc-red/20 bg-card-dark overflow-hidden ${className}`}>{children}</div>;
+function SectionCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`rounded-lg border border-parofc-red/20 bg-card-dark overflow-hidden ${className}`}
+    >
+      {children}
+    </div>
+  );
 }
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }).toUpperCase();
+  return d
+    .toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+    .toUpperCase();
 }
 
 /* ─── MAIN ─── */
-export function HomeClient({ news, blogs, matches, mainPartners, subPartners, trophies, youtubeVideos, standings, topScorer }: HomeClientProps) {
+export function HomeClient({
+  news,
+  blogs,
+  matches,
+  mainPartners,
+  subPartners,
+  trophies,
+  youtubeVideos,
+  standings,
+  topScorer,
+}: HomeClientProps) {
   const nextMatch = matches?.[0];
   const countdown = useCountdown(nextMatch?.date);
   const topNews = news?.slice(0, 3) ?? [];
@@ -197,7 +252,7 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
   const liveStandings = useSanityLiveQuery<StandingDoc | null>(
     STANDINGS_HOME_LATEST_QUERY,
     {},
-    standings ?? null
+    standings ?? null,
   );
   const standingTeams = sortTeamsByPoints(liveStandings?.teams ?? []);
   const sortedByPoints = standingTeams;
@@ -223,8 +278,12 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
         <section className="mx-auto max-w-[1400px] px-5 pt-5">
           <div className="rounded-lg border border-parofc-red/20 bg-card-dark px-4 py-5 sm:px-6">
             <div className="mb-5">
-              <h2 className="text-lg font-black uppercase text-parofc-red">Next Match</h2>
-              <p className="text-xs font-bold uppercase tracking-wider text-white/40">{nextMatch.competition}</p>
+              <h2 className="text-lg font-black uppercase text-parofc-red">
+                Next Match
+              </h2>
+              <p className="text-xs font-bold uppercase tracking-wider text-white/40">
+                {nextMatch.competition}
+              </p>
             </div>
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -232,27 +291,51 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                 <div className="text-center">
                   {nextMatch.homeCrest ? (
                     <div className="mx-auto h-12 w-12 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-full">
-                      <Image src={nextMatch.homeCrest} alt={nextMatch.homeTeam} width={64} height={64} className="h-full w-full object-contain" />
+                      <Image
+                        src={nextMatch.homeCrest}
+                        alt={nextMatch.homeTeam}
+                        width={64}
+                        height={64}
+                        className="h-full w-full object-contain"
+                      />
                     </div>
-                  ) : <Crest size="lg" />}
-                  <p className="mt-2 max-w-[80px] sm:max-w-none text-xs font-black uppercase tracking-wider sm:text-base">{nextMatch.homeTeam}</p>
+                  ) : (
+                    <Crest size="lg" />
+                  )}
+                  <p className="mt-2 max-w-[80px] sm:max-w-none text-xs font-black uppercase tracking-wider sm:text-base">
+                    {nextMatch.homeTeam}
+                  </p>
                 </div>
                 <div className="flex flex-col items-center gap-2 shrink-0">
                   <div className="h-6 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
-                  <span className="text-2xl font-black text-white sm:text-4xl">VS</span>
+                  <span className="text-2xl font-black text-white sm:text-4xl">
+                    VS
+                  </span>
                   <div className="h-6 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
                 </div>
                 <div className="text-center">
                   {nextMatch.awayCrest ? (
                     <div className="mx-auto h-12 w-12 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-full">
-                      <Image src={nextMatch.awayCrest} alt={nextMatch.awayTeam} width={64} height={64} className="h-full w-full object-contain" />
+                      <Image
+                        src={nextMatch.awayCrest}
+                        alt={nextMatch.awayTeam}
+                        width={64}
+                        height={64}
+                        className="h-full w-full object-contain"
+                      />
                     </div>
                   ) : (
                     <div className="mx-auto grid h-12 w-12 sm:h-16 sm:w-16 shrink-0 place-items-center rounded-full bg-white/10 text-sm sm:text-base font-black">
-                      {nextMatch.awayTeam.split(" ").map((w: string) => w[0]).join("").slice(0, 2)}
+                      {nextMatch.awayTeam
+                        .split(" ")
+                        .map((w: string) => w[0])
+                        .join("")
+                        .slice(0, 2)}
                     </div>
                   )}
-                  <p className="mt-2 max-w-[80px] sm:max-w-none text-xs font-black uppercase tracking-wider sm:text-base">{nextMatch.awayTeam}</p>
+                  <p className="mt-2 max-w-[80px] sm:max-w-none text-xs font-black uppercase tracking-wider sm:text-base">
+                    {nextMatch.awayTeam}
+                  </p>
                 </div>
               </div>
 
@@ -260,26 +343,67 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
 
               <div className="flex flex-col items-stretch sm:flex-row">
                 <div className="flex items-center justify-between py-2 sm:flex-col sm:justify-center sm:px-7">
-                  <HugeiconsIcon icon={Calendar} size={32} primaryColor="currentColor" className="text-white/50 sm:mb-2" strokeWidth={1.8} />
+                  <HugeiconsIcon
+                    icon={Calendar}
+                    size={32}
+                    primaryColor="currentColor"
+                    className="text-white/50 sm:mb-2"
+                    strokeWidth={1.8}
+                  />
                   <div className="text-right sm:text-center">
-                    <p className="text-sm font-black uppercase sm:text-base">{new Date(nextMatch.date).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}</p>
-                    <p className="text-2xs font-bold uppercase tracking-wider text-white/40">{new Date(nextMatch.date).toLocaleDateString("en-US", { weekday: "long" })}</p>
+                    <p className="text-sm font-black uppercase sm:text-base">
+                      {new Date(nextMatch.date).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                    <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
+                      {new Date(nextMatch.date).toLocaleDateString("en-US", {
+                        weekday: "long",
+                      })}
+                    </p>
                   </div>
                 </div>
                 <div className="my-2 h-px w-full bg-gradient-to-r from-transparent via-parofc-red/40 to-transparent sm:my-2 sm:h-auto sm:w-px sm:bg-gradient-to-b" />
                 <div className="flex items-center justify-between py-2 sm:flex-col sm:justify-center sm:px-7">
-                  <HugeiconsIcon icon={Clock} size={32} primaryColor="currentColor" className="text-white/50 sm:mb-2" strokeWidth={1.8} />
+                  <HugeiconsIcon
+                    icon={Clock}
+                    size={32}
+                    primaryColor="currentColor"
+                    className="text-white/50 sm:mb-2"
+                    strokeWidth={1.8}
+                  />
                   <div className="text-right sm:text-center">
-                    <p className="text-sm font-black uppercase sm:text-base">{new Date(nextMatch.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Thimphu" })}</p>
-                    <p className="text-2xs font-bold uppercase tracking-wider text-white/40">Kick Off</p>
+                    <p className="text-sm font-black uppercase sm:text-base">
+                      {new Date(nextMatch.date).toLocaleTimeString("en-GB", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                        timeZone: "Asia/Thimphu",
+                      })}
+                    </p>
+                    <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
+                      Kick Off
+                    </p>
                   </div>
                 </div>
                 <div className="my-2 h-px w-full bg-gradient-to-r from-transparent via-parofc-red/40 to-transparent sm:my-2 sm:h-auto sm:w-px sm:bg-gradient-to-b" />
                 <div className="flex items-center justify-between py-2 sm:flex-col sm:justify-center sm:px-7">
-                  <HugeiconsIcon icon={MapPin} size={32} primaryColor="currentColor" className="text-white/50 sm:mb-2" strokeWidth={1.8} />
+                  <HugeiconsIcon
+                    icon={MapPin}
+                    size={32}
+                    primaryColor="currentColor"
+                    className="text-white/50 sm:mb-2"
+                    strokeWidth={1.8}
+                  />
                   <div className="text-right sm:text-center">
-                    <p className="text-sm font-black uppercase sm:text-base">{nextMatch.venue}</p>
-                    <p className="text-2xs font-bold uppercase tracking-wider text-white/40">Venue</p>
+                    <p className="text-sm font-black uppercase sm:text-base">
+                      {nextMatch.venue}
+                    </p>
+                    <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
+                      Venue
+                    </p>
                   </div>
                 </div>
               </div>
@@ -298,7 +422,11 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                     <CountdownBlock value={countdown.mins} label="Mins" />
                   </div>
                   <div className="rounded-md border border-white/10 bg-white/[0.03] sm:rounded-none sm:border-0 sm:bg-transparent">
-                    <CountdownBlock value={countdown.secs} label="Secs" showDivider={false} />
+                    <CountdownBlock
+                      value={countdown.secs}
+                      label="Secs"
+                      showDivider={false}
+                    />
                   </div>
                 </div>
                 {nextMatch.ticketUrl && (
@@ -309,7 +437,12 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                     className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-red/50 bg-parofc-red px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/80"
                   >
                     Buy Tickets
-                    <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} primaryColor="currentColor" strokeWidth={1.9} />
+                    <HugeiconsIcon
+                      icon={ArrowUpRight01Icon}
+                      size={14}
+                      primaryColor="currentColor"
+                      strokeWidth={1.9}
+                    />
                   </a>
                 )}
                 {nextMatch.matchUrl && nextMatch.showMatchLink !== false ? (
@@ -320,7 +453,12 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                     className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-parofc-gold/35 bg-parofc-gold/10 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-parofc-gold transition hover:bg-parofc-gold hover:text-dark-charcoal"
                   >
                     Open match link
-                    <HugeiconsIcon icon={ArrowUpRight01Icon} size={14} primaryColor="currentColor" strokeWidth={1.9} />
+                    <HugeiconsIcon
+                      icon={ArrowUpRight01Icon}
+                      size={14}
+                      primaryColor="currentColor"
+                      strokeWidth={1.9}
+                    />
                   </a>
                 ) : null}
               </div>
@@ -335,13 +473,23 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-xl font-black uppercase">
-                Men&apos;s Live Standings <span className="flex items-center gap-1 text-xs font-bold text-red-500"><span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" /> LIVE</span>
+                Men&apos;s Live Standings{" "}
+                <span className="flex items-center gap-1 text-xs font-bold text-red-500">
+                  <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" />{" "}
+                  LIVE
+                </span>
               </h2>
               <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
-                {liveStandings?.competitionName || "Bhutan Premier League"} {liveStandings?.season ? liveStandings.season : "—"}
+                {liveStandings?.competitionName || "Bhutan Premier League"}{" "}
+                {liveStandings?.season ? liveStandings.season : "—"}
               </p>
             </div>
-            <Link href="/standings" className="w-fit text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View Full Table →</Link>
+            <Link
+              href="/standings"
+              className="w-fit text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline"
+            >
+              View Full Table →
+            </Link>
           </div>
           <div className="overflow-x-auto scrollbar-hide">
             <LiveStandingsTable teams={standingTeams} />
@@ -356,30 +504,59 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
         <div className="flex flex-col gap-5">
           {/* Race to the Title */}
           <SectionCard className="p-4">
-            <Link href="/standings" className="mb-3 text-sm font-black uppercase tracking-wider hover:text-parofc-red transition-colors block">Race to the Title</Link>
+            <Link
+              href="/standings"
+              className="mb-3 text-sm font-black uppercase tracking-wider hover:text-parofc-red transition-colors block"
+            >
+              Race to the Title
+            </Link>
             <div className="space-y-2">
               {raceToTitle.map((t) => {
                 const maxPts = sortedByPoints[0]?.points || 1;
                 const barPct = Math.max(20, Math.round((t.pts / maxPts) * 100));
                 return (
                   <div key={t.pos} className="flex items-center gap-3">
-                    <span className="w-5 text-lg font-black text-white/30">{t.pos}</span>
-                    <div className={`flex-1 rounded-md border px-3 py-2.5 ${t.isParo ? "border-parofc-red/30 bg-gradient-to-r from-parofc-red/15 to-transparent" : "border-white/10"}`}>
+                    <span className="w-5 text-lg font-black text-white/30">
+                      {t.pos}
+                    </span>
+                    <div
+                      className={`flex-1 rounded-md border px-3 py-2.5 ${t.isParo ? "border-parofc-red/30 bg-gradient-to-r from-parofc-red/15 to-transparent" : "border-white/10"}`}
+                    >
                       <div className="flex items-center gap-2">
                         {t.logo ? (
                           <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full">
-                            <Image src={t.logo} alt={t.name} width={28} height={28} className="h-full w-full object-contain" />
+                            <Image
+                              src={t.logo}
+                              alt={t.name}
+                              width={28}
+                              height={28}
+                              className="h-full w-full object-contain"
+                            />
                           </div>
                         ) : (
                           <TeamInitialsLogo name={t.name} />
                         )}
                         <div className="min-w-0 flex-1">
-                          <p className={`truncate text-xs font-black uppercase ${t.isParo ? "text-parofc-red" : ""}`}>{t.name}</p>
-                          <p className={`text-base font-black ${t.isParo ? "text-parofc-red" : "text-white"}`}>{t.pts} <span className="text-2xs font-bold text-white/40">PTS</span></p>
+                          <p
+                            className={`truncate text-xs font-black uppercase ${t.isParo ? "text-parofc-red" : ""}`}
+                          >
+                            {t.name}
+                          </p>
+                          <p
+                            className={`text-base font-black ${t.isParo ? "text-parofc-red" : "text-white"}`}
+                          >
+                            {t.pts}{" "}
+                            <span className="text-2xs font-bold text-white/40">
+                              PTS
+                            </span>
+                          </p>
                         </div>
                       </div>
                       <div className="mt-2 h-[2px] rounded-full bg-white/10">
-                        <div className={`h-full rounded-full ${t.isParo ? "bg-parofc-red" : "bg-white/30"}`} style={{ width: `${barPct}%` }} />
+                        <div
+                          className={`h-full rounded-full ${t.isParo ? "bg-parofc-red" : "bg-white/30"}`}
+                          style={{ width: `${barPct}%` }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -393,19 +570,31 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
             <SectionCard className="relative overflow-hidden">
               {topScorer.image && (
                 <div className="absolute right-0 top-0 h-full w-[45%] sm:w-1/2">
-                  <Image src={topScorer.image} alt={topScorer.name} fill className="object-cover object-top" />
+                  <Image
+                    src={topScorer.image}
+                    alt={topScorer.name}
+                    fill
+                    className="object-cover object-top"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-r from-card-dark via-card-dark/80 to-transparent" />
                 </div>
               )}
               <div className="relative z-10 p-5">
-                <h3 className="mb-4 text-base font-black uppercase tracking-wider">Top Scorer</h3>
+                <h3 className="mb-4 text-base font-black uppercase tracking-wider">
+                  Top Scorer of Paro FC
+                </h3>
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-5xl font-black text-parofc-red sm:text-6xl">{topScorer.goals}</span>
+                  <span className="text-5xl font-black text-parofc-red sm:text-6xl">
+                    {topScorer.goals}
+                  </span>
                   <div className="h-11 w-px bg-gradient-to-b from-transparent via-parofc-red/40 to-transparent" />
-                  <span className="text-base font-bold uppercase text-white/50">Goals</span>
+                  <span className="text-base font-bold uppercase text-white/50">
+                    Goals
+                  </span>
                 </div>
-                <h4 className="mt-4 text-lg font-black uppercase sm:text-xl">{topScorer.name}</h4>
-                <p className="text-xs font-bold uppercase tracking-wider text-white/40">{topScorer.club}</p>
+                <h4 className="mt-4 text-lg font-black uppercase sm:text-xl">
+                  {topScorer.name}
+                </h4>
               </div>
             </SectionCard>
           )}
@@ -418,25 +607,51 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
           <SectionCard className="p-6">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-base font-black uppercase">Latest Blog</h2>
-              <Link href="/blog" className="text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View All Posts →</Link>
+              <Link
+                href="/blog"
+                className="text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline"
+              >
+                View All Posts →
+              </Link>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               {topBlogs.map((item) => {
-                const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
+                const imgUrl = item.image
+                  ? urlFor(item.image).width(600).height(300).url()
+                  : null;
                 return (
-                  <Link key={item._id} href={`/blog/${item.slug}`} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-card-dark">
+                  <Link
+                    key={item._id}
+                    href={`/blog/${item.slug}`}
+                    className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-card-dark"
+                  >
                     <div className="relative aspect-[2/1] overflow-hidden">
                       {imgUrl ? (
-                        <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
+                        <Image
+                          src={imgUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                        />
                       ) : (
                         <div className="h-full w-full bg-gradient-to-br from-parofc-red/30 to-near-black" />
                       )}
                     </div>
                     <div className="p-5">
-                      <p className="text-2xs font-bold uppercase tracking-wider text-white/40">{formatDate(item.publishedAt)}</p>
-                      <h3 className="mt-2 text-lg font-black leading-snug">{item.title}</h3>
+                      <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
+                        {formatDate(item.publishedAt)}
+                      </p>
+                      <h3 className="mt-2 text-lg font-black leading-snug">
+                        {item.title}
+                      </h3>
                       <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-parofc-red">
-                        Read More <HugeiconsIcon icon={ChevronRight} size={14} primaryColor="currentColor" strokeWidth={2} />
+                        Read More{" "}
+                        <HugeiconsIcon
+                          icon={ChevronRight}
+                          size={14}
+                          primaryColor="currentColor"
+                          strokeWidth={2}
+                        />
                       </span>
                     </div>
                   </Link>
@@ -453,25 +668,54 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
           <SectionCard className="p-6">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-base font-black uppercase">Latest News</h2>
-              <Link href="/news" className="text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline">View All News →</Link>
+              <Link
+                href="/news"
+                className="text-xs font-bold uppercase tracking-wider text-parofc-red hover:underline"
+              >
+                View All News →
+              </Link>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               {topNews.map((item) => {
-                const imgUrl = item.image ? urlFor(item.image).width(600).height(300).url() : null;
+                const imgUrl = item.image
+                  ? urlFor(item.image).width(600).height(300).url()
+                  : null;
                 return (
-                  <Link key={item._id} href={item.externalUrl ?? `/news/${item.slug}`} {...(item.externalUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-card-dark">
+                  <Link
+                    key={item._id}
+                    href={item.externalUrl ?? `/news/${item.slug}`}
+                    {...(item.externalUrl
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="group cursor-pointer overflow-hidden rounded-md border border-parofc-red/20 bg-card-dark"
+                  >
                     <div className="relative aspect-[2/1] overflow-hidden">
                       {imgUrl ? (
-                        <Image src={imgUrl} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" />
+                        <Image
+                          src={imgUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                        />
                       ) : (
                         <div className="h-full w-full bg-gradient-to-br from-parofc-red/30 to-near-black" />
                       )}
                     </div>
                     <div className="p-5">
-                      <p className="text-2xs font-bold uppercase tracking-wider text-white/40">{formatDate(item.publishedAt)}</p>
-                      <h3 className="mt-2 text-lg font-black leading-snug">{item.title}</h3>
+                      <p className="text-2xs font-bold uppercase tracking-wider text-white/40">
+                        {formatDate(item.publishedAt)}
+                      </p>
+                      <h3 className="mt-2 text-lg font-black leading-snug">
+                        {item.title}
+                      </h3>
                       <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-parofc-red">
-                        Read More <HugeiconsIcon icon={ChevronRight} size={14} primaryColor="currentColor" strokeWidth={2} />
+                        Read More{" "}
+                        <HugeiconsIcon
+                          icon={ChevronRight}
+                          size={14}
+                          primaryColor="currentColor"
+                          strokeWidth={2}
+                        />
                       </span>
                     </div>
                   </Link>
@@ -488,23 +732,51 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
           <SectionCard className="p-5">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-xl font-black uppercase">Paro FC TV</h2>
-              <Link href="/tv" className="rounded-lg border border-parofc-red/30 px-4 py-2 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10">View All Videos →</Link>
+              <Link
+                href="/tv"
+                className="rounded-lg border border-parofc-red/30 px-4 py-2 text-2xs font-black uppercase tracking-wider text-parofc-red transition hover:bg-parofc-red/10"
+              >
+                View All Videos →
+              </Link>
             </div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {topVideos.map((v) => {
                 const ytId = getYoutubeIdFromUrl(v.youtubeUrl);
-                const thumb = ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null;
+                const thumb = ytId
+                  ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`
+                  : null;
                 return (
-                  <a key={v._id} href={v.youtubeUrl} target="_blank" rel="noopener noreferrer" className="group cursor-pointer">
+                  <a
+                    key={v._id}
+                    href={v.youtubeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group cursor-pointer"
+                  >
                     <div className="relative aspect-video overflow-hidden rounded-md bg-gradient-to-br from-parofc-red/30 to-near-black">
-                      {thumb && <Image src={thumb} alt={v.title} fill className="object-cover opacity-70" />}
+                      {thumb && (
+                        <Image
+                          src={thumb}
+                          alt={v.title}
+                          fill
+                          className="object-cover opacity-70"
+                        />
+                      )}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="grid h-10 w-10 place-items-center rounded-full bg-white/20 backdrop-blur-sm transition group-hover:bg-parofc-red/80">
-                          <HugeiconsIcon icon={Play} size={18} primaryColor="currentColor" className="text-white ml-0.5" strokeWidth={2.1} />
+                          <HugeiconsIcon
+                            icon={Play}
+                            size={18}
+                            primaryColor="currentColor"
+                            className="text-white ml-0.5"
+                            strokeWidth={2.1}
+                          />
                         </div>
                       </div>
                     </div>
-                    <h4 className="mt-2 text-xs font-black line-clamp-1">{v.title}</h4>
+                    <h4 className="mt-2 text-xs font-black line-clamp-1">
+                      {v.title}
+                    </h4>
                   </a>
                 );
               })}
@@ -517,7 +789,9 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
       {mainPartners.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-5 pt-5 pb-8">
           <SectionCard className="p-6">
-            <h2 className="mb-6 text-base font-black uppercase">Our Partners</h2>
+            <h2 className="mb-6 text-base font-black uppercase">
+              Our Partners
+            </h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {mainPartners.map((p) => (
                 <a
@@ -537,7 +811,9 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                         className="relative z-10 h-20 md:h-28 w-auto object-contain"
                       />
                     ) : (
-                      <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">Logo</span>
+                      <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">
+                        Logo
+                      </span>
                     )}
                   </div>
                 </a>
@@ -551,7 +827,9 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
       {subPartners.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-5 pb-8">
           <SectionCard className="p-6">
-            <h2 className="mb-6 text-base font-black uppercase">Sub Partners</h2>
+            <h2 className="mb-6 text-base font-black uppercase">
+              Sub Partners
+            </h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {subPartners.map((p) => (
                 <a
@@ -571,7 +849,9 @@ export function HomeClient({ news, blogs, matches, mainPartners, subPartners, tr
                         className="relative z-10 h-20 md:h-28 w-auto object-contain"
                       />
                     ) : (
-                      <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">Logo</span>
+                      <span className="relative z-10 text-2xs font-bold uppercase tracking-widest text-white/30">
+                        Logo
+                      </span>
                     )}
                   </div>
                 </a>
