@@ -3,6 +3,8 @@
 import {
   Facebook01Icon,
   InstagramIcon,
+  Linkedin01Icon,
+  NewTwitterIcon,
   TiktokIcon,
   YoutubeIcon,
 } from "@hugeicons/core-free-icons";
@@ -59,6 +61,8 @@ const socialLinks = [
     href: "https://www.youtube.com/parofc",
   },
   { icon: TiktokIcon, label: "TikTok", href: "https://www.tiktok.com/parofc" },
+  { icon: NewTwitterIcon, label: "X (Twitter)", href: "https://x.com/Paro_FC" },
+  { icon: Linkedin01Icon, label: "LinkedIn", href: "https://www.linkedin.com/in/karma-jigme-48958312a/" },
 ];
 
 export function Footer(_: FooterProps) {
