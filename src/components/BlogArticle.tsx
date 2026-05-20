@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Share01Icon,
   Bookmark01Icon,
   Clock01Icon,
   Calendar03Icon,
@@ -13,7 +12,7 @@ import {
   Cancel01Icon,
 } from "@hugeicons/core-free-icons";
 import { urlFor } from "@/sanity/lib/image";
-import { isShareUserCanceled } from "@/lib/share";
+import { ShareButtons } from "@/components/ShareButtons";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { useState, useEffect } from "react";
 
@@ -84,6 +83,22 @@ const portableTextComponents: PortableTextComponents = {
         {children}
       </blockquote>
     ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc list-outside pl-6 mb-5 space-y-2 text-lg text-gray-700">
+        {children}
+      </ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal list-outside pl-6 mb-5 space-y-2 text-lg text-gray-700">
+        {children}
+      </ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="leading-relaxed">{children}</li>,
+    number: ({ children }) => <li className="leading-relaxed">{children}</li>,
   },
   marks: {
     link: ({ children, value }) => (
@@ -175,32 +190,9 @@ export function BlogArticle({ article, relatedPosts }: BlogArticleProps) {
     }
   }, [isBookmarked, bookmarkedKey, isHydrated]);
 
-  const handleShare = async () => {
-    const url = `${window.location.origin}/blog/${article.slug}`;
-    const shareData = {
-      title: article.title,
-      text: article.description || article.title,
-      url,
-    };
-
-    try {
-      if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(url);
-        alert("Link copied to clipboard!");
-      }
-    } catch (err) {
-      if (!isShareUserCanceled(err)) {
-        try {
-          await navigator.clipboard.writeText(url);
-          alert("Link copied to clipboard!");
-        } catch (clipboardErr) {
-          console.error("Failed to copy link:", clipboardErr);
-        }
-      }
-    }
-  };
+  const articleUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/blog/${article.slug}`
+    : `/blog/${article.slug}`;
 
   return (
     <div className="min-h-screen bg-white">
@@ -292,13 +284,11 @@ export function BlogArticle({ article, relatedPosts }: BlogArticleProps) {
                 className={isBookmarked ? "text-parofc-gold" : "text-gray-400"}
               />
             </button>
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
-            >
-              <HugeiconsIcon icon={Share01Icon} size={20} />
-              <span className="font-medium">Share</span>
-            </button>
+            <ShareButtons
+              url={articleUrl}
+              title={article.title}
+              description={article.description}
+            />
           </div>
         </div>
       </motion.article>

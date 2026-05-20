@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Share01Icon,
   Bookmark01Icon,
   Clock01Icon,
   Calendar03Icon,
@@ -14,7 +13,7 @@ import {
   ArrowUpRight01Icon,
 } from "@hugeicons/core-free-icons";
 import { urlFor } from "@/sanity/lib/image";
-import { isShareUserCanceled } from "@/lib/share";
+import { ShareButtons } from "@/components/ShareButtons";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { useState, useEffect } from "react";
 
@@ -91,6 +90,22 @@ const portableTextComponents: PortableTextComponents = {
         {children}
       </blockquote>
     ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc list-outside pl-6 mb-5 space-y-2 text-lg text-gray-700">
+        {children}
+      </ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal list-outside pl-6 mb-5 space-y-2 text-lg text-gray-700">
+        {children}
+      </ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="leading-relaxed">{children}</li>,
+    number: ({ children }) => <li className="leading-relaxed">{children}</li>,
   },
   marks: {
     link: ({ children, value }) => (
@@ -186,35 +201,9 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
     }
   }, [isBookmarked, bookmarkedKey, isHydrated]);
 
-  const handleShare = async () => {
-    const url = `${window.location.origin}/news/${article.slug}`;
-    const shareData = {
-      title: article.title,
-      text: article.description || article.title,
-      url: url,
-    };
-
-    try {
-      // Use Web Share API if available (mobile devices)
-      if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback: Copy link to clipboard
-        await navigator.clipboard.writeText(url);
-        alert("Link copied to clipboard!");
-      }
-    } catch (err) {
-      if (!isShareUserCanceled(err)) {
-        // Fallback: Copy link to clipboard
-        try {
-          await navigator.clipboard.writeText(url);
-          alert("Link copied to clipboard!");
-        } catch (clipboardErr) {
-          console.error("Failed to copy link:", clipboardErr);
-        }
-      }
-    }
-  };
+  const articleUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/news/${article.slug}`
+    : `/news/${article.slug}`;
 
   return (
     <div className="min-h-screen bg-white">
@@ -329,13 +318,11 @@ export function NewsArticle({ article, relatedNews }: NewsArticleProps) {
                 />
               </button>
             </div>
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors"
-            >
-              <HugeiconsIcon icon={Share01Icon} size={20} />
-              <span className="font-medium">Share</span>
-            </button>
+            <ShareButtons
+              url={articleUrl}
+              title={article.title}
+              description={article.description}
+            />
           </div>
         </div>
 

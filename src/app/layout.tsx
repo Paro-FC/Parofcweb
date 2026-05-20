@@ -21,6 +21,7 @@ const getCachedPartners = unstable_cache(
 );
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://parofc.com"),
   title: "Paro FC - Official Website",
   description:
     "Official home of Paro FC: news, fixtures, squad, tickets, and the club shop.",
