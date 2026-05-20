@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-import Script from "next/script";
-import { unstable_cache } from "next/cache";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import "../index.css";
-import { SanityLive } from "@/sanity/lib/live-client";
-import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { ChatbotScript } from "@/components/ChatbotScript";
+import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { sanityFetch } from "@/sanity/lib/live";
+import { SanityLive } from "@/sanity/lib/live-client";
 import { PARTNERS_QUERY } from "@/sanity/lib/queries";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
+import Script from "next/script";
+import "../index.css";
 
 const getCachedPartners = unstable_cache(
   async () => {
