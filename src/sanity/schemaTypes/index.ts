@@ -17,6 +17,8 @@ import { academy } from "./academy";
 import { ebook } from "./ebook";
 import { topScorer } from "./topScorer";
 import { subscriber } from "./subscriber";
+import { tableBlock } from "./tableBlock";
+import { aboutPage } from "./aboutPage";
 
 export const schemaTypes = [
   news,
@@ -38,4 +40,6 @@ export const schemaTypes = [
   ebook,
   topScorer,
   subscriber,
+  tableBlock,
+  aboutPage,
 ];

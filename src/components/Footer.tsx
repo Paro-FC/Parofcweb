@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Facebook01Icon,
   InstagramIcon,
@@ -11,7 +9,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
 interface Partner {
   _id: string;
@@ -27,6 +24,7 @@ interface FooterProps {
 
 const quickLinks = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   { href: "/players", label: "Team" },
   { href: "/standings", label: "Standings" },
   { href: "/news", label: "News" },
@@ -66,34 +64,6 @@ const socialLinks = [
 ];
 
 export function Footer(_: FooterProps) {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
-
-  const handleSubscribe = async () => {
-    if (!email) return;
-    setStatus("loading");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setStatus("success");
-        setMessage("You're subscribed!");
-        setEmail("");
-      } else {
-        setStatus("error");
-        setMessage(data.error || "Something went wrong.");
-      }
-    } catch {
-      setStatus("error");
-      setMessage("Something went wrong.");
-    }
-  };
-
   return (
     <footer className="border-t border-parofc-red/15 bg-near-black">
       {/* Footer columns */}
@@ -198,35 +168,23 @@ export function Footer(_: FooterProps) {
           </div>
         </div>
 
-        {/* Newsletter */}
+        {/* Buy Tickets */}
         <div>
           <b className="text-2xs font-black uppercase tracking-wider text-parofc-red">
-            Newsletter
+            Tickets
           </b>
           <p className="mt-2 text-2xs text-white/30">
-            Subscribe for the latest news, updates and exclusive offers.
+            Get your match tickets and cheer for Paro FC live at the stadium.
           </p>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
-            onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-            className="mt-3 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-xs text-white placeholder:text-white/30 focus:border-parofc-red/40 focus:outline-none"
-            placeholder="Enter your email"
-            disabled={status === "loading" || status === "success"}
-          />
-          {message && (
-            <p className={`mt-1.5 text-2xs ${status === "success" ? "text-green-400" : "text-red-400"}`}>
-              {message}
-            </p>
-          )}
-          <button
-            onClick={handleSubscribe}
-            disabled={status === "loading" || status === "success"}
-            className="mt-2 w-full rounded-lg bg-parofc-red py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/85 disabled:opacity-50 disabled:cursor-not-allowed"
+          <Link
+            href="/fixtures-results"
+            className="mt-4 flex items-center justify-center gap-2 w-full rounded-lg bg-parofc-red py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/85"
           >
-            {status === "loading" ? "Subscribing..." : status === "success" ? "Subscribed!" : "Subscribe"}
-          </button>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
+            </svg>
+            Buy Tickets
+          </Link>
         </div>
       </div>
 

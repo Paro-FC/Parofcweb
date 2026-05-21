@@ -1,7 +1,7 @@
 import type { StructureBuilder, StructureResolver } from 'sanity/structure';
-import { CalendarIcon, DocumentIcon, TagIcon } from '@sanity/icons';
+import { CalendarIcon, CircleIcon, DocumentIcon, TagIcon } from '@sanity/icons';
 
-const HIDDEN_TYPES = new Set(['match', 'standing', 'standingsCompetition']);
+const HIDDEN_TYPES = new Set(['match', 'standing', 'standingsCompetition', 'aboutPage']);
 
 const matchesByTeam = (S: StructureBuilder, team: 'men' | 'women') =>
   S.documentTypeList('match')
@@ -80,6 +80,16 @@ export const structure: StructureResolver = (S) =>
                 .icon(TagIcon)
                 .child(competitionsByTeam(S, 'women')),
             ]),
+        ),
+      S.divider(),
+      S.listItem()
+        .title('About Page')
+        .icon(CircleIcon)
+        .child(
+          S.document()
+            .schemaType('aboutPage')
+            .documentId('singleton-about-page')
+            .title('About Page'),
         ),
       S.divider(),
       ...S.documentTypeListItems().filter(

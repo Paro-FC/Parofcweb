@@ -112,6 +112,7 @@ export const blog = defineType({
             }),
           ],
         }),
+        defineArrayMember({ type: 'tableBlock' }),
       ],
     }),
     defineField({

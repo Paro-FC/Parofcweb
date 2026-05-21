@@ -21,6 +21,7 @@ const menuGroups = [
       { label: "Fixtures & Results", href: "/fixtures-results" },
       { label: "Players", href: "/players" },
       { label: "Academy", href: "/academy" },
+      { label: "About", href: "/about" },
     ],
   },
   {

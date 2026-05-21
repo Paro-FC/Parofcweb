@@ -32,6 +32,7 @@ interface Match {
   venue: string;
   matchUrl?: string;
   showMatchLink?: boolean;
+  ticketUrl?: string;
   status?: "upcoming" | "live" | "ht" | "ft" | "postponed";
   homeScore?: number | null;
   awayScore?: number | null;
@@ -88,6 +89,14 @@ function getImageUrl(image: unknown): string | null {
   } catch {
     return null;
   }
+}
+
+function TicketIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
+    </svg>
+  );
 }
 
 function MatchRows({
@@ -250,6 +259,18 @@ function MatchRows({
                           </div>
                         </div>
                       </Link>
+                      {!showScores && match.ticketUrl && (
+                        <a
+                          href={match.ticketUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 md:px-4 bg-parofc-red hover:bg-parofc-red/90 text-white text-2xs font-bold uppercase tracking-wider transition-colors flex-shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <TicketIcon />
+                          <span className="hidden sm:inline">Buy Ticket</span>
+                        </a>
+                      )}
                     </div>
 
                     {/* Mobile meta */}

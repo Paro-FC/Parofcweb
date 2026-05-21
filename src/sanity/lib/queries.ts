@@ -198,6 +198,7 @@ export const ALL_MATCHES_QUERY = `*[_type == "match"] | order(date asc) {
   venue,
   matchUrl,
   showMatchLink,
+  ticketUrl,
   status,
   homeScore,
   awayScore
@@ -543,4 +544,22 @@ export const PRODUCT_QUERY = `*[_type == "product" && slug.current == $slug][0] 
   images,
   material,
   stock
+}`;
+
+export const ABOUT_PAGE_QUERY = `*[_type == "aboutPage" && _id == "singleton-about-page"][0] {
+  _id,
+  title,
+  subtitle,
+  heroImage {
+    asset-> { _id, url },
+    hotspot,
+    crop
+  },
+  body[] {
+    ...,
+    _type == "image" => {
+      ...,
+      asset->
+    }
+  }
 }`;

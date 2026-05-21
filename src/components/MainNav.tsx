@@ -12,26 +12,32 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SearchModal } from "./SearchModal";
 
 const leftLinks = [
   { href: "/standings", label: "Standings" },
   { href: "/fixtures-results", label: "Fixtures" },
   { href: "/players", label: "Squad" },
-  { href: "/academy", label: "Academy" },
-  { href: "/photos", label: "Photos" },
+  { href: "/about", label: "About Paro FC" },
 ];
 
 const rightLinks = [
+  { href: "/academy", label: "Academy" },
   { href: "/news", label: "News" },
   { href: "/blog", label: "Blog" },
+];
+
+const moreLinks = [
   { href: "/shop", label: "Shop" },
+  { href: "/photos", label: "Photos" },
   { href: "/ebooks", label: "Ebooks" },
 ];
 
 export function MainNav() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const { openMenu } = useSideMenu();
   const { getItemCount, setIsCartOpen } = useCart();
   const [mounted, setMounted] = useState(false);
@@ -40,6 +46,17 @@ export function MainNav() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [moreOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,7 +131,7 @@ export function MainNav() {
       </nav>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal font-display overflow-hidden">
+      <nav className="hidden md:block sticky top-0 z-50 bg-dark-charcoal font-display">
         {/* Stadium lighting glow — red floodlight from above */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_70%_80%_at_50%_-20%,rgba(206,5,5,0.11)_0%,transparent_100%)]" />
         {/* Subtle gold warmth at top edge */}
@@ -166,6 +183,55 @@ export function MainNav() {
                 <HugeiconsIcon icon={ArrowUpRight01Icon} size={10} />
               </Link>
             ))}
+
+            {/* More dropdown */}
+            <div className="relative" ref={moreRef}>
+              <button
+                onClick={() => setMoreOpen((v) => !v)}
+                className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors duration-200 cursor-pointer ${
+                  moreLinks.some((l) => isActive(l.href))
+                    ? "text-parofc-red"
+                    : "text-white/35 hover:text-light-gold"
+                }`}
+              >
+                More
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+
+              {moreOpen && (
+                <div className="absolute right-0 top-full mt-3 w-36 bg-dark-charcoal border border-white/10 shadow-xl z-50 py-1">
+                  {moreLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      prefetch
+                      scroll={false}
+                      onClick={() => setMoreOpen(false)}
+                      className={`flex items-center justify-between px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors duration-150 ${
+                        isActive(link.href)
+                          ? "text-parofc-red"
+                          : "text-white/35 hover:text-light-gold"
+                      }`}
+                    >
+                      {link.label}
+                      <HugeiconsIcon icon={ArrowUpRight01Icon} size={10} />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="w-px h-4 bg-white/10 mx-1" />
 

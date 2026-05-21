@@ -104,6 +104,7 @@ export const news = defineType({
             }),
           ],
         }),
+        defineArrayMember({ type: 'tableBlock' }),
       ],
     }),
     defineField({
