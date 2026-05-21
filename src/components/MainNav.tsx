@@ -185,7 +185,7 @@ export function MainNav() {
             ))}
 
             {/* More dropdown */}
-            <div className="relative" ref={moreRef}>
+            <div className="relative flex items-center" ref={moreRef}>
               <button
                 onClick={() => setMoreOpen((v) => !v)}
                 className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors duration-200 cursor-pointer ${
