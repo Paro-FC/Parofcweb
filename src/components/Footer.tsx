@@ -24,6 +24,7 @@ interface FooterProps {
 
 const quickLinks = [
   { href: "/", label: "Home" },
+  { href: "/fixtures-results", label: "Fixtures & results" },
   { href: "/about", label: "About Paro FC" },
   { href: "/players", label: "Team" },
   { href: "/standings", label: "Standings" },
@@ -32,10 +33,7 @@ const quickLinks = [
   { href: "/photos", label: "Photos" },
 ];
 
-const ticketLinks = [
-  { href: "/fixtures-results", label: "Fixtures & results" },
-  { href: "/shop", label: "Shop" },
-];
+const ticketLinks = [{ href: "/shop", label: "Shop" }];
 
 const academyLinks = [
   { href: "/academy", label: "Youth Teams" },
@@ -123,7 +121,7 @@ export function Footer(_: FooterProps) {
         {/* Tickets & Shop */}
         <div>
           <b className="text-2xs font-black uppercase tracking-wider text-parofc-red">
-            Tickets & Shop
+            Shop
           </b>
           <div className="mt-3 space-y-2 text-xs text-white/40">
             {ticketLinks.map((l) => (
