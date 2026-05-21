@@ -20,8 +20,8 @@ const menuGroups = [
       { label: "Standings", href: "/standings" },
       { label: "Fixtures & Results", href: "/fixtures-results" },
       { label: "Players", href: "/players" },
-      { label: "Academy", href: "/academy" },
       { label: "About Paro FC", href: "/about" },
+      { label: "Academy", href: "/academy" },
     ],
   },
   {
