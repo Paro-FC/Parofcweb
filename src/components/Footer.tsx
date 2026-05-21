@@ -24,7 +24,7 @@ interface FooterProps {
 
 const quickLinks = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "About Paro FC" },
   { href: "/players", label: "Team" },
   { href: "/standings", label: "Standings" },
   { href: "/news", label: "News" },
@@ -60,7 +60,11 @@ const socialLinks = [
   },
   { icon: TiktokIcon, label: "TikTok", href: "https://www.tiktok.com/parofc" },
   { icon: NewTwitterIcon, label: "X (Twitter)", href: "https://x.com/Paro_FC" },
-  { icon: Linkedin01Icon, label: "LinkedIn", href: "https://www.linkedin.com/in/karma-jigme-48958312a/" },
+  {
+    icon: Linkedin01Icon,
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/karma-jigme-48958312a/",
+  },
 ];
 
 export function Footer(_: FooterProps) {
@@ -180,7 +184,17 @@ export function Footer(_: FooterProps) {
             href="/fixtures-results"
             className="mt-4 flex items-center justify-center gap-2 w-full rounded-lg bg-parofc-red py-2.5 text-2xs font-black uppercase tracking-wider text-white transition hover:bg-parofc-red/85"
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
               <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
             </svg>
             Buy Tickets

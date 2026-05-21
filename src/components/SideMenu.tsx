@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { ArrowRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Cancel01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
 interface SideMenuProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ const menuGroups = [
       { label: "Fixtures & Results", href: "/fixtures-results" },
       { label: "Players", href: "/players" },
       { label: "Academy", href: "/academy" },
-      { label: "About", href: "/about" },
+      { label: "About Paro FC", href: "/about" },
     ],
   },
   {
